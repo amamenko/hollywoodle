@@ -1,0 +1,86 @@
+@keyframes incorrect-shake {
+  10% {
+    transform: translateX(-1px);
+  }
+  20% {
+    transform: translateX(2px);
+  }
+  30% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+  60% {
+    transform: translateX(4px);
+  }
+  70% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+  90% {
+    transform: translateX(-1px);
+  }
+}
+
+@mixin incorrect-shake-animation {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  animation-delay: 0s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: both;
+  animation-play-state: running;
+  animation-name: incorrect-shake;
+}
+
+.actor_movie_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .actor_movie_icon_container {
+    width: 90px;
+    height: 100%;
+    position: relative;
+
+    .correct_icon,
+    .incorrect_icon {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      color: #fff;
+      width: 1.5rem;
+      z-index: 100;
+    }
+  }
+}
+
+.actor_movie_image {
+  width: 90px;
+  height: auto;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box; /* Opera/IE 8+ */
+  border-radius: 5px;
+
+  &.incorrect {
+    @include incorrect-shake-animation;
+    border: 5px solid #e32;
+  }
+
+  &.correct {
+    border: 5px solid #68af16;
+  }
+}
+
+.actor_movie_name {
+  font-weight: 600;
+}

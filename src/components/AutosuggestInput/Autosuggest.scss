@@ -1,0 +1,103 @@
+.input_container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 1rem;
+}
+
+.guess_input_container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.autosuggest_input {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.form-control {
+    font-size: 18px;
+  }
+}
+
+.guess_button {
+  background: rgb(62, 192, 103);
+  color: #fff;
+  font-weight: 700 !important;
+  border-radius: 10px;
+  width: 10rem;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  border: none;
+
+  &:hover {
+    background: rgb(42, 172, 83);
+  }
+
+  &:active {
+    background: rgb(22, 152, 63);
+  }
+}
+
+.react-autosuggest__suggestions-container {
+  width: 100%;
+  position: absolute;
+  top: 50px;
+  padding: 0;
+  margin: 0;
+  z-index: 99999;
+}
+
+.react-autosuggest__suggestions-list {
+  margin: 0;
+  padding: 0;
+  max-height: 175px;
+  overflow-y: auto;
+  background: rgb(125, 125, 125);
+  text-align: left;
+}
+
+.autosuggest_container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+  li {
+    list-style: none;
+  }
+}
+
+.suggestion_container {
+  margin: 0;
+  padding: 0;
+  background: rgb(125, 125, 125);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid #dedede;
+  padding-left: 1rem;
+
+  &:hover {
+    cursor: pointer;
+    background: rgb(145, 145, 145);
+    transition: background-color 0.3s ease;
+  }
+
+  &:active,
+  &:focus {
+    cursor: pointer;
+    background: rgb(175, 175, 175);
+  }
+}
+
+.toast_message {
+  text-align: center;
+}
