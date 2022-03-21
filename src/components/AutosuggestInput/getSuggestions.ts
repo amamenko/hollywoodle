@@ -7,10 +7,10 @@ interface TMDBSearchResult {
 }
 
 export const getSuggestions = async (
-  value: { [key: string]: string },
+  value: string,
   typeOfGuess: "movie" | "actor"
 ) => {
-  const inputValue = value.value.trim().toLowerCase();
+  const inputValue = value.trim().toLowerCase();
   const inputLength = inputValue.length;
 
   if (inputLength <= 2) {

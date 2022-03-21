@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Autosuggest, {
   GetSuggestionValue,
   SuggestionsFetchRequested,
@@ -8,6 +8,7 @@ import { AppContext } from "../../App";
 import { toast } from "react-toastify";
 import Scroll from "react-scroll";
 import { getSuggestions } from "./getSuggestions";
+import debounce from "lodash.debounce";
 import "./Autosuggest.scss";
 
 const scroll = Scroll.animateScroll;
@@ -29,11 +30,18 @@ export const AutosuggestInput = ({
 
   const { guesses, changeGuesses } = useContext(AppContext);
 
-  const onSuggestionsFetchRequested = async (value: {
-    [key: string]: string;
-  }) => {
+  const onSuggestionsFetchRequested = async (value: string) => {
     changeSuggestions(await getSuggestions(value, typeOfGuess));
   };
+
+  // Stores reference to the debounced callback
+  const debouncedSearch = useRef(
+    debounce(({ value }) => {
+      onSuggestionsFetchRequested(
+        value
+      ) as unknown as SuggestionsFetchRequested;
+    }, 300)
+  ).current;
 
   const onSuggestionsClearRequested = () => {
     changeSuggestions([]);
@@ -105,9 +113,7 @@ export const AutosuggestInput = ({
     <div className="input_container">
       <Autosuggest
         suggestions={suggestions}
-        onSuggestionsFetchRequested={
-          onSuggestionsFetchRequested as unknown as SuggestionsFetchRequested
-        }
+        onSuggestionsFetchRequested={debouncedSearch}
         onSuggestionsClearRequested={onSuggestionsClearRequested}
         getSuggestionValue={
           getSuggestionValue as unknown as GetSuggestionValue<{
