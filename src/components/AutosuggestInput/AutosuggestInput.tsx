@@ -10,6 +10,8 @@ import Scroll from "react-scroll";
 import { getSuggestions } from "./getSuggestions";
 import debounce from "lodash.debounce";
 import "./Autosuggest.scss";
+import { getMovieCast } from "./getMovieCast";
+import { getMostRecent } from "../../utils/getMostRecent";
 
 const scroll = Scroll.animateScroll;
 
@@ -23,25 +25,34 @@ export const AutosuggestInput = ({
     { [key: string]: string | number | boolean }[]
   >([]);
   const [currentSelection, changeCurrentSelection] = useState({
+    id: 0,
     name: "",
     year: "",
     image: "",
   });
 
-  const { guesses, changeGuesses } = useContext(AppContext);
+  const { firstActor, lastActor, guesses, changeGuesses } =
+    useContext(AppContext);
 
-  const onSuggestionsFetchRequested = async (value: string) => {
-    changeSuggestions(await getSuggestions(value, typeOfGuess));
+  const debounceFn = (type: "movie" | "actor") => {
+    return debounce(({ value }) => {
+      onSuggestionsFetchRequested(
+        value,
+        type
+      ) as unknown as SuggestionsFetchRequested;
+    }, 300);
   };
 
   // Stores reference to the debounced callback
-  const debouncedSearch = useRef(
-    debounce(({ value }) => {
-      onSuggestionsFetchRequested(
-        value
-      ) as unknown as SuggestionsFetchRequested;
-    }, 300)
-  ).current;
+  const movieDebouncedSearch = useRef(debounceFn("movie")).current;
+  const actorDebouncedSearch = useRef(debounceFn("actor")).current;
+
+  const onSuggestionsFetchRequested = async (
+    value: string,
+    typeOfGuess: "movie" | "actor"
+  ) => {
+    changeSuggestions(await getSuggestions(value, typeOfGuess));
+  };
 
   const onSuggestionsClearRequested = () => {
     changeSuggestions([]);
@@ -51,11 +62,13 @@ export const AutosuggestInput = ({
     suggestion: GetSuggestionValue<{ [key: string]: string | number }>
   ) => suggestion.name;
 
-  const handleInputGuess = ({
+  const handleInputGuess = async ({
+    id,
     name,
     year,
     image,
   }: {
+    id: number;
     name: string;
     year: string;
     image: string;
@@ -75,12 +88,40 @@ export const AutosuggestInput = ({
       // Don't show any more toasts in queue
       setTimeout(() => toast.clearWaitingQueue(), 500);
     } else {
+      let movieCast: number[] = [];
+      if (typeOfGuess === "movie") {
+        movieCast = await getMovieCast(id);
+      } else {
+        const mostRecentMovie = getMostRecent(guesses, "movie");
+        if (
+          mostRecentMovie &&
+          mostRecentMovie.cast &&
+          Array.isArray(mostRecentMovie.cast)
+        ) {
+          movieCast = mostRecentMovie.cast;
+        }
+      }
+
+      const mostRecentActor = getMostRecent(guesses, "actor");
+      const mostRecentActorID = mostRecentActor
+        ? Number(mostRecentActor.id)
+        : Number(firstActor.id);
+
       changeGuesses([
         ...guesses,
-        { guess: name, year, image, incorrect: false, type: typeOfGuess },
+        {
+          id,
+          guess: name,
+          year,
+          image,
+          incorrect: !movieCast.includes(mostRecentActorID),
+          cast: movieCast,
+          type: typeOfGuess,
+        },
       ]);
       changeInputValue("");
       changeCurrentSelection({
+        id: 0,
         name: "",
         year: "",
         image: "",
@@ -96,12 +137,22 @@ export const AutosuggestInput = ({
       className="suggestion_container"
       onClick={() =>
         changeCurrentSelection({
+          id: Number(suggestion.id),
           name: suggestion.name.toString(),
           year: suggestion.year ? suggestion.year.toString() : "",
           image: suggestion.image.toString(),
         })
       }
     >
+      {typeOfGuess === "actor" ? (
+        <img
+          className="suggestion_image"
+          src={suggestion.image.toString()}
+          alt={`${suggestion.name}`}
+        />
+      ) : (
+        <></>
+      )}{" "}
       <p className="suggested_name">
         {suggestion.name.toString()}
         {suggestion.year ? ` (${suggestion.year})` : ""}
@@ -113,7 +164,9 @@ export const AutosuggestInput = ({
     <div className="input_container">
       <Autosuggest
         suggestions={suggestions}
-        onSuggestionsFetchRequested={debouncedSearch}
+        onSuggestionsFetchRequested={
+          typeOfGuess === "movie" ? movieDebouncedSearch : actorDebouncedSearch
+        }
         onSuggestionsClearRequested={onSuggestionsClearRequested}
         getSuggestionValue={
           getSuggestionValue as unknown as GetSuggestionValue<{

@@ -3,6 +3,7 @@ import React, {
   useState,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
 import { ReactComponent as LogoWhite } from "./assets/LogoWhite.svg";
 import { ActorMovieContainer } from "./components/ActorMovieContainer/ActorMovieContainer";
@@ -11,35 +12,69 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
+import { getMostRecent } from "./utils/getMostRecent";
+
+interface ActorObj {
+  name: string;
+  image: string;
+  id: number;
+}
 
 interface ContextProps {
-  guesses: { [key: string]: string | boolean }[];
+  firstActor: ActorObj;
+  lastActor: ActorObj;
+  guesses: { [key: string]: string | number | number[] | boolean }[];
   changeGuesses: Dispatch<
     SetStateAction<
       {
-        [key: string]: string | boolean;
+        [key: string]: string | number | number[] | boolean;
       }[]
     >
   >;
 }
 
 export const AppContext = createContext<ContextProps>({
+  firstActor: { name: "", image: "", id: 0 },
+  lastActor: { name: "", image: "", id: 0 },
   guesses: [{}],
   changeGuesses: () => [],
 });
 
 const App = () => {
+  const [firstActor, changeFirstActor] = useState({
+    name: "",
+    image: "",
+    id: 0,
+  });
+  const [lastActor, changeLastActor] = useState({ name: "", image: "", id: 0 });
   const [guesses, changeGuesses] = useState<
-    { [key: string]: string | boolean }[]
+    { [key: string]: string | number | number[] | boolean }[]
   >([]);
 
-  const mostRecentMovie = guesses
-    .reverse()
-    .find((guess) => guess.type === "movie");
+  useEffect(() => {
+    changeFirstActor({
+      name: "Benedict Cumberbatch",
+      image:
+        "https://www.themoviedb.org/t/p/w1280/fBEucxECxGLKVHBznO0qHtCGiMO.jpg",
+      id: 71580,
+    });
+
+    changeLastActor({
+      name: "John Goodman",
+      image:
+        "https://www.themoviedb.org/t/p/w1280/yyYqoyKHO7hE1zpgEV2XlqYWcNV.jpg",
+      id: 1230,
+    });
+  }, []);
+
+  const mostRecentMovie = getMostRecent(guesses, "movie");
+  const mostRecentActor = getMostRecent(guesses, "actor");
 
   return (
     <AppContext.Provider
       value={{
+        firstActor,
+        lastActor,
         guesses,
         changeGuesses,
       }}
@@ -51,10 +86,16 @@ const App = () => {
       <div className="app_container">
         <div className="main_container">
           <ActorMovieContainer
-            image="https://www.themoviedb.org/t/p/w1280/fBEucxECxGLKVHBznO0qHtCGiMO.jpg"
-            name="Benedict Cumberbatch"
+            image={firstActor.image}
+            name={firstActor.name}
           />
-          {guesses.map((el, index) => {
+          {guesses.map((el, index, arr) => {
+            const currentGuess = el.guess.toString();
+            const currentGuessType = el.type;
+            const prevGuess = arr[index - 1]
+              ? arr[index - 1].guess.toString()
+              : firstActor.name;
+
             if (
               typeof el.guess === "string" &&
               typeof el.incorrect === "boolean"
@@ -62,8 +103,12 @@ const App = () => {
               return (
                 <React.Fragment key={index}>
                   <InteractiveResponse
-                    actor1="Benedict Cumberbatch"
-                    movie={el.guess}
+                    actor1={
+                      currentGuessType === "actor" ? currentGuess : prevGuess
+                    }
+                    movie={
+                      currentGuessType === "movie" ? currentGuess : prevGuess
+                    }
                     incorrect={el.incorrect}
                     year={el.year.toString()}
                     points={30}
@@ -79,14 +124,15 @@ const App = () => {
             return <></>;
           })}
           <InteractiveResponse
-            actor1={"Benedict Cumberbatch"}
-            actor2="John Goodman"
+            actor1={
+              mostRecentActor
+                ? mostRecentActor.guess.toString()
+                : firstActor.name
+            }
+            actor2={lastActor.name}
             movie={mostRecentMovie ? mostRecentMovie.guess.toString() : ""}
           />
-          <ActorMovieContainer
-            image="https://www.themoviedb.org/t/p/w1280/yyYqoyKHO7hE1zpgEV2XlqYWcNV.jpg"
-            name="John Goodman"
-          />
+          <ActorMovieContainer image={lastActor.image} name={lastActor.name} />
         </div>
       </div>
     </AppContext.Provider>

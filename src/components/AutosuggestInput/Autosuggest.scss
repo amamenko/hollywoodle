@@ -96,6 +96,14 @@
     cursor: pointer;
     background: rgb(175, 175, 175);
   }
+
+  .suggestion_image {
+    box-sizing: border-box;
+    border: 1px solid #fff;
+    max-width: 20px;
+    height: auto;
+    margin-right: 1rem;
+  }
 }
 
 .toast_message {

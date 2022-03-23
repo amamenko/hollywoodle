@@ -91,6 +91,7 @@ export const getSuggestions = async (
         .sort(resultSortingFunction)
         .map((item: TMDBSearchResult) => {
           return {
+            id: item.id,
             name: item.title,
             year: format(parseISO(item.release_date.toString()), "yyyy"),
             image: `https://www.themoviedb.org/t/p/w1280/${item.poster_path}`,
@@ -111,6 +112,7 @@ export const getSuggestions = async (
         .sort(resultSortingFunction)
         .map((item: TMDBSearchResult) => {
           return {
+            id: item.id,
             name: item.name,
             year: "",
             image: `https://www.themoviedb.org/t/p/w1280/${item.profile_path}`,
