@@ -17,3 +17,19 @@ b.correct {
   justify-content: center;
   width: 100%;
 }
+
+.question_container {
+  display: flex;
+
+  .question_emoji {
+    font-size: 2rem;
+    align-self: center;
+    margin-left: 1rem;
+  }
+
+  p {
+    text-align: left;
+    padding-left: 2rem;
+    padding-right: 3rem;
+  }
+}

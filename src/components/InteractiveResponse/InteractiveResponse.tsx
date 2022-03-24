@@ -23,26 +23,39 @@ export const InteractiveResponse = ({
   const { guesses } = useContext(AppContext);
   const mostRecentGuess = guesses[guesses.length - 1];
 
-  const typeOfGuess =
-    !mostRecentGuess || mostRecentGuess.type === "actor" ? "movie" : "actor";
-
+  const typeOfGuess = !mostRecentGuess
+    ? "movie"
+    : mostRecentGuess.incorrect
+    ? mostRecentGuess.type === "actor"
+      ? "actor"
+      : "movie"
+    : mostRecentGuess.type === "actor"
+    ? "movie"
+    : "actor";
+  console.log({ actor1 });
   return (
     <div className="interactive_container">
       {actor1 && actor2 ? (
         <>
           {typeOfGuess === "movie" ? (
-            <p>
-              Can you think of a movie starring <b>{actor1}</b> and either{" "}
-              <b>{actor2}</b> or someone else <b>{actor2}</b> has worked with?
-            </p>
+            <div className="question_container">
+              <div className="question_emoji">🎥</div>
+              <p>
+                Can you think of a movie starring <b>{actor1}</b> and either{" "}
+                <b>{actor2}</b> or someone else <b>{actor2}</b> has worked with?
+              </p>
+            </div>
           ) : (
-            <p>
-              Can you think of someone in{" "}
-              <b>
-                {mostRecentGuess.guess} ({mostRecentGuess.year})
-              </b>{" "}
-              who was also in a movie with <b>{actor2}</b>?
-            </p>
+            <div className="question_container">
+              <div className="question_emoji">🎭</div>
+              <p>
+                Can you think of someone in{" "}
+                <b>
+                  {mostRecentGuess.guess} ({mostRecentGuess.year})
+                </b>{" "}
+                who was also in a movie with <b>{actor2}</b>?
+              </p>
+            </div>
           )}
           <AutosuggestInput typeOfGuess={typeOfGuess} />
         </>

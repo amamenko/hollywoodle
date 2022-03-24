@@ -4,6 +4,7 @@ import React, {
   Dispatch,
   SetStateAction,
   useEffect,
+  useCallback,
 } from "react";
 import { ReactComponent as LogoWhite } from "./assets/LogoWhite.svg";
 import { ActorMovieContainer } from "./components/ActorMovieContainer/ActorMovieContainer";
@@ -23,11 +24,23 @@ interface ActorObj {
 interface ContextProps {
   firstActor: ActorObj;
   lastActor: ActorObj;
-  guesses: { [key: string]: string | number | number[] | boolean }[];
+  guesses: {
+    [key: string]:
+      | string
+      | number
+      | number[]
+      | boolean
+      | { [key: string]: string };
+  }[];
   changeGuesses: Dispatch<
     SetStateAction<
       {
-        [key: string]: string | number | number[] | boolean;
+        [key: string]:
+          | string
+          | number
+          | number[]
+          | boolean
+          | { [key: string]: string };
       }[]
     >
   >;
@@ -48,8 +61,17 @@ const App = () => {
   });
   const [lastActor, changeLastActor] = useState({ name: "", image: "", id: 0 });
   const [guesses, changeGuesses] = useState<
-    { [key: string]: string | number | number[] | boolean }[]
+    {
+      [key: string]:
+        | string
+        | number
+        | number[]
+        | boolean
+        | { [key: string]: string };
+    }[]
   >([]);
+
+  console.log(guesses);
 
   useEffect(() => {
     changeFirstActor({
@@ -70,6 +92,62 @@ const App = () => {
   const mostRecentMovie = getMostRecent(guesses, "movie");
   const mostRecentActor = getMostRecent(guesses, "actor");
 
+  const renderGuesses = useCallback(() => {
+    const allGuesses = guesses.slice().sort((a, b) => {
+      return (
+        (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
+      );
+    });
+
+    return allGuesses.map((el, index, arr) => {
+      const currentGuessType = el.type;
+
+      const determineChoice = (type: string, default_val: string): string => {
+        if (currentGuessType === type) {
+          return el.guess.toString();
+        } else {
+          if (
+            el.prev_guess &&
+            typeof el.prev_guess === "object" &&
+            !Array.isArray(el.prev_guess) &&
+            el.prev_guess.guess &&
+            el.prev_guess.type === type
+          ) {
+            return el.prev_guess.guess.toString();
+          }
+          return default_val;
+        }
+      };
+
+      console.log({
+        currentGuessType,
+        guess: el.guess,
+        prev: el.prev_guess,
+        chosen: determineChoice("actor", firstActor.name),
+      });
+
+      if (typeof el.guess === "string" && typeof el.incorrect === "boolean") {
+        return (
+          <React.Fragment key={index}>
+            <InteractiveResponse
+              actor1={determineChoice("actor", firstActor.name)}
+              movie={determineChoice("movie", "")}
+              incorrect={el.incorrect}
+              year={el.year.toString()}
+              points={el.incorrect ? 30 : 10}
+            />
+            <ActorMovieContainer
+              image={el.image.toString()}
+              name={el.guess}
+              incorrect={el.incorrect}
+            />
+          </React.Fragment>
+        );
+      }
+      return <></>;
+    });
+  }, [firstActor.name, guesses]);
+
   return (
     <AppContext.Provider
       value={{
@@ -89,40 +167,7 @@ const App = () => {
             image={firstActor.image}
             name={firstActor.name}
           />
-          {guesses.map((el, index, arr) => {
-            const currentGuess = el.guess.toString();
-            const currentGuessType = el.type;
-            const prevGuess = arr[index - 1]
-              ? arr[index - 1].guess.toString()
-              : firstActor.name;
-
-            if (
-              typeof el.guess === "string" &&
-              typeof el.incorrect === "boolean"
-            ) {
-              return (
-                <React.Fragment key={index}>
-                  <InteractiveResponse
-                    actor1={
-                      currentGuessType === "actor" ? currentGuess : prevGuess
-                    }
-                    movie={
-                      currentGuessType === "movie" ? currentGuess : prevGuess
-                    }
-                    incorrect={el.incorrect}
-                    year={el.year.toString()}
-                    points={30}
-                  />
-                  <ActorMovieContainer
-                    image={el.image.toString()}
-                    name={el.guess}
-                    incorrect={el.incorrect}
-                  />
-                </React.Fragment>
-              );
-            }
-            return <></>;
-          })}
+          {renderGuesses()}
           <InteractiveResponse
             actor1={
               mostRecentActor

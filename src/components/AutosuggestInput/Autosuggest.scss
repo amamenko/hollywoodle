@@ -20,6 +20,7 @@
 
   &.form-control {
     font-size: 18px;
+    padding-left: 2.25rem;
   }
 }
 
@@ -70,6 +71,20 @@
   li {
     list-style: none;
   }
+}
+
+.autosuggest_input_container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.input_symbol_container {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.65rem;
+  margin: 0 auto;
 }
 
 .suggestion_container {

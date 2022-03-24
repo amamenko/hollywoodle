@@ -9,9 +9,11 @@ import { toast } from "react-toastify";
 import Scroll from "react-scroll";
 import { getSuggestions } from "./getSuggestions";
 import debounce from "lodash.debounce";
-import "./Autosuggest.scss";
 import { getMovieCast } from "./getMovieCast";
 import { getMostRecent } from "../../utils/getMostRecent";
+import isMobile from "ismobilejs";
+import { AiOutlineSearch } from "react-icons/ai";
+import "./Autosuggest.scss";
 
 const scroll = Scroll.animateScroll;
 
@@ -20,6 +22,8 @@ export const AutosuggestInput = ({
 }: {
   typeOfGuess: "movie" | "actor";
 }) => {
+  const currentIsMobile = isMobile();
+
   const [inputValue, changeInputValue] = useState("");
   const [suggestions, changeSuggestions] = useState<
     { [key: string]: string | number | boolean }[]
@@ -31,8 +35,7 @@ export const AutosuggestInput = ({
     image: "",
   });
 
-  const { firstActor, lastActor, guesses, changeGuesses } =
-    useContext(AppContext);
+  const { firstActor, guesses, changeGuesses } = useContext(AppContext);
 
   const debounceFn = (type: "movie" | "actor") => {
     return debounce(({ value }) => {
@@ -107,18 +110,37 @@ export const AutosuggestInput = ({
         ? Number(mostRecentActor.id)
         : Number(firstActor.id);
 
-      changeGuesses([
-        ...guesses,
-        {
-          id,
-          guess: name,
-          year,
-          image,
-          incorrect: !movieCast.includes(mostRecentActorID),
-          cast: movieCast,
-          type: typeOfGuess,
-        },
-      ]);
+      const prevGuess = guesses.sort((a, b) => {
+        return (
+          (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
+        );
+      })[guesses.length - 1];
+
+      const newGuess: {
+        [key: string]:
+          | string
+          | number
+          | number[]
+          | boolean
+          | { [key: string]: string };
+      } = {
+        guess_number: guesses.length,
+        id,
+        guess: name,
+        prev_guess: prevGuess
+          ? {
+              guess: prevGuess.guess.toString(),
+              type: prevGuess.type.toString(),
+            }
+          : { guess: "", type: "" },
+        year,
+        image,
+        incorrect: !movieCast.includes(mostRecentActorID),
+        cast: movieCast,
+        type: typeOfGuess,
+      };
+
+      changeGuesses([...guesses, newGuess]);
       changeInputValue("");
       changeCurrentSelection({
         id: 0,
@@ -160,10 +182,19 @@ export const AutosuggestInput = ({
     </div>
   );
 
+  const autoFocusInput = () => {
+    setTimeout(() => {
+      const inputEl = document.getElementById("autosuggest_input");
+      if (inputEl && !inputValue) inputEl.focus();
+    }, 500);
+  };
+
   return (
     <div className="input_container">
       <Autosuggest
+        ref={autoFocusInput}
         suggestions={suggestions}
+        focusInputOnSuggestionClick={currentIsMobile.any}
         onSuggestionsFetchRequested={
           typeOfGuess === "movie" ? movieDebouncedSearch : actorDebouncedSearch
         }
@@ -174,22 +205,32 @@ export const AutosuggestInput = ({
           }>
         }
         renderSuggestion={renderSuggestion}
+        renderInputComponent={(inputProps) => (
+          <div className="autosuggest_input_container">
+            <input {...inputProps} />
+            <div className="input_symbol_container">
+              <AiOutlineSearch size={20} color={"rgb(150, 150, 150)"} />
+            </div>
+          </div>
+        )}
         containerProps={{
           className: "autosuggest_container",
         }}
         inputProps={{
           className: "autosuggest_input form-control",
+          id: "autosuggest_input",
           value: inputValue,
           onChange: (form, event) => {
             changeInputValue(event.newValue.toUpperCase());
           },
         }}
       />
+
       <Button
         className="guess_button"
         onClick={() => handleInputGuess(currentSelection)}
       >
-        GUESS
+        GUESS {typeOfGuess.toUpperCase()}
       </Button>
     </div>
   );

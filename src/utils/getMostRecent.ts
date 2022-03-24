@@ -1,6 +1,11 @@
 export const getMostRecent = (
   arr: {
-    [key: string]: string | number | boolean | number[];
+    [key: string]:
+      | string
+      | number
+      | number[]
+      | boolean
+      | { [key: string]: string };
   }[],
   type: string
 ) => {
