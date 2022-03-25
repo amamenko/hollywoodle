@@ -5,7 +5,7 @@ export const getMostRecent = (
       | number
       | number[]
       | boolean
-      | { [key: string]: string };
+      | { [key: string]: string | number };
   }[],
   type: string
 ) => {

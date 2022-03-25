@@ -57,8 +57,24 @@
   padding: 0;
   max-height: 175px;
   overflow-y: auto;
-  background: rgb(125, 125, 125);
   text-align: left;
+}
+
+.react-autosuggest__suggestion {
+  background: rgb(125, 125, 125);
+
+  &[aria-selected="true"],
+  &:hover {
+    cursor: pointer;
+    background: rgb(145, 145, 145);
+    transition: background-color 0.3s ease;
+  }
+
+  &:active,
+  &:focus {
+    cursor: pointer;
+    background: rgb(175, 175, 175);
+  }
 }
 
 .autosuggest_container {
@@ -90,7 +106,6 @@
 .suggestion_container {
   margin: 0;
   padding: 0;
-  background: rgb(125, 125, 125);
   color: #fff;
   font-weight: 600;
   text-decoration: none;
@@ -99,18 +114,6 @@
   justify-content: flex-start;
   border-bottom: 1px solid #dedede;
   padding-left: 1rem;
-
-  &:hover {
-    cursor: pointer;
-    background: rgb(145, 145, 145);
-    transition: background-color 0.3s ease;
-  }
-
-  &:active,
-  &:focus {
-    cursor: pointer;
-    background: rgb(175, 175, 175);
-  }
 
   .suggestion_image {
     box-sizing: border-box;

@@ -30,7 +30,7 @@ interface ContextProps {
       | number
       | number[]
       | boolean
-      | { [key: string]: string };
+      | { [key: string]: string | number };
   }[];
   changeGuesses: Dispatch<
     SetStateAction<
@@ -40,7 +40,7 @@ interface ContextProps {
           | number
           | number[]
           | boolean
-          | { [key: string]: string };
+          | { [key: string]: string | number };
       }[]
     >
   >;
@@ -67,11 +67,29 @@ const App = () => {
         | number
         | number[]
         | boolean
-        | { [key: string]: string };
+        | { [key: string]: string | number };
     }[]
   >([]);
-
-  console.log(guesses);
+  const [mostRecentMovie, changeMostRecentMovie] = useState<{
+    [key: string]:
+      | string
+      | number
+      | boolean
+      | number[]
+      | {
+          [key: string]: string | number;
+        };
+  }>({ guess: "", type: "", year: "" });
+  const [mostRecentActor, changeMostRecentActor] = useState<{
+    [key: string]:
+      | string
+      | number
+      | boolean
+      | number[]
+      | {
+          [key: string]: string | number;
+        };
+  }>({ guess: "", type: "", year: "" });
 
   useEffect(() => {
     changeFirstActor({
@@ -89,8 +107,29 @@ const App = () => {
     });
   }, []);
 
-  const mostRecentMovie = getMostRecent(guesses, "movie");
-  const mostRecentActor = getMostRecent(guesses, "actor");
+  useEffect(() => {
+    const sortedGuesses = guesses.sort((a, b) => {
+      return (
+        (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
+      );
+    });
+    const currentRecentMovie = getMostRecent(sortedGuesses, "movie");
+    if (currentRecentMovie && currentRecentMovie.id !== mostRecentMovie.id) {
+      changeMostRecentMovie(currentRecentMovie);
+    }
+  }, [guesses, mostRecentMovie]);
+
+  useEffect(() => {
+    const sortedGuesses = guesses.sort((a, b) => {
+      return (
+        (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
+      );
+    });
+    const currentRecentActor = getMostRecent(sortedGuesses, "actor");
+    if (currentRecentActor && currentRecentActor.id !== mostRecentActor.id) {
+      changeMostRecentActor(currentRecentActor);
+    }
+  }, [guesses, mostRecentActor]);
 
   const renderGuesses = useCallback(() => {
     const allGuesses = guesses.slice().sort((a, b) => {
@@ -119,21 +158,20 @@ const App = () => {
         }
       };
 
-      console.log({
-        currentGuessType,
-        guess: el.guess,
-        prev: el.prev_guess,
-        chosen: determineChoice("actor", firstActor.name),
-      });
+      const determinedActor = determineChoice("actor", firstActor.name);
+      const determinedMovie = determineChoice(
+        "movie",
+        mostRecentMovie ? mostRecentMovie.guess.toString() : ""
+      );
 
       if (typeof el.guess === "string" && typeof el.incorrect === "boolean") {
         return (
           <React.Fragment key={index}>
             <InteractiveResponse
-              actor1={determineChoice("actor", firstActor.name)}
-              movie={determineChoice("movie", "")}
+              actor1={determinedActor}
+              movie={determinedMovie}
               incorrect={el.incorrect}
-              year={el.year.toString()}
+              year={determinedMovie ? mostRecentMovie.year.toString() : ""}
               points={el.incorrect ? 30 : 10}
             />
             <ActorMovieContainer
@@ -146,7 +184,39 @@ const App = () => {
       }
       return <></>;
     });
-  }, [firstActor.name, guesses]);
+  }, [firstActor.name, guesses, mostRecentMovie]);
+
+  const handleActorProp = () => {
+    if (mostRecentActor && mostRecentActor.guess) {
+      if (
+        !mostRecentMovie ||
+        !mostRecentMovie.guess_number ||
+        !mostRecentActor.incorrect
+      ) {
+        return mostRecentActor.guess.toString();
+      } else {
+        return "";
+      }
+    } else {
+      return firstActor.name;
+    }
+  };
+
+  const handleMovieProp = (result: string) => {
+    if (mostRecentMovie && mostRecentMovie.guess) {
+      if (
+        !mostRecentActor ||
+        !mostRecentActor.guess_number ||
+        !mostRecentMovie.incorrect
+      ) {
+        return result;
+      } else {
+        return "";
+      }
+    } else {
+      return "";
+    }
+  };
 
   return (
     <AppContext.Provider
@@ -169,13 +239,10 @@ const App = () => {
           />
           {renderGuesses()}
           <InteractiveResponse
-            actor1={
-              mostRecentActor
-                ? mostRecentActor.guess.toString()
-                : firstActor.name
-            }
+            actor1={handleActorProp()}
             actor2={lastActor.name}
-            movie={mostRecentMovie ? mostRecentMovie.guess.toString() : ""}
+            movie={handleMovieProp(mostRecentMovie.guess.toString())}
+            year={handleMovieProp(mostRecentMovie.year.toString())}
           />
           <ActorMovieContainer image={lastActor.image} name={lastActor.name} />
         </div>

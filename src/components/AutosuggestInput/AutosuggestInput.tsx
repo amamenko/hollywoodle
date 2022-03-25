@@ -1,4 +1,10 @@
-import React, { useContext, useRef, useState } from "react";
+import React, {
+  KeyboardEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Autosuggest, {
   GetSuggestionValue,
   SuggestionsFetchRequested,
@@ -13,6 +19,7 @@ import { getMovieCast } from "./getMovieCast";
 import { getMostRecent } from "../../utils/getMostRecent";
 import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
+import axios from "axios";
 import "./Autosuggest.scss";
 
 const scroll = Scroll.animateScroll;
@@ -34,6 +41,7 @@ export const AutosuggestInput = ({
     year: "",
     image: "",
   });
+  const [movieCast, changeMovieCast] = useState<number[]>([]);
 
   const { firstActor, guesses, changeGuesses } = useContext(AppContext);
 
@@ -49,6 +57,25 @@ export const AutosuggestInput = ({
   // Stores reference to the debounced callback
   const movieDebouncedSearch = useRef(debounceFn("movie")).current;
   const actorDebouncedSearch = useRef(debounceFn("actor")).current;
+
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+
+    if (currentSelection && currentSelection.id && typeOfGuess === "movie") {
+      const fetchData = async () => {
+        try {
+          const results = await getMovieCast(currentSelection.id);
+          changeMovieCast(results);
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      fetchData();
+    }
+
+    return () => source.cancel();
+  }, [currentSelection, typeOfGuess]);
 
   const onSuggestionsFetchRequested = async (
     value: string,
@@ -91,24 +118,7 @@ export const AutosuggestInput = ({
       // Don't show any more toasts in queue
       setTimeout(() => toast.clearWaitingQueue(), 500);
     } else {
-      let movieCast: number[] = [];
-      if (typeOfGuess === "movie") {
-        movieCast = await getMovieCast(id);
-      } else {
-        const mostRecentMovie = getMostRecent(guesses, "movie");
-        if (
-          mostRecentMovie &&
-          mostRecentMovie.cast &&
-          Array.isArray(mostRecentMovie.cast)
-        ) {
-          movieCast = mostRecentMovie.cast;
-        }
-      }
-
-      const mostRecentActor = getMostRecent(guesses, "actor");
-      const mostRecentActorID = mostRecentActor
-        ? Number(mostRecentActor.id)
-        : Number(firstActor.id);
+      let currentActorId: number = Number(firstActor.id);
 
       const prevGuess = guesses.sort((a, b) => {
         return (
@@ -116,26 +126,45 @@ export const AutosuggestInput = ({
         );
       })[guesses.length - 1];
 
+      if (typeOfGuess === "actor") {
+        const mostRecentMovie = getMostRecent(guesses, "movie");
+        if (
+          mostRecentMovie &&
+          mostRecentMovie.cast &&
+          Array.isArray(mostRecentMovie.cast)
+        ) {
+          changeMovieCast(mostRecentMovie.cast);
+          currentActorId = id;
+        }
+      } else {
+        currentActorId =
+          prevGuess && prevGuess.type === "actor"
+            ? Number(prevGuess.id)
+            : Number(firstActor.id);
+      }
+
       const newGuess: {
         [key: string]:
           | string
           | number
           | number[]
           | boolean
-          | { [key: string]: string };
+          | { [key: string]: string | number };
       } = {
         guess_number: guesses.length,
         id,
         guess: name,
         prev_guess: prevGuess
           ? {
+              id: Number(prevGuess.id),
               guess: prevGuess.guess.toString(),
               type: prevGuess.type.toString(),
+              year: prevGuess.year.toString(),
             }
-          : { guess: "", type: "" },
+          : { id: 0, guess: "", type: "", year: "" },
         year,
         image,
-        incorrect: !movieCast.includes(mostRecentActorID),
+        incorrect: !!!movieCast.find((id) => id === currentActorId),
         cast: movieCast,
         type: typeOfGuess,
       };
@@ -148,24 +177,41 @@ export const AutosuggestInput = ({
         year: "",
         image: "",
       });
-      scroll.scrollToBottom();
+
+      // Only scroll to bottom on click on larger screens
+      if (!currentIsMobile.any) {
+        scroll.scrollToBottom();
+      }
     }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === "Enter") {
+      if (currentSelection && currentSelection.name) {
+        handleInputGuess(currentSelection);
+      }
+    }
+  };
+
+  const handleSuggestionSelected = (
+    e: React.FormEvent<any>,
+    data: Autosuggest.SuggestionSelectedEventData<{
+      [key: string]: string | number | boolean;
+    }>
+  ) => {
+    const suggestion = data.suggestion;
+    changeCurrentSelection({
+      id: Number(suggestion.id),
+      name: suggestion.name.toString(),
+      year: suggestion.year ? suggestion.year.toString() : "",
+      image: suggestion.image.toString(),
+    });
   };
 
   const renderSuggestion = (suggestion: {
     [key: string]: string | number | boolean;
   }) => (
-    <div
-      className="suggestion_container"
-      onClick={() =>
-        changeCurrentSelection({
-          id: Number(suggestion.id),
-          name: suggestion.name.toString(),
-          year: suggestion.year ? suggestion.year.toString() : "",
-          image: suggestion.image.toString(),
-        })
-      }
-    >
+    <div className="suggestion_container">
       {typeOfGuess === "actor" ? (
         <img
           className="suggestion_image"
@@ -194,7 +240,6 @@ export const AutosuggestInput = ({
       <Autosuggest
         ref={autoFocusInput}
         suggestions={suggestions}
-        focusInputOnSuggestionClick={currentIsMobile.any}
         onSuggestionsFetchRequested={
           typeOfGuess === "movie" ? movieDebouncedSearch : actorDebouncedSearch
         }
@@ -223,7 +268,9 @@ export const AutosuggestInput = ({
           onChange: (form, event) => {
             changeInputValue(event.newValue.toUpperCase());
           },
+          onKeyDown: handleKeyDown,
         }}
+        onSuggestionSelected={handleSuggestionSelected}
       />
 
       <Button

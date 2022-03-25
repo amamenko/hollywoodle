@@ -21,7 +21,9 @@ export const InteractiveResponse = ({
   points = 0,
 }: InteractiveResponseProps) => {
   const { guesses } = useContext(AppContext);
-  const mostRecentGuess = guesses[guesses.length - 1];
+  const mostRecentGuess = guesses.sort((a, b) => {
+    return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
+  })[guesses.length - 1];
 
   const typeOfGuess = !mostRecentGuess
     ? "movie"
@@ -32,7 +34,7 @@ export const InteractiveResponse = ({
     : mostRecentGuess.type === "actor"
     ? "movie"
     : "actor";
-  console.log({ actor1 });
+
   return (
     <div className="interactive_container">
       {actor1 && actor2 ? (
@@ -44,6 +46,7 @@ export const InteractiveResponse = ({
                 Can you think of a movie starring <b>{actor1}</b> and either{" "}
                 <b>{actor2}</b> or someone else <b>{actor2}</b> has worked with?
               </p>
+              <div className="question_emoji reversed">🎥</div>
             </div>
           ) : (
             <div className="question_container">
@@ -51,16 +54,17 @@ export const InteractiveResponse = ({
               <p>
                 Can you think of someone in{" "}
                 <b>
-                  {mostRecentGuess.guess} ({mostRecentGuess.year})
+                  {movie} ({year})
                 </b>{" "}
                 who was also in a movie with <b>{actor2}</b>?
               </p>
+              <div className="question_emoji reversed">🎭</div>
             </div>
           )}
           <AutosuggestInput typeOfGuess={typeOfGuess} />
         </>
       ) : (
-        <p>
+        <p className="points_statement">
           <b>{actor1}</b>{" "}
           {incorrect ? (
             <b className="incorrect">WAS NOT</b>
