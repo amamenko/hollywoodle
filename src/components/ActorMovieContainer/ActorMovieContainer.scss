@@ -51,6 +51,7 @@
     height: 100%;
     position: relative;
 
+    .partial_credit_icon,
     .correct_icon,
     .incorrect_icon {
       position: absolute;
@@ -59,6 +60,12 @@
       color: #fff;
       width: 1.5rem;
       z-index: 100;
+    }
+
+    .partial_credit_icon {
+      background: #fff;
+      border: 2px solid #fff;
+      border-radius: 50px;
     }
   }
 }
@@ -70,6 +77,10 @@
   -moz-box-sizing: border-box; /* Firefox, other Gecko */
   box-sizing: border-box; /* Opera/IE 8+ */
   border-radius: 5px;
+
+  &.partial {
+    border: 5px solid rgb(255, 100, 0);
+  }
 
   &.incorrect {
     @include incorrect-shake-animation;

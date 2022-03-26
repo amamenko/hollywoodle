@@ -5,15 +5,16 @@ import React, {
   SetStateAction,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import { ReactComponent as LogoWhite } from "./assets/LogoWhite.svg";
 import { ActorMovieContainer } from "./components/ActorMovieContainer/ActorMovieContainer";
 import { InteractiveResponse } from "./components/InteractiveResponse/InteractiveResponse";
 import { ToastContainer } from "react-toastify";
+import Reward, { RewardElement } from "react-rewards";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
-import { getMostRecent } from "./utils/getMostRecent";
 
 interface ActorObj {
   name: string;
@@ -44,6 +45,10 @@ interface ContextProps {
       }[]
     >
   >;
+  currentPoints: number;
+  changeCurrentPoints: React.Dispatch<React.SetStateAction<number>>;
+  win: boolean;
+  changeWin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -51,6 +56,10 @@ export const AppContext = createContext<ContextProps>({
   lastActor: { name: "", image: "", id: 0 },
   guesses: [{}],
   changeGuesses: () => [],
+  currentPoints: 0,
+  changeCurrentPoints: () => {},
+  win: false,
+  changeWin: () => {},
 });
 
 const App = () => {
@@ -90,6 +99,10 @@ const App = () => {
           [key: string]: string | number;
         };
   }>({ guess: "", type: "", year: "" });
+  const [currentPoints, changeCurrentPoints] = useState<number>(0);
+  const [win, changeWin] = useState(false);
+
+  const rewardEl = useRef<RewardElement>(null);
 
   useEffect(() => {
     changeFirstActor({
@@ -113,7 +126,10 @@ const App = () => {
         (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
       );
     });
-    const currentRecentMovie = getMostRecent(sortedGuesses, "movie");
+    sortedGuesses.reverse();
+    const currentRecentMovie = sortedGuesses.find(
+      (el) => el.type.toString() === "movie"
+    );
     if (currentRecentMovie && currentRecentMovie.id !== mostRecentMovie.id) {
       changeMostRecentMovie(currentRecentMovie);
     }
@@ -125,7 +141,10 @@ const App = () => {
         (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
       );
     });
-    const currentRecentActor = getMostRecent(sortedGuesses, "actor");
+    sortedGuesses.reverse();
+    const currentRecentActor = sortedGuesses.find(
+      (el) => el.type.toString() === "actor"
+    );
     if (currentRecentActor && currentRecentActor.id !== mostRecentActor.id) {
       changeMostRecentActor(currentRecentActor);
     }
@@ -138,7 +157,7 @@ const App = () => {
       );
     });
 
-    return allGuesses.map((el, index, arr) => {
+    return allGuesses.map((el, index) => {
       const currentGuessType = el.type;
 
       const determineChoice = (type: string, default_val: string): string => {
@@ -154,6 +173,26 @@ const App = () => {
           ) {
             return el.prev_guess.guess.toString();
           }
+
+          if (type === "actor") {
+            if (
+              el.last_correct_actor &&
+              typeof el.last_correct_actor === "object" &&
+              !Array.isArray(el.last_correct_actor) &&
+              el.last_correct_actor.guess
+            ) {
+              return el.last_correct_actor.guess.toString();
+            }
+          } else {
+            if (
+              el.last_correct_movie &&
+              typeof el.last_correct_movie === "object" &&
+              !Array.isArray(el.last_correct_movie) &&
+              el.last_correct_movie.guess
+            ) {
+              return el.last_correct_movie.guess.toString();
+            }
+          }
           return default_val;
         }
       };
@@ -164,20 +203,23 @@ const App = () => {
         mostRecentMovie ? mostRecentMovie.guess.toString() : ""
       );
 
-      if (typeof el.guess === "string" && typeof el.incorrect === "boolean") {
+      if (
+        typeof el.guess === "string" &&
+        (typeof el.incorrect === "boolean" || typeof el.incorrect === "string")
+      ) {
         return (
           <React.Fragment key={index}>
+            <ActorMovieContainer
+              image={el.image.toString()}
+              name={el.guess}
+              incorrect={el.incorrect}
+            />
             <InteractiveResponse
               actor1={determinedActor}
               movie={determinedMovie}
               incorrect={el.incorrect}
               year={determinedMovie ? mostRecentMovie.year.toString() : ""}
-              points={el.incorrect ? 30 : 10}
-            />
-            <ActorMovieContainer
-              image={el.image.toString()}
-              name={el.guess}
-              incorrect={el.incorrect}
+              points={el.incorrect === "partial" ? 20 : el.incorrect ? 30 : 10}
             />
           </React.Fragment>
         );
@@ -195,7 +237,15 @@ const App = () => {
       ) {
         return mostRecentActor.guess.toString();
       } else {
-        return "";
+        if (
+          mostRecentActor.last_correct_actor &&
+          typeof mostRecentActor.last_correct_actor === "object" &&
+          !Array.isArray(mostRecentActor.last_correct_actor)
+        ) {
+          return mostRecentActor.last_correct_actor.guess.toString();
+        } else {
+          return firstActor.name;
+        }
       }
     } else {
       return firstActor.name;
@@ -211,10 +261,24 @@ const App = () => {
       ) {
         return result;
       } else {
-        return "";
+        if (
+          mostRecentMovie.last_correct_movie &&
+          typeof mostRecentMovie.last_correct_movie === "object" &&
+          !Array.isArray(mostRecentMovie.last_correct_movie)
+        ) {
+          return mostRecentMovie.last_correct_movie.guess.toString();
+        } else {
+          return "";
+        }
       }
     } else {
       return "";
+    }
+  };
+
+  const throwPopcorn = () => {
+    if (rewardEl.current) {
+      rewardEl.current.rewardMe();
     }
   };
 
@@ -225,26 +289,60 @@ const App = () => {
         lastActor,
         guesses,
         changeGuesses,
+        currentPoints,
+        changeCurrentPoints,
+        win,
+        changeWin,
       }}
     >
       <ToastContainer limit={1} />
-      <div className="header">
+
+      <div
+        className="header"
+        // onClick={() => throwPopcorn()}
+      >
+        <Reward
+          ref={rewardEl}
+          type="emoji"
+          config={{
+            emoji: ["🍿"],
+            lifetime: 3000,
+            zIndex: 9999,
+            elementSize: 75,
+            spread: 1000,
+            springAnimation: false,
+          }}
+        />
         <LogoWhite />
+        <div className="points_container">Current points: {currentPoints}</div>
       </div>
       <div className="app_container">
         <div className="main_container">
-          <ActorMovieContainer
-            image={firstActor.image}
-            name={firstActor.name}
-          />
+          <div className="first_actor_container">
+            <ActorMovieContainer
+              image={firstActor.image}
+              name={firstActor.name}
+            />
+          </div>
           {renderGuesses()}
-          <InteractiveResponse
-            actor1={handleActorProp()}
-            actor2={lastActor.name}
-            movie={handleMovieProp(mostRecentMovie.guess.toString())}
-            year={handleMovieProp(mostRecentMovie.year.toString())}
-          />
-          <ActorMovieContainer image={lastActor.image} name={lastActor.name} />
+          <div
+            className={`main_response_input_container ${
+              guesses.length === 0 ? "" : "with_guesses"
+            }`}
+          >
+            <InteractiveResponse
+              actor1={handleActorProp()}
+              actor2={lastActor.name}
+              movie={handleMovieProp(mostRecentMovie.guess.toString())}
+              year={handleMovieProp(mostRecentMovie.year.toString())}
+            />
+          </div>
+          <div className="last_actor_container">
+            <ActorMovieContainer
+              image={lastActor.image}
+              name={lastActor.name}
+            />
+          </div>{" "}
         </div>
       </div>
     </AppContext.Provider>

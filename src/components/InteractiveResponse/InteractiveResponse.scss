@@ -6,6 +6,10 @@ b.correct {
   color: green;
 }
 
+b.partial {
+  color: rgb(255, 100, 0);
+}
+
 .interactive_container {
   box-sizing: border-box;
   background: rgb(230, 230, 230);
@@ -16,6 +20,10 @@ b.correct {
   align-items: center;
   justify-content: center;
   width: 100%;
+
+  &.question_block {
+    background: rgba(175, 201, 240, 0.5);
+  }
 }
 
 .points_statement {
@@ -24,19 +32,6 @@ b.correct {
 
 .question_container {
   display: flex;
-
-  .question_emoji {
-    font-size: 1.5rem;
-    align-self: center;
-    margin-left: 1rem;
-
-    &.reversed {
-      -webkit-transform: scaleX(-1);
-      transform: scaleX(-1);
-      margin-right: 1rem;
-      margin-left: 0;
-    }
-  }
 
   p {
     text-align: center;

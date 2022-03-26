@@ -27,6 +27,25 @@
   }
 }
 
+.points_container {
+  position: absolute;
+  font-size: 1.25rem;
+  top: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  height: 3rem;
+  width: 100%;
+  max-width: 32rem;
+  font-weight: 700;
+  border-top: 1px solid #fff;
+  box-sizing: border-box;
+  margin-top: 1px;
+}
+
 .app_container {
   width: 100%;
   min-height: 100vh;
@@ -37,7 +56,8 @@
   text-align: center;
   margin: 0 auto;
   background: #fff;
-  margin-top: 4rem;
+  padding-top: 7rem;
+  box-sizing: border-box;
 }
 
 .main_container {
@@ -45,4 +65,33 @@
   flex-direction: column;
   align-items: center;
   margin: 1rem 0;
+}
+
+.Toastify__toast-container {
+  top: 70px;
+  z-index: 99999999;
+}
+
+.first_actor_container {
+  border-bottom: 1px solid rgb(200, 200, 200);
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.last_actor_container {
+  border-top: 1px solid rgb(200, 200, 200);
+  width: 100%;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  padding-bottom: 5rem;
+}
+
+.main_response_input_container {
+  width: 100%;
+
+  &.with_guesses {
+    border-top: 1px solid rgb(200, 200, 200);
+    margin-top: 1rem;
+    padding-top: 2rem;
+  }
 }

@@ -16,7 +16,6 @@ import Scroll from "react-scroll";
 import { getSuggestions } from "./getSuggestions";
 import debounce from "lodash.debounce";
 import { getMovieCast } from "./getMovieCast";
-import { getMostRecent } from "../../utils/getMostRecent";
 import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
@@ -42,8 +41,30 @@ export const AutosuggestInput = ({
     image: "",
   });
   const [movieCast, changeMovieCast] = useState<number[]>([]);
+  const [suggestionImagesLoaded, changeSuggestionImagesLoaded] = useState<
+    string[]
+  >([]);
+  const [showSuggestions, changeShowSuggestions] = useState(false);
 
-  const { firstActor, guesses, changeGuesses } = useContext(AppContext);
+  const {
+    firstActor,
+    lastActor,
+    guesses,
+    changeGuesses,
+    currentPoints,
+    changeCurrentPoints,
+    changeWin,
+  } = useContext(AppContext);
+
+  useEffect(() => {
+    if (
+      typeOfGuess === "movie" ||
+      suggestionImagesLoaded.length === suggestions.length
+    ) {
+      changeShowSuggestions(true);
+      changeSuggestionImagesLoaded([]);
+    }
+  }, [suggestionImagesLoaded.length, suggestions.length, typeOfGuess]);
 
   const debounceFn = (type: "movie" | "actor") => {
     return debounce(({ value }) => {
@@ -120,27 +141,75 @@ export const AutosuggestInput = ({
     } else {
       let currentActorId: number = Number(firstActor.id);
 
-      const prevGuess = guesses.sort((a, b) => {
+      const sortedGuesses = guesses.sort((a, b) => {
         return (
           (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
         );
-      })[guesses.length - 1];
+      });
+
+      const prevGuess = sortedGuesses[guesses.length - 1];
+      // Latest guess comes first
+      sortedGuesses.reverse();
+      const lastCorrectActor = sortedGuesses.find(
+        (el) => el.type === "actor" && !el.incorrect
+      );
+
+      const formatGuessObj = (guess: {
+        [key: string]:
+          | string
+          | number
+          | boolean
+          | number[]
+          | { [key: string]: string | number };
+      }) => {
+        if (guess && guess.guess) {
+          return {
+            id: Number(guess.id),
+            guess: guess.guess.toString(),
+            type: guess.type.toString(),
+            year: guess.year.toString(),
+          };
+        } else {
+          return { id: 0, guess: "", type: "", year: "" };
+        }
+      };
+
+      const lastCorrectMovie = sortedGuesses.find(
+        (el) => el.type === "movie" && !el.incorrect
+      );
 
       if (typeOfGuess === "actor") {
-        const mostRecentMovie = getMostRecent(guesses, "movie");
         if (
-          mostRecentMovie &&
-          mostRecentMovie.cast &&
-          Array.isArray(mostRecentMovie.cast)
+          lastCorrectMovie &&
+          lastCorrectMovie.cast &&
+          Array.isArray(lastCorrectMovie.cast)
         ) {
-          changeMovieCast(mostRecentMovie.cast);
+          changeMovieCast(lastCorrectMovie.cast);
           currentActorId = id;
         }
       } else {
-        currentActorId =
-          prevGuess && prevGuess.type === "actor"
-            ? Number(prevGuess.id)
-            : Number(firstActor.id);
+        currentActorId = lastCorrectActor
+          ? Number(lastCorrectActor.id)
+          : prevGuess && prevGuess.type === "actor"
+          ? Number(prevGuess.id)
+          : Number(firstActor.id);
+      }
+
+      let incorrect_status: boolean | string = true;
+
+      if (movieCast.find((id) => id === lastActor.id)) {
+        incorrect_status = "partial";
+        if (movieCast.find((id) => id === currentActorId)) {
+          incorrect_status = false;
+          // User has won and completed the game
+          changeWin(true);
+        }
+      } else {
+        if (movieCast.find((id) => id === currentActorId)) {
+          incorrect_status = false;
+        } else {
+          incorrect_status = true;
+        }
       }
 
       const newGuess: {
@@ -154,21 +223,24 @@ export const AutosuggestInput = ({
         guess_number: guesses.length,
         id,
         guess: name,
-        prev_guess: prevGuess
-          ? {
-              id: Number(prevGuess.id),
-              guess: prevGuess.guess.toString(),
-              type: prevGuess.type.toString(),
-              year: prevGuess.year.toString(),
-            }
-          : { id: 0, guess: "", type: "", year: "" },
+        prev_guess: formatGuessObj(prevGuess),
+        last_correct_actor: formatGuessObj(
+          lastCorrectActor ? lastCorrectActor : {}
+        ),
+        last_correct_movie: formatGuessObj(
+          lastCorrectMovie ? lastCorrectMovie : {}
+        ),
         year,
         image,
-        incorrect: !!!movieCast.find((id) => id === currentActorId),
+        incorrect: incorrect_status,
         cast: movieCast,
         type: typeOfGuess,
       };
 
+      const pointsAlloted =
+        incorrect_status === "partial" ? 20 : incorrect_status ? 30 : 10;
+
+      changeCurrentPoints(currentPoints + pointsAlloted);
       changeGuesses([...guesses, newGuess]);
       changeInputValue("");
       changeCurrentSelection({
@@ -211,12 +283,21 @@ export const AutosuggestInput = ({
   const renderSuggestion = (suggestion: {
     [key: string]: string | number | boolean;
   }) => (
-    <div className="suggestion_container">
+    <div
+      className="suggestion_container"
+      style={{ display: showSuggestions ? "flex" : "none" }}
+    >
       {typeOfGuess === "actor" ? (
         <img
           className="suggestion_image"
           src={suggestion.image.toString()}
           alt={`${suggestion.name}`}
+          onLoad={() =>
+            changeSuggestionImagesLoaded([
+              ...suggestionImagesLoaded,
+              suggestion.name.toString(),
+            ])
+          }
         />
       ) : (
         <></>
@@ -266,6 +347,9 @@ export const AutosuggestInput = ({
           id: "autosuggest_input",
           value: inputValue,
           onChange: (form, event) => {
+            if (typeOfGuess === "actor" && event.method === "type") {
+              if (showSuggestions) changeShowSuggestions(false);
+            }
             changeInputValue(event.newValue.toUpperCase());
           },
           onKeyDown: handleKeyDown,
@@ -273,12 +357,21 @@ export const AutosuggestInput = ({
         onSuggestionSelected={handleSuggestionSelected}
       />
 
-      <Button
-        className="guess_button"
-        onClick={() => handleInputGuess(currentSelection)}
-      >
-        GUESS {typeOfGuess.toUpperCase()}
-      </Button>
+      <div className="guess_button_container">
+        <div className="question_emoji">
+          {" "}
+          {typeOfGuess === "movie" ? "🎥" : "🎭"}
+        </div>
+        <Button
+          className="guess_button"
+          onClick={() => handleInputGuess(currentSelection)}
+        >
+          GUESS {typeOfGuess.toUpperCase()}
+        </Button>
+        <div className="question_emoji reversed">
+          {typeOfGuess === "movie" ? "🎥" : "🎭"}
+        </div>
+      </div>
     </div>
   );
 };

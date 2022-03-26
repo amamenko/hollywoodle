@@ -7,7 +7,7 @@ interface InteractiveResponseProps {
   actor1: string;
   actor2?: string;
   movie?: string;
-  incorrect?: boolean;
+  incorrect?: boolean | string;
   year?: string;
   points?: number;
 }
@@ -20,14 +20,14 @@ export const InteractiveResponse = ({
   year = "",
   points = 0,
 }: InteractiveResponseProps) => {
-  const { guesses } = useContext(AppContext);
+  const { guesses, firstActor, lastActor } = useContext(AppContext);
   const mostRecentGuess = guesses.sort((a, b) => {
     return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
   })[guesses.length - 1];
 
   const typeOfGuess = !mostRecentGuess
     ? "movie"
-    : mostRecentGuess.incorrect
+    : mostRecentGuess.incorrect || mostRecentGuess.incorrect === "partial"
     ? mostRecentGuess.type === "actor"
       ? "actor"
       : "movie"
@@ -36,21 +36,18 @@ export const InteractiveResponse = ({
     : "actor";
 
   return (
-    <div className="interactive_container">
+    <div className={`interactive_container ${points ? "question_block" : ""}`}>
       {actor1 && actor2 ? (
         <>
           {typeOfGuess === "movie" ? (
             <div className="question_container">
-              <div className="question_emoji">🎥</div>
               <p>
                 Can you think of a movie starring <b>{actor1}</b> and either{" "}
                 <b>{actor2}</b> or someone else <b>{actor2}</b> has worked with?
               </p>
-              <div className="question_emoji reversed">🎥</div>
             </div>
           ) : (
             <div className="question_container">
-              <div className="question_emoji">🎭</div>
               <p>
                 Can you think of someone in{" "}
                 <b>
@@ -58,15 +55,21 @@ export const InteractiveResponse = ({
                 </b>{" "}
                 who was also in a movie with <b>{actor2}</b>?
               </p>
-              <div className="question_emoji reversed">🎭</div>
             </div>
           )}
           <AutosuggestInput typeOfGuess={typeOfGuess} />
         </>
       ) : (
         <p className="points_statement">
-          <b>{actor1}</b>{" "}
-          {incorrect ? (
+          {incorrect === "partial" && "Partial credit! Although "}
+          {incorrect !== "partial" ? (
+            <b>{actor1}</b>
+          ) : (
+            <b>{lastActor.name}</b>
+          )}{" "}
+          {incorrect === "partial" ? (
+            <b className="partial">WAS</b>
+          ) : incorrect ? (
             <b className="incorrect">WAS NOT</b>
           ) : (
             <b className="correct">WAS</b>
@@ -76,7 +79,17 @@ export const InteractiveResponse = ({
             {movie}
             {year ? ` (${year})` : ""}
           </b>
-          .
+          {incorrect === "partial" ? ", " : "."}
+          {incorrect === "partial" ? (
+            actor1 ? (
+              <b>{actor1}</b>
+            ) : (
+              <b>{firstActor.name}</b>
+            )
+          ) : (
+            ""
+          )}{" "}
+          {incorrect === "partial" ? <b className="partial">WAS NOT.</b> : ""}
           <br />
           You gained {points} points.
         </p>

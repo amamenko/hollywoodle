@@ -1,7 +1,6 @@
-import { useRef } from "react";
-import Reward, { RewardElement } from "react-rewards";
 import { ReactComponent as CrossRedCircle } from "../../assets/CrossRedCircle.svg";
 import { ReactComponent as CircleCheckMark } from "../../assets/CircleCheckMark.svg";
+import { ReactComponent as PartialCredit } from "../../assets/PartialCredit.svg";
 import "./ActorMovieContainer.scss";
 
 export const ActorMovieContainer = ({
@@ -11,34 +10,16 @@ export const ActorMovieContainer = ({
 }: {
   image: string;
   name: string;
-  incorrect?: boolean | undefined;
+  incorrect?: boolean | string | undefined;
 }) => {
-  const rewardEl = useRef<RewardElement>(null);
-
-  //   const throwPopcorn = () => {
-  //     if (rewardEl.current) {
-  //       rewardEl.current.rewardMe();
-  //     }
-  //   };
-
   return (
     <>
-      {/* <Reward
-        ref={rewardEl}
-        type="emoji"
-        config={{
-          emoji: ["🍿"],
-          lifetime: 3000,
-          zIndex: 9999,
-          elementSize: 75,
-          spread: 1000,
-          springAnimation: false,
-        }}
-      /> */}
       <div className="actor_movie_container">
         <div className="actor_movie_icon_container">
-          {typeof incorrect === "boolean" ? (
-            incorrect ? (
+          {typeof incorrect === "boolean" || typeof incorrect === "string" ? (
+            incorrect === "partial" ? (
+              <PartialCredit className="partial_credit_icon" />
+            ) : incorrect ? (
               <CrossRedCircle className="incorrect_icon" />
             ) : (
               <CircleCheckMark className="correct_icon" />
@@ -49,8 +30,10 @@ export const ActorMovieContainer = ({
         </div>
         <img
           className={`actor_movie_image ${
-            typeof incorrect === "boolean"
-              ? incorrect
+            typeof incorrect === "boolean" || typeof incorrect === "string"
+              ? incorrect === "partial"
+                ? "partial"
+                : incorrect
                 ? "incorrect"
                 : "correct"
               : ""
