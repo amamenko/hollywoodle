@@ -36,6 +36,10 @@ cron.schedule("0 0 * * *", () => {
   updateDatabaseActors();
 });
 
+app.get("/", (req: Request, res: Response) => {
+  res.send("The Hollywoodle server is up and running!");
+});
+
 // Connect to MongoDB with Mongoose
 mongoose
   .connect(
