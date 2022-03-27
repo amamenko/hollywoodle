@@ -67,6 +67,20 @@
   margin: 1rem 0;
 }
 
+.main_spinner_container {
+  width: 100%;
+  margin: 10rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    padding-top: 1rem;
+    font-size: 1.25rem;
+  }
+}
+
 .Toastify__toast-container {
   top: 70px;
   z-index: 99999999;

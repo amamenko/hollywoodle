@@ -5,13 +5,14 @@ import React, {
   SetStateAction,
   useEffect,
   useCallback,
-  useRef,
 } from "react";
 import { ReactComponent as LogoWhite } from "./assets/LogoWhite.svg";
 import { ActorMovieContainer } from "./components/ActorMovieContainer/ActorMovieContainer";
 import { InteractiveResponse } from "./components/InteractiveResponse/InteractiveResponse";
+import { Winner } from "./components/Winner/Winner";
 import { ToastContainer } from "react-toastify";
-import Reward, { RewardElement } from "react-rewards";
+import axios from "axios";
+import ClipLoader from "react-spinners/ClipLoader";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
@@ -102,22 +103,41 @@ const App = () => {
   const [currentPoints, changeCurrentPoints] = useState<number>(0);
   const [win, changeWin] = useState(false);
 
-  const rewardEl = useRef<RewardElement>(null);
+  const getFirstAndLastActors = async () => {
+    const nodeEnv = process.env.REACT_APP_NODE_ENV
+      ? process.env.REACT_APP_NODE_ENV
+      : "";
+
+    const actorObjects = await axios
+      .get(
+        nodeEnv && nodeEnv === "production"
+          ? process.env.REACT_APP_PROD_SERVER
+          : "http://localhost:4000/api/actor"
+      )
+      .then((res) => res.data)
+      .then((data) => data)
+      .catch((e) => console.error(e));
+    return actorObjects;
+  };
 
   useEffect(() => {
-    changeFirstActor({
-      name: "Benedict Cumberbatch",
-      image:
-        "https://www.themoviedb.org/t/p/w1280/fBEucxECxGLKVHBznO0qHtCGiMO.jpg",
-      id: 71580,
-    });
+    const fetchData = async () => {
+      try {
+        const currentFirstAndLastActors = await getFirstAndLastActors();
+        const currentFirst = currentFirstAndLastActors.find(
+          (actor: { [key: string]: string | number }) => actor.type === "first"
+        );
+        changeFirstActor(currentFirst);
+        const currentLast = currentFirstAndLastActors.find(
+          (actor: { [key: string]: string | number }) => actor.type === "last"
+        );
+        changeLastActor(currentLast);
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
-    changeLastActor({
-      name: "John Goodman",
-      image:
-        "https://www.themoviedb.org/t/p/w1280/yyYqoyKHO7hE1zpgEV2XlqYWcNV.jpg",
-      id: 1230,
-    });
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -276,12 +296,6 @@ const App = () => {
     }
   };
 
-  const throwPopcorn = () => {
-    if (rewardEl.current) {
-      rewardEl.current.rewardMe();
-    }
-  };
-
   return (
     <AppContext.Provider
       value={{
@@ -296,53 +310,50 @@ const App = () => {
       }}
     >
       <ToastContainer limit={1} />
-
-      <div
-        className="header"
-        // onClick={() => throwPopcorn()}
-      >
-        <Reward
-          ref={rewardEl}
-          type="emoji"
-          config={{
-            emoji: ["🍿"],
-            lifetime: 3000,
-            zIndex: 9999,
-            elementSize: 75,
-            spread: 1000,
-            springAnimation: false,
-          }}
-        />
+      <div className="header">
         <LogoWhite />
         <div className="points_container">Current points: {currentPoints}</div>
       </div>
       <div className="app_container">
         <div className="main_container">
-          <div className="first_actor_container">
-            <ActorMovieContainer
-              image={firstActor.image}
-              name={firstActor.name}
-            />
-          </div>
-          {renderGuesses()}
-          <div
-            className={`main_response_input_container ${
-              guesses.length === 0 ? "" : "with_guesses"
-            }`}
-          >
-            <InteractiveResponse
-              actor1={handleActorProp()}
-              actor2={lastActor.name}
-              movie={handleMovieProp(mostRecentMovie.guess.toString())}
-              year={handleMovieProp(mostRecentMovie.year.toString())}
-            />
-          </div>
-          <div className="last_actor_container">
-            <ActorMovieContainer
-              image={lastActor.image}
-              name={lastActor.name}
-            />
-          </div>{" "}
+          {firstActor.name && lastActor.name ? (
+            <>
+              <div className="first_actor_container">
+                <ActorMovieContainer
+                  image={firstActor.image}
+                  name={firstActor.name}
+                />
+              </div>
+              {renderGuesses()}
+              {win ? (
+                <Winner />
+              ) : (
+                <div
+                  className={`main_response_input_container ${
+                    guesses.length === 0 ? "" : "with_guesses"
+                  }`}
+                >
+                  <InteractiveResponse
+                    actor1={handleActorProp()}
+                    actor2={lastActor.name}
+                    movie={handleMovieProp(mostRecentMovie.guess.toString())}
+                    year={handleMovieProp(mostRecentMovie.year.toString())}
+                  />
+                </div>
+              )}
+              <div className="last_actor_container">
+                <ActorMovieContainer
+                  image={lastActor.image}
+                  name={lastActor.name}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="main_spinner_container">
+              <ClipLoader color={"#000"} size={100} />
+              <p>Loading actors...</p>
+            </div>
+          )}
         </div>
       </div>
     </AppContext.Provider>

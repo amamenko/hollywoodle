@@ -1,0 +1,25 @@
+.winner_container {
+  background: rgb(230, 230, 230);
+  margin-bottom: 1rem;
+  padding: 2rem 3rem 1rem 3rem;
+}
+
+.winner_icon_container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 10rem;
+  }
+
+  img {
+    width: 19rem;
+
+    &.cats_poster {
+      width: 6.5rem;
+    }
+  }
+}
