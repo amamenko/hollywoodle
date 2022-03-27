@@ -41,10 +41,6 @@ export const AutosuggestInput = ({
     image: "",
   });
   const [movieCast, changeMovieCast] = useState<number[]>([]);
-  const [suggestionImagesLoaded, changeSuggestionImagesLoaded] = useState<
-    string[]
-  >([]);
-  const [showSuggestions, changeShowSuggestions] = useState(false);
 
   const {
     firstActor,
@@ -55,16 +51,6 @@ export const AutosuggestInput = ({
     changeCurrentPoints,
     changeWin,
   } = useContext(AppContext);
-
-  useEffect(() => {
-    if (
-      typeOfGuess === "movie" ||
-      suggestionImagesLoaded.length === suggestions.length
-    ) {
-      changeShowSuggestions(true);
-      changeSuggestionImagesLoaded([]);
-    }
-  }, [suggestionImagesLoaded.length, suggestions.length, typeOfGuess]);
 
   const debounceFn = (type: "movie" | "actor") => {
     return debounce(({ value }) => {
@@ -283,21 +269,12 @@ export const AutosuggestInput = ({
   const renderSuggestion = (suggestion: {
     [key: string]: string | number | boolean;
   }) => (
-    <div
-      className="suggestion_container"
-      style={{ display: showSuggestions ? "flex" : "none" }}
-    >
+    <div className="suggestion_container">
       {typeOfGuess === "actor" ? (
         <img
           className="suggestion_image"
           src={suggestion.image.toString()}
           alt={`${suggestion.name}`}
-          onLoad={() =>
-            changeSuggestionImagesLoaded([
-              ...suggestionImagesLoaded,
-              suggestion.name.toString(),
-            ])
-          }
         />
       ) : (
         <></>
@@ -347,9 +324,6 @@ export const AutosuggestInput = ({
           id: "autosuggest_input",
           value: inputValue,
           onChange: (form, event) => {
-            if (typeOfGuess === "actor" && event.method === "type") {
-              if (showSuggestions) changeShowSuggestions(false);
-            }
             changeInputValue(event.newValue.toUpperCase());
           },
           onKeyDown: handleKeyDown,
