@@ -5,22 +5,10 @@ import { updateDatabaseActors } from "./functions/updateDatabaseActors";
 import { Actor } from "./models/Actor";
 import cron from "node-cron";
 import enforce from "express-sslify";
-import cors from "cors";
 
 const app = express();
 
 const port = process.env.PORT || 4000;
-
-// Cross-Origin Requests
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://hollywoodle.ml"
-        : "http://localhost:3000",
-    optionsSuccessStatus: 200,
-  })
-);
 
 if (process.env.NODE_ENV === "production") {
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
