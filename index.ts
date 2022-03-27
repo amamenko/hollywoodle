@@ -4,9 +4,13 @@ import mongoose from "mongoose";
 import { updateDatabaseActors } from "./functions/updateDatabaseActors";
 import { Actor } from "./models/Actor";
 import cron from "node-cron";
+import cors from "cors";
 import enforce from "express-sslify";
 
 const app = express();
+
+// Cross-Origin Requests
+app.use(cors());
 
 const port = process.env.PORT || 4000;
 
