@@ -61,7 +61,6 @@ export const HowToPlayModal = () => {
         className={`how_to_play_overlay ${displayModal ? "show" : ""}`}
         onClick={() => changeDisplayModal(!displayModal)}
       />
-      <p className="Alert">{alert}</p>
     </>
   );
 };

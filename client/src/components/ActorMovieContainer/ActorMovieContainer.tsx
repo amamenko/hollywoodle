@@ -8,10 +8,14 @@ export const ActorMovieContainer = ({
   image,
   name,
   incorrect = undefined,
+  knownFor,
+  gender,
 }: {
   image: string;
   name: string;
   incorrect?: boolean | string | undefined;
+  knownFor?: { [key: string]: string | number };
+  gender?: string;
 }) => {
   return (
     <>
@@ -43,7 +47,9 @@ export const ActorMovieContainer = ({
           alt={name}
         />
         <p className="actor_movie_name">{name}</p>
-        {/* <WhoButton /> */}
+        {knownFor && gender && (
+          <WhoButton knownFor={knownFor} gender={gender} />
+        )}
       </div>
     </>
   );

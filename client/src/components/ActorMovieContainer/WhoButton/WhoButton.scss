@@ -1,7 +1,64 @@
 .collapse_container {
-  height: 100px;
+  height: 125px;
+  margin-top: 1rem;
+  width: 100%;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 230, 100, 0.5);
+  position: relative;
+
+  span {
+    padding: 0 2rem;
+  }
+}
+
+.ReactCollapse--content {
+  width: 100%;
+  max-width: 32rem;
 }
 
 .ReactCollapse--collapse {
-  transition: height 500ms;
+  transition: height 250ms;
+}
+
+.who_button_container {
+  margin-bottom: 1rem;
+  padding-top: 0.5rem;
+  position: relative;
+
+  p {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 0.75rem;
+  }
+}
+
+.who_button {
+  background: rgb(185, 185, 185);
+  color: #000;
+  font-weight: 700 !important;
+  border-radius: 10px;
+  width: 10rem;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  transition: background 0.25s ease;
+
+  &:not(.active):hover {
+    background: rgb(170, 170, 170);
+  }
+
+  &:not(.active):active {
+    background: rgb(150, 150, 150);
+  }
+
+  &.active {
+    opacity: 0.5;
+    cursor: default;
+  }
 }

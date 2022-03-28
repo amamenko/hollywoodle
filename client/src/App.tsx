@@ -23,6 +23,8 @@ interface ActorObj {
   name: string;
   image: string;
   id: number;
+  most_popular_recent_movie?: { [key: string]: string | number };
+  gender?: string;
 }
 
 interface ContextProps {
@@ -55,8 +57,20 @@ interface ContextProps {
 }
 
 export const AppContext = createContext<ContextProps>({
-  firstActor: { name: "", image: "", id: 0 },
-  lastActor: { name: "", image: "", id: 0 },
+  firstActor: {
+    name: "",
+    image: "",
+    id: 0,
+    most_popular_recent_movie: {},
+    gender: "",
+  },
+  lastActor: {
+    name: "",
+    image: "",
+    id: 0,
+    most_popular_recent_movie: {},
+    gender: "",
+  },
   guesses: [{}],
   changeGuesses: () => [],
   currentPoints: 0,
@@ -70,8 +84,16 @@ const App = () => {
     name: "",
     image: "",
     id: 0,
+    most_popular_recent_movie: {},
+    gender: "",
   });
-  const [lastActor, changeLastActor] = useState({ name: "", image: "", id: 0 });
+  const [lastActor, changeLastActor] = useState({
+    name: "",
+    image: "",
+    id: 0,
+    most_popular_recent_movie: {},
+    gender: "",
+  });
   const [guesses, changeGuesses] = useState<
     {
       [key: string]:
@@ -335,6 +357,8 @@ const App = () => {
                   <ActorMovieContainer
                     image={firstActor.image}
                     name={firstActor.name}
+                    knownFor={firstActor.most_popular_recent_movie}
+                    gender={firstActor.gender}
                   />
                 </div>
                 {renderGuesses()}
@@ -358,6 +382,8 @@ const App = () => {
                   <ActorMovieContainer
                     image={lastActor.image}
                     name={lastActor.name}
+                    knownFor={lastActor.most_popular_recent_movie}
+                    gender={lastActor.gender}
                   />
                 </div>
               </>
