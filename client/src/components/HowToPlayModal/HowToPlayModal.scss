@@ -48,6 +48,7 @@
   padding: 0 0 12px;
   transition: all 0.3s ease-out;
   z-index: 99999999999999;
+  overflow: hidden;
 
   @media only screen and (min-width: 992px) {
     height: 100vh;
@@ -77,4 +78,14 @@
   font-size: 14px;
   margin: 0 1.5rem;
   color: #fff;
+}
+
+.how_to_play_list {
+  border-top: 1px solid rgb(65, 65, 65);
+  padding: 0 0 0.5rem 0rem;
+
+  li {
+    margin-top: 1rem;
+    margin-left: 1rem;
+  }
 }
