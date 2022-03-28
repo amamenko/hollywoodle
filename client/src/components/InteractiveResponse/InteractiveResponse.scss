@@ -10,6 +10,17 @@ b.partial {
   color: rgb(255, 100, 0);
 }
 
+.response_header {
+  display: block;
+  padding-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.response_bottom_points {
+  display: block;
+  padding-top: 0.5rem;
+}
+
 .interactive_container {
   box-sizing: border-box;
   background: rgb(230, 230, 230);
@@ -22,7 +33,7 @@ b.partial {
   width: 100%;
 
   &.question_block {
-    background: rgba(175, 201, 240, 0.5);
+    background: rgba(175, 201, 240, 0.4);
   }
 }
 

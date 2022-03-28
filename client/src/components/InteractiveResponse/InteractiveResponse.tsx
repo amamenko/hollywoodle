@@ -43,17 +43,18 @@ export const InteractiveResponse = ({
             <div className="question_container">
               <p>
                 Can you think of a movie starring <b>{actor1}</b> and either{" "}
-                <b>{actor2}</b> or someone else <b>{actor2}</b> has worked with?
+                <b>{actor2}</b> or another actor <b>{actor2}</b> has worked
+                with?
               </p>
             </div>
           ) : (
             <div className="question_container">
               <p>
-                Can you think of someone in{" "}
+                Can you think of another actor in{" "}
                 <b>
                   {movie} ({year})
                 </b>{" "}
-                who was also in a movie with <b>{actor2}</b>?
+                who also starred in a movie with <b>{actor2}</b>?
               </p>
             </div>
           )}
@@ -61,20 +62,38 @@ export const InteractiveResponse = ({
         </>
       ) : (
         <p className="points_statement">
-          {incorrect === "partial" && "Partial credit! Although "}
+          <span className="response_header">
+            {incorrect === "partial" ? (
+              <>
+                <b className="partial">PARTIAL CREDIT!</b>
+                <br />
+              </>
+            ) : incorrect ? (
+              <>
+                <b className="incorrect">INCORRECT!</b>
+                <br />
+              </>
+            ) : (
+              <>
+                <b className="correct">CORRECT!</b>
+                <br />
+              </>
+            )}
+          </span>
+          {incorrect === "partial" && "Although "}
           {incorrect !== "partial" ? (
             <b>{actor1}</b>
           ) : (
             <b>{lastActor.name}</b>
           )}{" "}
           {incorrect === "partial" ? (
-            <b className="partial">WAS</b>
+            <b className="partial">DID ACT</b>
           ) : incorrect ? (
-            <b className="incorrect">WAS NOT</b>
+            <b className="incorrect">DID NOT ACT</b>
           ) : (
-            <b className="correct">WAS</b>
+            <b className="correct">DID ACT</b>
           )}{" "}
-          in{" "}
+          in <br />
           <b>
             {movie}
             {year ? ` (${year})` : ""}
@@ -89,9 +108,11 @@ export const InteractiveResponse = ({
           ) : (
             ""
           )}{" "}
-          {incorrect === "partial" ? <b className="partial">WAS NOT.</b> : ""}
+          {incorrect === "partial" ? <b className="partial">DID NOT.</b> : ""}
           <br />
-          You gained {points} points.
+          <span className="response_bottom_points">
+            You gained <b className="incorrect">{points}</b> points.
+          </span>
         </p>
       )}
     </div>

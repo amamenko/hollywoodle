@@ -1,7 +1,10 @@
 import sample from "lodash.sample";
 import axios from "axios";
 
-export const getRandomPopularActor = async (exceptedName?: string) => {
+export const getRandomPopularActor = async (
+  exceptedName?: string,
+  exceptedName2?: string
+) => {
   let triesCounter = 0;
 
   while (triesCounter < 20) {
@@ -33,12 +36,13 @@ export const getRandomPopularActor = async (exceptedName?: string) => {
               movie.media_type === "tv" ||
               movie.adult ||
               movie.original_language !== "en" ||
-              movie.vote_count < 17500
+              movie.vote_count < 13000
           ) &&
           currentActor.known_for_department === "Acting" &&
           currentActor.profile_path &&
           !currentActor.adult &&
-          currentActor.name !== exceptedName
+          currentActor.name !== exceptedName &&
+          currentActor.name !== exceptedName2
       );
 
       if (filteredResults.length > 0) {

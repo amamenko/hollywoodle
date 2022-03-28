@@ -105,10 +105,7 @@ export const getSuggestions = async (
         .catch((e) => console.error(e));
 
       return results
-        .filter(
-          (item: TMDBSearchResult) =>
-            item.profile_path && item.known_for_department === "Acting"
-        )
+        .filter((item: TMDBSearchResult) => item.profile_path)
         .sort(resultSortingFunction)
         .map((item: TMDBSearchResult) => {
           return {

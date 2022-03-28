@@ -1,6 +1,7 @@
 import { ReactComponent as CrossRedCircle } from "../../assets/CrossRedCircle.svg";
 import { ReactComponent as CircleCheckMark } from "../../assets/CircleCheckMark.svg";
 import { ReactComponent as PartialCredit } from "../../assets/PartialCredit.svg";
+import { WhoButton } from "./WhoButton/WhoButton";
 import "./ActorMovieContainer.scss";
 
 export const ActorMovieContainer = ({
@@ -40,8 +41,9 @@ export const ActorMovieContainer = ({
           }`}
           src={image}
           alt={name}
-        ></img>
+        />
         <p className="actor_movie_name">{name}</p>
+        {/* <WhoButton /> */}
       </div>
     </>
   );

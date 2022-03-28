@@ -5,14 +5,16 @@ import React, {
   SetStateAction,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
-import { ReactComponent as LogoWhite } from "./assets/LogoWhite.svg";
 import { ActorMovieContainer } from "./components/ActorMovieContainer/ActorMovieContainer";
 import { InteractiveResponse } from "./components/InteractiveResponse/InteractiveResponse";
 import { Winner } from "./components/Winner/Winner";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
+import Reward, { RewardElement } from "react-rewards";
+import { Header } from "./components/Header/Header";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
@@ -102,6 +104,8 @@ const App = () => {
   }>({ guess: "", type: "", year: "" });
   const [currentPoints, changeCurrentPoints] = useState<number>(0);
   const [win, changeWin] = useState(false);
+
+  const rewardEl = useRef<RewardElement>(null);
 
   const getFirstAndLastActors = async () => {
     const nodeEnv = process.env.REACT_APP_NODE_ENV
@@ -310,52 +314,62 @@ const App = () => {
       }}
     >
       <ToastContainer limit={1} />
-      <div className="header">
-        <LogoWhite />
-        <div className="points_container">Current points: {currentPoints}</div>
-      </div>
-      <div className="app_container">
-        <div className="main_container">
-          {firstActor.name && lastActor.name ? (
-            <>
-              <div className="first_actor_container">
-                <ActorMovieContainer
-                  image={firstActor.image}
-                  name={firstActor.name}
-                />
-              </div>
-              {renderGuesses()}
-              {win ? (
-                <Winner />
-              ) : (
-                <div
-                  className={`main_response_input_container ${
-                    guesses.length === 0 ? "" : "with_guesses"
-                  }`}
-                >
-                  <InteractiveResponse
-                    actor1={handleActorProp()}
-                    actor2={lastActor.name}
-                    movie={handleMovieProp(mostRecentMovie.guess.toString())}
-                    year={handleMovieProp(mostRecentMovie.year.toString())}
+      <Header />
+      <Reward
+        ref={rewardEl}
+        type="emoji"
+        config={{
+          emoji: ["🍿"],
+          lifetime: 200,
+          zIndex: 9999,
+          elementSize: 75,
+          spread: 1000,
+          springAnimation: false,
+        }}
+      >
+        <div className="app_container">
+          <div className="main_container">
+            {firstActor.name && lastActor.name ? (
+              <>
+                <div className="first_actor_container">
+                  <ActorMovieContainer
+                    image={firstActor.image}
+                    name={firstActor.name}
                   />
                 </div>
-              )}
-              <div className="last_actor_container">
-                <ActorMovieContainer
-                  image={lastActor.image}
-                  name={lastActor.name}
-                />
+                {renderGuesses()}
+                {win ? (
+                  <Winner ref={rewardEl} />
+                ) : (
+                  <div
+                    className={`main_response_input_container ${
+                      guesses.length === 0 ? "" : "with_guesses"
+                    }`}
+                  >
+                    <InteractiveResponse
+                      actor1={handleActorProp()}
+                      actor2={lastActor.name}
+                      movie={handleMovieProp(mostRecentMovie.guess.toString())}
+                      year={handleMovieProp(mostRecentMovie.year.toString())}
+                    />
+                  </div>
+                )}
+                <div className="last_actor_container">
+                  <ActorMovieContainer
+                    image={lastActor.image}
+                    name={lastActor.name}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="main_spinner_container">
+                <ClipLoader color={"#000"} size={100} />
+                <p>Loading actors...</p>
               </div>
-            </>
-          ) : (
-            <div className="main_spinner_container">
-              <ClipLoader color={"#000"} size={100} />
-              <p>Loading actors...</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      </Reward>
     </AppContext.Provider>
   );
 };
