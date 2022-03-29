@@ -11,7 +11,8 @@ export const WhoButton = ({
   knownFor: { [key: string]: string | number };
   gender: string;
 }) => {
-  const { currentPoints, changeCurrentPoints, win } = useContext(AppContext);
+  const { currentPoints, changeCurrentPoints, win, darkMode } =
+    useContext(AppContext);
   const [collapse, changeCollapse] = useState(false);
 
   const toggleCollapse = () => {
@@ -40,7 +41,7 @@ export const WhoButton = ({
           isOpened={collapse}
           initialStyle={{ height: 0, overflow: "hidden" }}
         >
-          <div className="collapse_container">
+          <div className={`collapse_container ${darkMode ? "dark" : ""}`}>
             <span>
               {gender === "male"
                 ? "His"
@@ -50,6 +51,9 @@ export const WhoButton = ({
               most popular recent role was the character of{" "}
               <b>"{knownFor.character}"</b> in the <b>{knownFor.year}</b> film{" "}
               <b>{knownFor.title}</b>.
+              <br />
+              <br />
+              You gained <b className="incorrect">30</b> points.
             </span>
           </div>
         </Collapse>

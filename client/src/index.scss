@@ -12,9 +12,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: rgb(200, 200, 200);
+  transition: background 0.4s ease;
+  overflow-x: hidden;
 
   &.dark {
-    background: #121213;
+    background: #0e1117;
   }
 }
 

@@ -15,6 +15,7 @@ import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import Reward, { RewardElement } from "react-rewards";
 import { Header } from "./components/Header/Header";
+import { Footer } from "./components/Footer/Footer";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
@@ -54,6 +55,8 @@ interface ContextProps {
   changeCurrentPoints: React.Dispatch<React.SetStateAction<number>>;
   win: boolean;
   changeWin: React.Dispatch<React.SetStateAction<boolean>>;
+  darkMode: boolean;
+  changeDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -77,6 +80,8 @@ export const AppContext = createContext<ContextProps>({
   changeCurrentPoints: () => {},
   win: false,
   changeWin: () => {},
+  darkMode: true,
+  changeDarkMode: () => [],
 });
 
 const App = () => {
@@ -126,8 +131,47 @@ const App = () => {
   }>({ guess: "", type: "", year: "" });
   const [currentPoints, changeCurrentPoints] = useState<number>(0);
   const [win, changeWin] = useState(false);
+  const [darkMode, changeDarkMode] = useState(true);
 
   const rewardEl = useRef<RewardElement>(null);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [darkMode]);
+
+  const handleLightChange = useCallback(
+    (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        if (!darkMode) changeDarkMode(true);
+      } else {
+        if (darkMode) changeDarkMode(false);
+      }
+    },
+    [darkMode]
+  );
+
+  // Look for color preference on app mount
+  useEffect(() => {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      changeDarkMode(true);
+    } else {
+      changeDarkMode(false);
+    }
+  }, []);
+
+  // Watch for light preference changes
+  useEffect(() => {
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", handleLightChange);
+  }, [handleLightChange]);
 
   const getFirstAndLastActors = async () => {
     const nodeEnv = process.env.REACT_APP_NODE_ENV
@@ -333,6 +377,8 @@ const App = () => {
         changeCurrentPoints,
         win,
         changeWin,
+        darkMode,
+        changeDarkMode,
       }}
     >
       <ToastContainer limit={1} />
@@ -349,7 +395,7 @@ const App = () => {
           springAnimation: false,
         }}
       >
-        <div className="app_container">
+        <div className={`app_container ${darkMode ? "dark" : ""}`}>
           <div className="main_container">
             {firstActor.name && lastActor.name ? (
               <>
@@ -386,10 +432,11 @@ const App = () => {
                     gender={lastActor.gender}
                   />
                 </div>
+                <Footer />
               </>
             ) : (
               <div className="main_spinner_container">
-                <ClipLoader color={"#000"} size={100} />
+                <ClipLoader color={darkMode ? "#fff" : "#000"} size={100} />
                 <p>Loading actors...</p>
               </div>
             )}

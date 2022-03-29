@@ -2,6 +2,50 @@
   position: relative;
   width: 100%;
   padding-bottom: 1rem;
+
+  .react-autosuggest__suggestions-list {
+    margin: 0;
+    padding: 0;
+    max-height: 175px;
+    overflow-y: auto;
+    text-align: left;
+
+    .react-autosuggest__suggestion {
+      background: rgb(125, 125, 125);
+      transition: background 0.4s ease;
+
+      &[aria-selected="true"],
+      &:hover {
+        cursor: pointer;
+        background: rgb(145, 145, 145);
+        transition: background-color 0.3s ease;
+      }
+
+      &:active,
+      &:focus {
+        cursor: pointer;
+        background: rgb(175, 175, 175);
+      }
+    }
+  }
+
+  &.dark {
+    .react-autosuggest__suggestion {
+      background: rgb(34, 37, 53);
+
+      &[aria-selected="true"],
+      &:hover {
+        cursor: pointer;
+        background: rgb(54, 57, 73);
+      }
+
+      &:active,
+      &:focus {
+        cursor: pointer;
+        background: rgb(84, 87, 103);
+      }
+    }
+  }
 }
 
 .guess_input_container {
@@ -17,10 +61,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #fff;
+  transition: background 0.4s ease;
 
   &.form-control {
     font-size: 18px;
     padding-left: 2.25rem;
+
+    &.dark {
+      background: #0e1117;
+      color: #fff;
+    }
   }
 }
 
@@ -33,6 +84,7 @@
   padding: 0.5rem;
   margin-top: 1rem;
   border: none;
+  transition: background 0.4s ease;
 
   &:hover {
     background: rgb(42, 172, 83);
@@ -40,6 +92,18 @@
 
   &:active {
     background: rgb(22, 152, 63);
+  }
+
+  &.dark {
+    background: rgb(46, 160, 66);
+
+    &:hover {
+      background: rgb(26, 140, 46);
+    }
+
+    &:active {
+      background: rgb(6, 120, 26);
+    }
   }
 }
 
@@ -50,31 +114,6 @@
   padding: 0;
   margin: 0;
   z-index: 99999;
-}
-
-.react-autosuggest__suggestions-list {
-  margin: 0;
-  padding: 0;
-  max-height: 175px;
-  overflow-y: auto;
-  text-align: left;
-}
-
-.react-autosuggest__suggestion {
-  background: rgb(125, 125, 125);
-
-  &[aria-selected="true"],
-  &:hover {
-    cursor: pointer;
-    background: rgb(145, 145, 145);
-    transition: background-color 0.3s ease;
-  }
-
-  &:active,
-  &:focus {
-    cursor: pointer;
-    background: rgb(175, 175, 175);
-  }
 }
 
 .autosuggest_container {
@@ -114,6 +153,10 @@
   justify-content: flex-start;
   border-bottom: 1px solid #dedede;
   padding-left: 1rem;
+
+  &.dark {
+    border-bottom: 1px solid #30363d;
+  }
 
   .suggestion_image {
     box-sizing: border-box;

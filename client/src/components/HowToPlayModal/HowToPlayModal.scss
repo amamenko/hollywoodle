@@ -2,15 +2,17 @@
   position: absolute;
   left: 1rem;
 
-  &:hover {
-    fill: rgb(200, 200, 200);
-    cursor: pointer;
-  }
+  @media only screen and (min-width: 992px) {
+    &:hover {
+      fill: rgb(200, 200, 200);
+      cursor: pointer;
+    }
 
-  &:focus,
-  &:active {
-    fill: rgb(150, 150, 150);
-    cursor: pointer;
+    &:focus,
+    &:active {
+      fill: rgb(150, 150, 150);
+      cursor: pointer;
+    }
   }
 }
 

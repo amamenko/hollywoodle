@@ -10,7 +10,7 @@ export const HowToPlayModal = () => {
       <AiOutlineQuestionCircle
         className="how_to_play_icon"
         color={"#fff"}
-        size={30}
+        size={25}
         onClick={() => changeDisplayModal(!displayModal)}
       />
       <div className={`how_to_play_modal ${displayModal ? "show" : ""}`}>

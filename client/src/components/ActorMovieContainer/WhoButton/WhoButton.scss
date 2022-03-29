@@ -8,6 +8,11 @@
   justify-content: center;
   background: rgba(255, 230, 100, 0.5);
   position: relative;
+  transition: background 0.4s ease;
+
+  &.dark {
+    background: rgba(189, 148, 13, 0.25);
+  }
 
   span {
     padding: 0 2rem;

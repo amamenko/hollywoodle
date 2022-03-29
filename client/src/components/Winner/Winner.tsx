@@ -11,7 +11,7 @@ export interface FullRewardElement extends RewardElement {
 }
 
 export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
-  const { currentPoints, guesses, firstActor, lastActor } =
+  const { currentPoints, guesses, firstActor, lastActor, darkMode } =
     useContext(AppContext);
 
   // Throw popcorn as soon as the winner component mounts
@@ -32,7 +32,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
   }, [ref]);
 
   return (
-    <div className="winner_container">
+    <div className={`winner_container ${darkMode ? "dark" : ""}`}>
       <div className="winner_icon_container">
         {currentPoints >= 100 ? (
           <img

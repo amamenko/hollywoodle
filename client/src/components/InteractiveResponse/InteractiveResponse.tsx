@@ -20,7 +20,7 @@ export const InteractiveResponse = ({
   year = "",
   points = 0,
 }: InteractiveResponseProps) => {
-  const { guesses, firstActor, lastActor } = useContext(AppContext);
+  const { guesses, firstActor, lastActor, darkMode } = useContext(AppContext);
   const mostRecentGuess = guesses.sort((a, b) => {
     return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
   })[guesses.length - 1];
@@ -36,7 +36,11 @@ export const InteractiveResponse = ({
     : "actor";
 
   return (
-    <div className={`interactive_container ${points ? "question_block" : ""}`}>
+    <div
+      className={`interactive_container ${darkMode ? "dark" : ""} ${
+        points ? "question_block" : ""
+      }`}
+    >
       {actor1 && actor2 ? (
         <>
           {typeOfGuess === "movie" ? (
@@ -75,7 +79,7 @@ export const InteractiveResponse = ({
               </>
             ) : (
               <>
-                <b className="correct">CORRECT!</b>
+                <b className={`correct ${darkMode ? "dark" : ""}`}>CORRECT!</b>
                 <br />
               </>
             )}
@@ -91,7 +95,7 @@ export const InteractiveResponse = ({
           ) : incorrect ? (
             <b className="incorrect">DID NOT ACT</b>
           ) : (
-            <b className="correct">DID ACT</b>
+            <b className={`correct ${darkMode ? "dark" : ""}`}>DID ACT</b>
           )}{" "}
           in <br />
           <b>

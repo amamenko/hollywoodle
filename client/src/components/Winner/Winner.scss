@@ -3,6 +3,11 @@
   margin-bottom: 1rem;
   margin-top: 1rem;
   padding: 2rem 3rem 1rem 3rem;
+  transition: background 0.4s ease;
+
+  &.dark {
+    background: rgba(0, 120, 170, 0.3);
+  }
 }
 
 .winner_icon_container {

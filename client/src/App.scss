@@ -1,8 +1,8 @@
 .app_container {
+  position: relative;
   width: 100%;
   min-height: 100vh;
   max-width: 32rem;
-  overflow: hidden;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -11,10 +11,17 @@
   background: #fff;
   padding-top: 7rem;
   box-sizing: border-box;
+  transition: background 0.4s ease, color 0.4s ease;
 
   &.dark {
-    background: #3a3a3c;
+    background: #010408;
+    border-bottom: none;
     color: #fff;
+
+    @media only screen and (min-width: 32rem) {
+      border: 1px solid #30363d;
+      border-bottom: none;
+    }
   }
 }
 
@@ -24,7 +31,6 @@
   align-items: center;
   margin: 1rem 0;
   max-width: 32rem;
-  overflow: hidden;
 }
 
 .main_spinner_container {
@@ -43,7 +49,11 @@
 
 .Toastify__toast-container {
   top: 70px;
-  z-index: 99999999;
+  z-index: 9999999;
+}
+
+.Toastify__toast-theme--dark {
+  border: 1px solid #30363d;
 }
 
 .first_actor_container {

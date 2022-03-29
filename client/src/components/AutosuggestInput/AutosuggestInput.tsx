@@ -50,6 +50,7 @@ export const AutosuggestInput = ({
     currentPoints,
     changeCurrentPoints,
     changeWin,
+    darkMode,
   } = useContext(AppContext);
 
   const debounceFn = (type: "movie" | "actor") => {
@@ -269,7 +270,7 @@ export const AutosuggestInput = ({
   const renderSuggestion = (suggestion: {
     [key: string]: string | number | boolean;
   }) => (
-    <div className="suggestion_container">
+    <div className={`suggestion_container ${darkMode ? "dark" : ""}`}>
       {typeOfGuess === "actor" ? (
         <img
           className="suggestion_image"
@@ -294,7 +295,7 @@ export const AutosuggestInput = ({
   };
 
   return (
-    <div className="input_container">
+    <div className={`input_container ${darkMode ? "dark" : ""}`}>
       <Autosuggest
         ref={autoFocusInput}
         suggestions={suggestions}
@@ -320,7 +321,7 @@ export const AutosuggestInput = ({
           className: "autosuggest_container",
         }}
         inputProps={{
-          className: "autosuggest_input form-control",
+          className: `autosuggest_input form-control ${darkMode ? "dark" : ""}`,
           id: "autosuggest_input",
           value: inputValue,
           onChange: (form, event) => {
@@ -337,7 +338,7 @@ export const AutosuggestInput = ({
           {typeOfGuess === "movie" ? "🎥" : "🎭"}
         </div>
         <Button
-          className="guess_button"
+          className={`guess_button ${darkMode ? "dark" : ""}`}
           onClick={() => handleInputGuess(currentSelection)}
         >
           GUESS {typeOfGuess.toUpperCase()}

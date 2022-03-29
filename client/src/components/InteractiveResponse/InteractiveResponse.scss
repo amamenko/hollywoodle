@@ -4,6 +4,11 @@ b.incorrect {
 
 b.correct {
   color: green;
+  transition: color 0.4s ease;
+
+  &.dark {
+    color: #68af16;
+  }
 }
 
 b.partial {
@@ -31,9 +36,20 @@ b.partial {
   align-items: center;
   justify-content: center;
   width: 100%;
+  transition: background 0.4s ease;
+
+  &.dark {
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    border-top: 1px solid #30363d;
+  }
 
   &.question_block {
     background: rgba(200, 220, 240, 0.4);
+
+    &.dark {
+      background: #161b22;
+    }
   }
 }
 
