@@ -271,15 +271,11 @@ export const AutosuggestInput = ({
     [key: string]: string | number | boolean;
   }) => (
     <div className={`suggestion_container ${darkMode ? "dark" : ""}`}>
-      {typeOfGuess === "actor" ? (
-        <img
-          className="suggestion_image"
-          src={suggestion.image.toString()}
-          alt={`${suggestion.name}`}
-        />
-      ) : (
-        <></>
-      )}{" "}
+      <img
+        className="suggestion_image"
+        src={suggestion.image.toString()}
+        alt={`${suggestion.name}`}
+      />{" "}
       <p className="suggested_name">
         {suggestion.name.toString()}
         {suggestion.year ? ` (${suggestion.year})` : ""}
@@ -335,7 +331,7 @@ export const AutosuggestInput = ({
       <div className="guess_button_container">
         <div className="question_emoji">
           {" "}
-          {typeOfGuess === "movie" ? "🎥" : "🎭"}
+          {typeOfGuess === "movie" ? "🎬" : "🎭"}
         </div>
         <Button
           className={`guess_button ${darkMode ? "dark" : ""}`}
@@ -344,7 +340,7 @@ export const AutosuggestInput = ({
           GUESS {typeOfGuess.toUpperCase()}
         </Button>
         <div className="question_emoji reversed">
-          {typeOfGuess === "movie" ? "🎥" : "🎭"}
+          {typeOfGuess === "movie" ? "🎬" : "🎭"}
         </div>
       </div>
     </div>
