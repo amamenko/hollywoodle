@@ -34,7 +34,7 @@ export const Header = () => {
         )}
       </div>
       <div className={`points_container ${darkMode ? "dark" : ""}`}>
-        Current points: {currentPoints}
+        Penalty Points: {currentPoints}
       </div>
     </div>
   );

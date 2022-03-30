@@ -80,10 +80,10 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
           : `only`}{" "}
         <b>{currentPoints}</b>{" "}
         {currentPoints >= 100
-          ? `points in the process.`
+          ? `penalty points in the process.`
           : currentPoints >= 50
-          ? "points."
-          : "points!"}
+          ? "penalty points."
+          : "penalty points!"}
       </p>
     </div>
   );

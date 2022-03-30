@@ -16,6 +16,8 @@ import ClipLoader from "react-spinners/ClipLoader";
 import Reward, { RewardElement } from "react-rewards";
 import { Header } from "./components/Header/Header";
 import { Footer } from "./components/Footer/Footer";
+import { AllGuesses } from "./components/AllGuesses/AllGuesses";
+import { format } from "date-fns-tz";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
@@ -132,8 +134,32 @@ const App = () => {
   const [currentPoints, changeCurrentPoints] = useState<number>(0);
   const [win, changeWin] = useState(false);
   const [darkMode, changeDarkMode] = useState(true);
+  const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
 
   const rewardEl = useRef<RewardElement>(null);
+
+  // Server-side is refreshing actor data, show loading component
+  useEffect(() => {
+    const timesArr: string[] = [];
+    for (let i = 0; i <= 10; i++) {
+      timesArr.push(`0000${i < 10 ? "0" + i : i}`);
+    }
+    const timeInterval = setInterval(() => {
+      const currentHoursSeconds = format(new Date(), "HHmmss", {
+        timeZone: "America/New_York",
+      });
+      if (timesArr.includes(currentHoursSeconds)) {
+        changeRefreshingDataTime(true);
+
+        // Reload page and fetch new data
+        if (currentHoursSeconds === "000010") {
+          window.location.reload();
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(timeInterval);
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -240,84 +266,6 @@ const App = () => {
     }
   }, [guesses, mostRecentActor]);
 
-  const renderGuesses = useCallback(() => {
-    const allGuesses = guesses.slice().sort((a, b) => {
-      return (
-        (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
-      );
-    });
-
-    return allGuesses.map((el, index) => {
-      const currentGuessType = el.type;
-
-      const determineChoice = (type: string, default_val: string): string => {
-        if (currentGuessType === type) {
-          return el.guess.toString();
-        } else {
-          if (
-            el.prev_guess &&
-            typeof el.prev_guess === "object" &&
-            !Array.isArray(el.prev_guess) &&
-            el.prev_guess.guess &&
-            el.prev_guess.type === type
-          ) {
-            return el.prev_guess.guess.toString();
-          }
-
-          if (type === "actor") {
-            if (
-              el.last_correct_actor &&
-              typeof el.last_correct_actor === "object" &&
-              !Array.isArray(el.last_correct_actor) &&
-              el.last_correct_actor.guess
-            ) {
-              return el.last_correct_actor.guess.toString();
-            }
-          } else {
-            if (
-              el.last_correct_movie &&
-              typeof el.last_correct_movie === "object" &&
-              !Array.isArray(el.last_correct_movie) &&
-              el.last_correct_movie.guess
-            ) {
-              return el.last_correct_movie.guess.toString();
-            }
-          }
-          return default_val;
-        }
-      };
-
-      const determinedActor = determineChoice("actor", firstActor.name);
-      const determinedMovie = determineChoice(
-        "movie",
-        mostRecentMovie ? mostRecentMovie.guess.toString() : ""
-      );
-
-      if (
-        typeof el.guess === "string" &&
-        (typeof el.incorrect === "boolean" || typeof el.incorrect === "string")
-      ) {
-        return (
-          <React.Fragment key={index}>
-            <ActorMovieContainer
-              image={el.image.toString()}
-              name={el.guess}
-              incorrect={el.incorrect}
-            />
-            <InteractiveResponse
-              actor1={determinedActor}
-              movie={determinedMovie}
-              incorrect={el.incorrect}
-              year={determinedMovie ? mostRecentMovie.year.toString() : ""}
-              points={el.incorrect === "partial" ? 20 : el.incorrect ? 30 : 10}
-            />
-          </React.Fragment>
-        );
-      }
-      return <></>;
-    });
-  }, [firstActor.name, guesses, mostRecentMovie]);
-
   const handleActorProp = () => {
     if (mostRecentActor && mostRecentActor.guess) {
       if (
@@ -397,7 +345,7 @@ const App = () => {
       >
         <div className={`app_container ${darkMode ? "dark" : ""}`}>
           <div className="main_container">
-            {firstActor.name && lastActor.name ? (
+            {firstActor.name && lastActor.name && !refreshingDataTime ? (
               <>
                 <div className="first_actor_container">
                   <ActorMovieContainer
@@ -407,7 +355,7 @@ const App = () => {
                     gender={firstActor.gender}
                   />
                 </div>
-                {renderGuesses()}
+                <AllGuesses mostRecentMovie={mostRecentMovie} />
                 {win ? (
                   <Winner ref={rewardEl} />
                 ) : (
@@ -437,7 +385,7 @@ const App = () => {
             ) : (
               <div className="main_spinner_container">
                 <ClipLoader color={darkMode ? "#fff" : "#000"} size={100} />
-                <p>Loading actors...</p>
+                <p>Loading {refreshingDataTime ? "new" : ""} actors...</p>
               </div>
             )}
           </div>

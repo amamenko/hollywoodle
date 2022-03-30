@@ -15,12 +15,10 @@
 
   &.dark {
     background: #010408;
-    border-bottom: none;
     color: #fff;
 
     @media only screen and (min-width: 32rem) {
-      border: 1px solid #30363d;
-      border-bottom: none;
+      outline: 1px solid #30363d;
     }
   }
 }

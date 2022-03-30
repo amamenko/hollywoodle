@@ -1,9 +1,19 @@
 import React, { useState } from "react";
+import Countdown from "react-countdown";
 import { AiOutlineQuestionCircle, AiOutlineClose } from "react-icons/ai";
+import { endOfDay } from "date-fns";
+import { formatInTimeZone, toDate } from "date-fns-tz";
 import "./HowToPlayModal.scss";
 
 export const HowToPlayModal = () => {
   const [displayModal, changeDisplayModal] = useState(false);
+  const date = new Date();
+  const formattedETDate = formatInTimeZone(
+    date,
+    "America/New_York",
+    "yyyy-MM-dd HH:mm:ssXXX"
+  );
+  const parsedDate = toDate(formattedETDate, { timeZone: "America/New_York" });
 
   return (
     <>
@@ -27,12 +37,12 @@ export const HowToPlayModal = () => {
             films they starred in as few guesses as possible.
           </p>
           <p>
-            The <b>LOWER</b> your points, the better.
+            The <b>LOWER</b> your penalty points, the better.
           </p>
           <p>
-            Think you can do it in one? If you can’t — that’s okay! Hollywood’s
-            a small town. Try to name a movie that the first actor was in that
-            stars someone who’s made something with the second actor.
+            Think you can do it in one? If you can’t — that’s okay! Try to name
+            a movie that the first actor was in that stars an actor who’s made a
+            different movie with the second actor.
           </p>
           <p>
             That’s the way to do it: guess a movie, then an actor, then a movie
@@ -41,20 +51,31 @@ export const HowToPlayModal = () => {
           <ul className="how_to_play_list">
             <li>
               Any <b className="correct">CORRECT</b> guess will give you 10
-              points.
+              penalty points.
             </li>
             <li>
               An <b className="incorrect">INCORRECT</b> guess will give you 30
-              points — so don’t type a movie the current actor wasn't in or an
-              actor who wasn’t in the current movie!
+              penalty points — so don’t type a movie the current actor wasn't in
+              or an actor who wasn’t in the current movie!
             </li>
             <li>
               If you’re guessing movies and type something the goal actor was in
               but not the current actor, we’ll give you{" "}
-              <b className="partial">PARTIAL CREDIT</b> — 20 points. Not what we
-              were looking for, but you know your movies!
+              <b className="partial">PARTIAL CREDIT</b> — 20 penalty points. Not
+              what we were looking for, but you know your movies!
             </li>
           </ul>
+          <div className="next_pairing_countdown_container">
+            <p>Next Hollywoodle actor pairing in:</p>
+            <b>
+              <Countdown
+                date={endOfDay(parsedDate)}
+                autoStart={true}
+                daysInHours={true}
+                onComplete={() => changeDisplayModal(false)}
+              />
+            </b>
+          </div>
         </div>
       </div>
       <div

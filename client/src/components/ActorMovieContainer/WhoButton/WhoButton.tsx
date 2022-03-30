@@ -27,7 +27,7 @@ export const WhoButton = ({
       <div className="who_button_container">
         {!collapse && (
           <p>
-            Stuck? <b>(+30 points)</b>
+            Stuck? <b>(+30 penalty points)</b>
           </p>
         )}
         <Button
@@ -53,7 +53,7 @@ export const WhoButton = ({
               <b>{knownFor.title}</b>.
               <br />
               <br />
-              You gained <b className="incorrect">30</b> points.
+              You gained <b className="incorrect">30</b> penalty points.
             </span>
           </div>
         </Collapse>

@@ -80,7 +80,7 @@
 }
 
 .how_to_play_text_container {
-  font-size: 14px;
+  font-size: 13.5px;
   margin: 0 1.5rem;
   color: #fff;
 }
@@ -92,5 +92,16 @@
   li {
     margin-top: 1rem;
     margin-left: 1rem;
+  }
+}
+
+.next_pairing_countdown_container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-top: 1px solid rgb(65, 65, 65);
+
+  p {
+    margin-right: 0.5rem;
   }
 }
