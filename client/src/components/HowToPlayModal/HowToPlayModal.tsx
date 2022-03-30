@@ -37,7 +37,7 @@ export const HowToPlayModal = () => {
             films they starred in as few guesses as possible.
           </p>
           <p>
-            The <b>LOWER</b> your penalty points, the better.
+            The <b>LOWER</b> your total moves, the better.
           </p>
           <p>
             Think you can do it in one? If you can’t — that’s okay! Try to name
@@ -50,18 +50,22 @@ export const HowToPlayModal = () => {
           </p>
           <ul className="how_to_play_list">
             <li>
-              Any <b className="correct">CORRECT</b> guess will give you 10
-              penalty points.
+              Any <b className="correct">CORRECT</b> guess will gain you{" "}
+              <b>1</b> move.
             </li>
             <li>
-              An <b className="incorrect">INCORRECT</b> guess will give you 30
-              penalty points — so don’t type a movie the current actor wasn't in
+              An <b className="incorrect">INCORRECT</b> guess will gain you{" "}
+              <b>3</b> moves — so don’t type a movie the current actor wasn't in
               or an actor who wasn’t in the current movie!
+            </li>
+            <li>
+              <b className="incorrect">HINTS</b> will also gain you <b>3</b>{" "}
+              moves but may save you moves in the long run.
             </li>
             <li>
               If you’re guessing movies and type something the goal actor was in
               but not the current actor, we’ll give you{" "}
-              <b className="partial">PARTIAL CREDIT</b> — 20 penalty points. Not
+              <b className="partial">PARTIAL CREDIT</b> — <b>2</b> moves. Not
               what we were looking for, but you know your movies!
             </li>
           </ul>

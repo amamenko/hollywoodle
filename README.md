@@ -29,9 +29,9 @@
 
 In March of 2022, it seemed that the Wordleverse had a dearth of movie-related Wordle spin-offs. With the [94th Academy Awards](https://en.wikipedia.org/wiki/94th_Academy_Awards) (popularly known as the Oscars) quickly approaching, the timing seemed perfect for a Hollywood-themed Wordle-like game to enter the Wordleverse.
 
-Originally the brainchild of Alex Jaloza, Hollywoodle provides users two new daily actors to link either by movie or by co-star with the fewest possible guesses. The user is given points for each guess - 10 points for a correct guess, 30 points for an incorrect guess, and 20 points for a guess of a movie that only features the final actor and not the first or current one (partial credit). If a user needs a hint they are penalized 30 points.
+Originally the brainchild of Alex Jaloza, Hollywoodle provides users two new daily actors to link either by movie or by co-star with the fewest possible guesses. The user is gains a certain amount of "moves" for each guess - 1 move for a correct guess, 3 moves for an incorrect guess, and 2 moves for a guess of a movie that only features the final actor and not the first or current one (partial credit). If a user needs a hint they are penalized 3 moves.
 
-In essence, the objective of the game is to score as few points as possible with the fewest guesses as possible.
+In essence, the objective of the game is to link the two given actors with as few moves as possible.
 
 ## Functionality
 
@@ -46,11 +46,10 @@ Hollywoodle is built with the [MERN](https://www.geeksforgeeks.org/mern-stack/) 
 
 - Requests actor data from the backend and renders details about the initial and final actor for the user to guess the relation.
 - Sets a [dark/light-mode](https://css-tricks.com/a-complete-guide-to-dark-mode-on-the-web/) theme based on the user's native preferred specification (although this can also be manually toggled by the user).
-- Uses React's [Context API](https://reactjs.org/docs/context.html) to store and access widely-used state variables such as points and dark-mode configuration throughout the application.
+- Uses React's [Context API](https://reactjs.org/docs/context.html) to store and access widely-used state variables such as total moves and dark-mode configuration throughout the application.
 - [Autosuggests](https://github.com/moroshko/react-autosuggest) movies or actors (details of which are once again fetched from TMDB) based on a user's search input.
 - Determines the correctness of a user's guess selection by means of movie cast ID lookup that searches for a match using TMDB's movie and actor IDs.
 - Displays a popcorn emoji (🍿) [confetti rain effect](https://www.npmjs.com/package/react-rewards) when a user successfuly links the first given actor with the final given actor.
-
 
 ## Deployment
 

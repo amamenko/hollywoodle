@@ -47,8 +47,8 @@ export const AutosuggestInput = ({
     lastActor,
     guesses,
     changeGuesses,
-    currentPoints,
-    changeCurrentPoints,
+    currentMoves,
+    changeCurrentMoves,
     changeWin,
     darkMode,
   } = useContext(AppContext);
@@ -225,9 +225,9 @@ export const AutosuggestInput = ({
       };
 
       const pointsAlloted =
-        incorrect_status === "partial" ? 20 : incorrect_status ? 30 : 10;
+        incorrect_status === "partial" ? 2 : incorrect_status ? 3 : 1;
 
-      changeCurrentPoints(currentPoints + pointsAlloted);
+      changeCurrentMoves(currentMoves + pointsAlloted);
       changeGuesses([...guesses, newGuess]);
       changeInputValue("");
       changeCurrentSelection({

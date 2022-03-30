@@ -53,8 +53,8 @@ interface ContextProps {
       }[]
     >
   >;
-  currentPoints: number;
-  changeCurrentPoints: React.Dispatch<React.SetStateAction<number>>;
+  currentMoves: number;
+  changeCurrentMoves: React.Dispatch<React.SetStateAction<number>>;
   win: boolean;
   changeWin: React.Dispatch<React.SetStateAction<boolean>>;
   darkMode: boolean;
@@ -78,8 +78,8 @@ export const AppContext = createContext<ContextProps>({
   },
   guesses: [{}],
   changeGuesses: () => [],
-  currentPoints: 0,
-  changeCurrentPoints: () => {},
+  currentMoves: 0,
+  changeCurrentMoves: () => {},
   win: false,
   changeWin: () => {},
   darkMode: true,
@@ -131,7 +131,7 @@ const App = () => {
           [key: string]: string | number;
         };
   }>({ guess: "", type: "", year: "" });
-  const [currentPoints, changeCurrentPoints] = useState<number>(0);
+  const [currentMoves, changeCurrentMoves] = useState<number>(0);
   const [win, changeWin] = useState(false);
   const [darkMode, changeDarkMode] = useState(true);
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
@@ -321,8 +321,8 @@ const App = () => {
         lastActor,
         guesses,
         changeGuesses,
-        currentPoints,
-        changeCurrentPoints,
+        currentMoves,
+        changeCurrentMoves,
         win,
         changeWin,
         darkMode,

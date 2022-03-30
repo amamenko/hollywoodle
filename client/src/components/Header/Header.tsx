@@ -6,7 +6,7 @@ import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 import "./Header.scss";
 
 export const Header = () => {
-  const { currentPoints, darkMode, changeDarkMode } = useContext(AppContext);
+  const { currentMoves, darkMode, changeDarkMode } = useContext(AppContext);
 
   const toggleLightDarkMode = () => {
     changeDarkMode(!darkMode);
@@ -34,7 +34,7 @@ export const Header = () => {
         )}
       </div>
       <div className={`points_container ${darkMode ? "dark" : ""}`}>
-        Penalty Points: {currentPoints}
+        Total Moves: {currentMoves}
       </div>
     </div>
   );

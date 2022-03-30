@@ -11,14 +11,14 @@ export const WhoButton = ({
   knownFor: { [key: string]: string | number };
   gender: string;
 }) => {
-  const { currentPoints, changeCurrentPoints, win, darkMode } =
+  const { currentMoves, changeCurrentMoves, win, darkMode } =
     useContext(AppContext);
   const [collapse, changeCollapse] = useState(false);
 
   const toggleCollapse = () => {
     if (!collapse && !win) {
       changeCollapse(true);
-      changeCurrentPoints(currentPoints + 30);
+      changeCurrentMoves(currentMoves + 3);
     }
   };
 
@@ -27,7 +27,7 @@ export const WhoButton = ({
       <div className="who_button_container">
         {!collapse && (
           <p>
-            Stuck? <b>(+30 penalty points)</b>
+            Stuck? <b>(+3 moves)</b>
           </p>
         )}
         <Button
@@ -53,7 +53,7 @@ export const WhoButton = ({
               <b>{knownFor.title}</b>.
               <br />
               <br />
-              You gained <b className="incorrect">30</b> penalty points.
+              You gained <b className="incorrect">3</b> moves.
             </span>
           </div>
         </Collapse>

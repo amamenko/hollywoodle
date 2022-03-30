@@ -11,7 +11,7 @@ export interface FullRewardElement extends RewardElement {
 }
 
 export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
-  const { currentPoints, guesses, firstActor, lastActor, darkMode } =
+  const { currentMoves, firstActor, lastActor, darkMode } =
     useContext(AppContext);
 
   // Throw popcorn as soon as the winner component mounts
@@ -26,6 +26,12 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
         ref.current.container.style.justifyContent = "center";
         ref.current.container.style.zIndex = "999999999";
         ref.current.container.style.overflow = "hidden";
+
+        setTimeout(() => {
+          if (ref.current && ref.current.container) {
+            ref.current.container.style.display = "none";
+          }
+        }, 3500);
       }
       ref.current.rewardMe();
     }
@@ -34,13 +40,13 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
   return (
     <div className={`winner_container ${darkMode ? "dark" : ""}`}>
       <div className="winner_icon_container">
-        {currentPoints >= 100 ? (
+        {currentMoves > 10 ? (
           <img
             className="cats_poster"
             src={Cats}
             alt="The poster for the movie Cats (2019)"
           />
-        ) : currentPoints >= 50 ? (
+        ) : currentMoves >= 5 ? (
           <img
             src={Dicaprio}
             alt="Leonardo Dicaprio from The Great Gatsby (2013)"
@@ -50,40 +56,31 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
         )}
       </div>
       <h2>
-        {currentPoints >= 100 ? (
+        {currentMoves > 10 ? (
           <span>
             Oof — now that’s <br />
-            💣 a box office bomb. 💣
+            💣 &nbsp;&nbsp;a box office bomb.&nbsp;&nbsp; 💣
           </span>
-        ) : currentPoints >= 50 ? (
+        ) : currentMoves >= 5 ? (
           <span>
-            🍸 Well, it’s an honor 🍸
+            🍸 &nbsp;&nbsp;Well, it’s an honor&nbsp;&nbsp; 🍸
             <br /> just to be nominated.
           </span>
         ) : (
           <span>
             And the Oscar goes to...
             <br />
-            🏆 you! 🏆
+            🏆 &nbsp;&nbsp;you!&nbsp;&nbsp; 🏆
           </span>
         )}
       </h2>
       <p>
         You were able to connect <b>{firstActor.name}</b> to{" "}
         <b>{lastActor.name}</b>
-        {currentPoints >= 100 ? ", but it took you " : " in "}
-        <b>{guesses.length}</b> moves —{" "}
-        {currentPoints >= 100
-          ? `racking up a whopping`
-          : currentPoints >= 50
-          ? `you got`
-          : `only`}{" "}
-        <b>{currentPoints}</b>{" "}
-        {currentPoints >= 100
-          ? `penalty points in the process.`
-          : currentPoints >= 50
-          ? "penalty points."
-          : "penalty points!"}
+        {currentMoves > 10 ? ", but it took you " : " in "}
+        {currentMoves > 10 ? "a whopping" : currentMoves < 5 ? "only" : ""}{" "}
+        <b>{currentMoves}</b>{" "}
+        {currentMoves >= 5 ? "moves." : currentMoves === 1 ? "move!" : "moves!"}
       </p>
     </div>
   );

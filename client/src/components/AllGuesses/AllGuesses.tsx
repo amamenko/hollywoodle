@@ -87,7 +87,7 @@ export const AllGuesses = ({ mostRecentMovie }: { [key: string]: any }) => {
                     : " "
                   : ""
               }
-              points={el.incorrect === "partial" ? 20 : el.incorrect ? 30 : 10}
+              points={el.incorrect === "partial" ? 2 : el.incorrect ? 3 : 1}
             />
           </React.Fragment>
         );
