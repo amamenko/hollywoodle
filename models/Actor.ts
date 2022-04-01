@@ -6,6 +6,7 @@ const actorSchema = new mongoose.Schema({
   id: Number,
   type: String,
   gender: String,
+  date: String,
   most_popular_recent_movie: {
     title: String,
     year: Number,

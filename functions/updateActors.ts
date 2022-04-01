@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { getMostKnownFor } from "./getMostKnownFor";
 import { getRandomPopularActor } from "./getRandomPopularActor";
 
@@ -24,6 +25,7 @@ export const updateActors = async () => {
         image: `https://image.tmdb.org/t/p/w1280${image_path}`,
         type,
         gender: gender === 1 ? "female" : gender === 2 ? "male" : "other",
+        date: format(new Date(), "MM/dd/yyyy"),
       };
     };
 
