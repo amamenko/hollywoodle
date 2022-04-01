@@ -46,8 +46,9 @@
 }
 
 .Toastify__toast-container {
+  position: fixed;
   top: 70px;
-  z-index: 9999999;
+  z-index: 999999999999999999999;
 }
 
 .Toastify__toast-theme--dark {

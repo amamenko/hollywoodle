@@ -34,7 +34,14 @@ export const HowToPlayModal = () => {
         <div className="how_to_play_text_container">
           <p>
             Each day we’ll give you two actors. The goal is to connect them with
-            films they starred in as few guesses as possible.
+            films they starred in as few guesses as possible, much like the{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Six Degrees of Kevin Bacon.
+            </a>
           </p>
           <p>
             The <b>LOWER</b> your total moves, the better.
@@ -54,13 +61,13 @@ export const HowToPlayModal = () => {
               <b>1</b> move.
             </li>
             <li>
+              <b>HINTS</b> will also gain you <b>1</b> move but may save you
+              moves later on.
+            </li>
+            <li>
               An <b className="incorrect">INCORRECT</b> guess will gain you{" "}
               <b>3</b> moves — so don’t type a movie the current actor wasn't in
               or an actor who wasn’t in the current movie!
-            </li>
-            <li>
-              <b className="incorrect">HINTS</b> will also gain you <b>3</b>{" "}
-              moves but may save you moves in the long run.
             </li>
             <li>
               If you’re guessing movies and type something the goal actor was in

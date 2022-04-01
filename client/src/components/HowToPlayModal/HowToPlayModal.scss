@@ -1,17 +1,16 @@
 .how_to_play_icon {
   position: absolute;
   left: 1rem;
+  cursor: pointer;
 
-  @media only screen and (min-width: 992px) {
+  @media only screen and (min-width: 768px) {
     &:hover {
       fill: rgb(200, 200, 200);
-      cursor: pointer;
     }
 
     &:focus,
     &:active {
       fill: rgb(150, 150, 150);
-      cursor: pointer;
     }
   }
 }
@@ -83,6 +82,29 @@
   font-size: 13.5px;
   margin: 0 1.5rem;
   color: #fff;
+
+  a {
+    text-decoration: none;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    padding-bottom: 1px;
+    color: rgb(200, 200, 200);
+    transition: color 0.4s ease, border-bottom-color 0.4s ease;
+
+    @media only screen and (min-width: 768px) {
+      &:hover {
+        color: rgb(150, 150, 150);
+        border-bottom: 1px solid rgb(150, 150, 150);
+        cursor: pointer;
+      }
+
+      &:focus,
+      &:active {
+        color: rgb(125, 125, 125);
+        border-bottom: 1px solid rgb(125, 125, 125);
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 .how_to_play_list {

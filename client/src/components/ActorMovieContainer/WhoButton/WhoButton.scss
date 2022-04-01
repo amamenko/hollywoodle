@@ -1,21 +1,32 @@
 .collapse_container {
-  height: 125px;
+  height: 165px;
   margin-top: 1rem;
   width: 100%;
   font-size: 0.95rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 230, 100, 0.5);
+  background: rgb(255, 243, 181);
   position: relative;
   transition: background 0.4s ease;
 
-  &.dark {
-    background: rgba(189, 148, 13, 0.25);
+  &.initial_actors {
+    min-width: 32rem;
   }
 
-  span {
+  &.dark {
+    background: rgb(48, 41, 15);
+  }
+
+  .hint_content_container {
     padding: 0 2rem;
+  }
+
+  h2 {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 0.5rem;
   }
 }
 

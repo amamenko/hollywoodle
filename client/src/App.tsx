@@ -22,7 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
 
-interface ActorObj {
+export interface ActorObj {
   name: string;
   image: string;
   id: number;

@@ -20,8 +20,24 @@ import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
 import "./Autosuggest.scss";
+import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
 
 const scroll = Scroll.animateScroll;
+
+export interface GuessType {
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | number[]
+    | {
+        [key: string]: string | number;
+      };
+}
+
+export const sortAsc = (a: GuessType, b: GuessType) => {
+  return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
+};
 
 export const AutosuggestInput = ({
   typeOfGuess = "movie",
@@ -30,6 +46,7 @@ export const AutosuggestInput = ({
 }) => {
   const currentIsMobile = isMobile();
 
+  const [inputInitiallyFocused, changeInputInitiallyFocused] = useState(true);
   const [inputValue, changeInputValue] = useState("");
   const [suggestions, changeSuggestions] = useState<
     { [key: string]: string | number | boolean }[]
@@ -41,6 +58,7 @@ export const AutosuggestInput = ({
     image: "",
   });
   const [movieCast, changeMovieCast] = useState<number[]>([]);
+  const [hintCollapsed, changeHintCollapsed] = useState(false);
 
   const {
     firstActor,
@@ -128,11 +146,7 @@ export const AutosuggestInput = ({
     } else {
       let currentActorId: number = Number(firstActor.id);
 
-      const sortedGuesses = guesses.sort((a, b) => {
-        return (
-          (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0)
-        );
-      });
+      const sortedGuesses = guesses.sort(sortAsc);
 
       const prevGuess = sortedGuesses[guesses.length - 1];
       // Latest guess comes first
@@ -227,7 +241,9 @@ export const AutosuggestInput = ({
       const pointsAlloted =
         incorrect_status === "partial" ? 2 : incorrect_status ? 3 : 1;
 
+      changeInputInitiallyFocused(true);
       changeCurrentMoves(currentMoves + pointsAlloted);
+      changeHintCollapsed(false);
       changeGuesses([...guesses, newGuess]);
       changeInputValue("");
       changeCurrentSelection({
@@ -284,10 +300,13 @@ export const AutosuggestInput = ({
   );
 
   const autoFocusInput = () => {
-    setTimeout(() => {
-      const inputEl = document.getElementById("autosuggest_input");
-      if (inputEl && !inputValue) inputEl.focus();
-    }, 500);
+    if (inputInitiallyFocused) {
+      setTimeout(() => {
+        const inputEl = document.getElementById("autosuggest_input");
+        if (inputEl && !inputValue) inputEl.focus();
+        changeInputInitiallyFocused(false);
+      }, 500);
+    }
   };
 
   return (
@@ -327,7 +346,6 @@ export const AutosuggestInput = ({
         }}
         onSuggestionSelected={handleSuggestionSelected}
       />
-
       <div className="guess_button_container">
         <div className="question_emoji">
           {" "}
@@ -343,6 +361,18 @@ export const AutosuggestInput = ({
           {typeOfGuess === "movie" ? "🎬" : "🎭"}
         </div>
       </div>
+      {
+        <div className="guess_hint_button_container">
+          {guesses.length > 0 &&
+            guesses.some((guess: GuessType) => !guess.incorrect) && (
+              <WhoButton
+                typeOfGuess={typeOfGuess}
+                hintCollapsed={hintCollapsed}
+                changeHintCollapsed={changeHintCollapsed}
+              />
+            )}
+        </div>
+      }
     </div>
   );
 };

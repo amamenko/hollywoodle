@@ -115,7 +115,7 @@ export const InteractiveResponse = ({
           {incorrect === "partial" ? <b className="partial">DID NOT.</b> : ""}
           <br />
           <span className="response_bottom_points">
-            You gained <b className="incorrect">{points}</b>{" "}
+            Your total moves increased by <b className="incorrect">{points}</b>{" "}
             {points === 1 ? "move" : "moves"}.
           </span>
         </p>
