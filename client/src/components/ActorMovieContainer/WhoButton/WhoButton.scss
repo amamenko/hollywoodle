@@ -1,5 +1,5 @@
 .collapse_container {
-  height: 165px;
+  height: 175px;
   margin-top: 1rem;
   width: 100%;
   font-size: 0.95rem;
@@ -10,10 +10,6 @@
   background: rgb(255, 243, 181);
   position: relative;
   transition: background 0.4s ease;
-
-  &.initial_actors {
-    min-width: 32rem;
-  }
 
   &.dark {
     background: rgb(48, 41, 15);

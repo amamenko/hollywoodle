@@ -101,11 +101,7 @@ export const WhoButton = ({
           isOpened={collapse}
           initialStyle={{ height: 0, overflow: "hidden" }}
         >
-          <div
-            className={`collapse_container ${darkMode ? "dark" : ""} ${
-              knownFor ? "initial_actors" : ""
-            }`}
-          >
+          <div className={`collapse_container ${darkMode ? "dark" : ""}`}>
             <h2>HINT</h2>
             {knownFor && gender ? (
               <span className="hint_content_container">
