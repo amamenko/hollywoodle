@@ -1,19 +1,10 @@
 import React, { useState } from "react";
-import Countdown from "react-countdown";
 import { AiOutlineQuestionCircle, AiOutlineClose } from "react-icons/ai";
-import { endOfDay } from "date-fns";
-import { formatInTimeZone, toDate } from "date-fns-tz";
 import "./HowToPlayModal.scss";
+import { CountdownTimer } from "../Countdown/CountdownTimer";
 
 export const HowToPlayModal = () => {
   const [displayModal, changeDisplayModal] = useState(false);
-  const date = new Date();
-  const formattedETDate = formatInTimeZone(
-    date,
-    "America/New_York",
-    "yyyy-MM-dd HH:mm:ssXXX"
-  );
-  const parsedDate = toDate(formattedETDate, { timeZone: "America/New_York" });
 
   return (
     <>
@@ -79,11 +70,8 @@ export const HowToPlayModal = () => {
           <div className="next_pairing_countdown_container">
             <p>Next Hollywoodle actor pairing in:</p>
             <b>
-              <Countdown
-                date={endOfDay(parsedDate)}
-                autoStart={true}
-                daysInHours={true}
-                onComplete={() => changeDisplayModal(false)}
+              <CountdownTimer
+                handleComplete={() => changeDisplayModal(false)}
               />
             </b>
           </div>

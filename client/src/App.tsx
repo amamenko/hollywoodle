@@ -59,6 +59,12 @@ interface ContextProps {
   changeWin: React.Dispatch<React.SetStateAction<boolean>>;
   darkMode: boolean;
   changeDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+  changeMostRecentActor: React.Dispatch<
+    React.SetStateAction<{ [key: string]: any }>
+  >;
+  changeMostRecentMovie: React.Dispatch<
+    React.SetStateAction<{ [key: string]: any }>
+  >;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -84,6 +90,8 @@ export const AppContext = createContext<ContextProps>({
   changeWin: () => {},
   darkMode: true,
   changeDarkMode: () => [],
+  changeMostRecentActor: () => [],
+  changeMostRecentMovie: () => [],
 });
 
 const App = () => {
@@ -244,7 +252,7 @@ const App = () => {
     });
     sortedGuesses.reverse();
     const currentRecentMovie = sortedGuesses.find(
-      (el) => el.type.toString() === "movie"
+      (el) => el.type && el.type.toString() === "movie"
     );
     if (currentRecentMovie && currentRecentMovie.id !== mostRecentMovie.id) {
       changeMostRecentMovie(currentRecentMovie);
@@ -259,7 +267,7 @@ const App = () => {
     });
     sortedGuesses.reverse();
     const currentRecentActor = sortedGuesses.find(
-      (el) => el.type.toString() === "actor"
+      (el) => el.type && el.type.toString() === "actor"
     );
     if (currentRecentActor && currentRecentActor.id !== mostRecentActor.id) {
       changeMostRecentActor(currentRecentActor);
@@ -327,6 +335,8 @@ const App = () => {
         changeWin,
         darkMode,
         changeDarkMode,
+        changeMostRecentActor,
+        changeMostRecentMovie,
       }}
     >
       <ToastContainer limit={1} />

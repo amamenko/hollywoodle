@@ -1,9 +1,14 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { ReactComponent as Oscar } from "../../assets/Oscar.svg";
 import Dicaprio from "../../assets/Dicaprio.png";
 import Cats from "../../assets/Cats.jpg";
 import { RewardElement } from "react-rewards";
+import { CountdownTimer } from "../Countdown/CountdownTimer";
+import FacebookButton from "./ShareButtons/FacebookButton";
+import TwitterButton from "./ShareButtons/TwitterButton";
+import CopyLinkButton from "./ShareButtons/CopyLinkButton";
+import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
 
 export interface FullRewardElement extends RewardElement {
@@ -11,8 +16,36 @@ export interface FullRewardElement extends RewardElement {
 }
 
 export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
-  const { currentMoves, firstActor, lastActor, darkMode } =
-    useContext(AppContext);
+  const {
+    currentMoves,
+    firstActor,
+    lastActor,
+    darkMode,
+    changeWin,
+    changeGuesses,
+    changeCurrentMoves,
+    changeMostRecentActor,
+    changeMostRecentMovie,
+  } = useContext(AppContext);
+  const [shareLinkClicked, changeShareLinkClicked] = useState(false);
+  const [shareLinkAnimatingOut, changeShareLinkAnimatingOut] = useState(false);
+
+  const handleRetake = () => {
+    window.scrollTo(0, 0);
+    changeGuesses([]);
+    changeMostRecentActor({ guess: "", type: "", year: "" });
+    changeMostRecentMovie({ guess: "", type: "", year: "" });
+    changeWin(false);
+    changeCurrentMoves(0);
+
+    if (shareLinkClicked) {
+      changeShareLinkClicked(false);
+    }
+
+    if (shareLinkAnimatingOut) {
+      changeShareLinkAnimatingOut(false);
+    }
+  };
 
   // Throw popcorn as soon as the winner component mounts
   useEffect(() => {
@@ -36,6 +69,23 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
       ref.current.rewardMe();
     }
   }, [ref]);
+
+  useEffect(() => {
+    if (shareLinkClicked) {
+      setTimeout(() => {
+        changeShareLinkAnimatingOut(true);
+      }, 4500);
+
+      setTimeout(() => {
+        changeShareLinkClicked(false);
+        changeShareLinkAnimatingOut(false);
+      }, 4800);
+    }
+  }, [shareLinkClicked]);
+
+  const shareText = `I connected ${firstActor.name} to ${
+    lastActor.name
+  } in ${currentMoves} ${currentMoves === 1 ? "move" : "moves"} on Hollywoodle`;
 
   return (
     <div className={`winner_container ${darkMode ? "dark" : ""}`}>
@@ -81,7 +131,40 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
         {currentMoves > 10 ? "a whopping" : currentMoves < 5 ? "only" : ""}{" "}
         <b>{currentMoves}</b>{" "}
         {currentMoves >= 5 ? "moves." : currentMoves === 1 ? "move!" : "moves!"}
-      </p>
+      </p>{" "}
+      <div className={`winner_countdown_container ${darkMode ? "dark" : ""}`}>
+        <p>Next Hollywoodle actor pairing:</p>
+        <b>
+          <CountdownTimer />
+        </b>
+      </div>
+      <div className={`winner_bottom ${darkMode ? "dark" : ""}`}>
+        <p
+          className={`play_again_link ${darkMode ? "dark" : ""}`}
+          onClick={handleRetake}
+        >
+          Play Again
+        </p>
+        <ul
+          className={`share_links_list ${darkMode ? "dark" : ""}`}
+          aria-label="share"
+        >
+          <CopyLinkButton
+            shareLinkClicked={shareLinkClicked}
+            changeShareLinkClicked={changeShareLinkClicked}
+            shareLinkAnimatingOut={shareLinkAnimatingOut}
+            copyShareLink={`${shareText} https://hollywoodle.ml/`}
+          />
+          <TwitterButton
+            twitterShareLink={"https://hollywoodle.ml/"}
+            twitterShareText={shareText}
+          />
+          <FacebookButton
+            facebookShareLink={"https://hollywoodle.ml/"}
+            facebookShareText={shareText}
+          />
+        </ul>
+      </div>
     </div>
   );
 });

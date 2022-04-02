@@ -1,0 +1,164 @@
+.share_button_outer_container {
+  position: relative;
+  @media (max-width: 40rem) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.share_links_list {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li:not(:first-child) {
+    margin-left: 0.5rem;
+  }
+
+  li {
+    @media (min-width: 40rem) {
+      display: unset;
+    }
+  }
+
+  .share_button {
+    appearance: none;
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+    width: 2rem;
+    padding: 0.5rem;
+    border: 1px solid #000;
+    border-radius: 50%;
+    color: #000;
+
+    svg {
+      pointer-events: none;
+      display: block;
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background: #fff;
+
+      > svg {
+        fill: #000;
+      }
+    }
+  }
+
+  &.dark {
+    .share_button {
+      color: #fff;
+      border: 1px solid #fff;
+
+      &:hover {
+        background: #fff;
+
+        > svg {
+          fill: #000;
+        }
+      }
+    }
+
+    .tooltip_outer_wrapper {
+      background-color: #fff;
+      border: 1px solid #fff;
+      color: #000;
+    }
+
+    .tooltip_container {
+      > div::after {
+        border-top-color: #fff;
+        border-color: #fff transparent transparent transparent;
+      }
+    }
+  }
+}
+
+.tooltip_inner_wrapper {
+  display: flex;
+  align-items: center;
+  box-sizing: inherit;
+  font-family: inherit;
+}
+
+.tooltip_outer_wrapper {
+  left: 15px;
+  bottom: 30px;
+  transform: translate(-50%, 0);
+  margin-bottom: 15px;
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #222;
+  box-sizing: inherit;
+  font-family: inherit;
+  position: absolute;
+  white-space: nowrap;
+  width: auto;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  box-shadow: 0 1px 1px rgb(173 168 168 / 10%);
+  border-radius: 3px;
+}
+
+.tooltip_container {
+  box-sizing: inherit;
+  font-family: inherit;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeout {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  animation: fadein 0.2s ease;
+
+  &.tooltip_animating_out {
+    animation: fadeout 0.5s ease;
+  }
+
+  svg {
+    margin-right: 0.4rem;
+    width: 20px;
+    height: 20px;
+  }
+
+  p {
+    font-size: 0.8rem;
+    padding-left: 0.25rem;
+  }
+
+  > div::after {
+    content: "";
+    border-top-color: #222;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -0.5875rem;
+    border-width: 0.5875rem;
+    border-style: solid;
+    border-color: #222 transparent transparent transparent;
+  }
+}
