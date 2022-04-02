@@ -37,17 +37,16 @@ export const getRandomPopularActor = async (
               movie.media_type === "tv" ||
               movie.adult ||
               movie.original_language !== "en" ||
-              movie.vote_count < 13000
+              movie.vote_count < 10000
           ) &&
           currentActor.known_for_department === "Acting" &&
           currentActor.profile_path &&
           !currentActor.adult &&
-          currentActor.popularity > 18 &&
+          currentActor.popularity >= 17.5 &&
           !allBlacklistedIDs.includes(currentActor.id) &&
           currentActor.name !== exceptedName &&
           currentActor.name !== exceptedName2
       );
-
       if (filteredResults.length > 0) {
         const foundActor = sample(filteredResults);
         if (foundActor.profile_path) {

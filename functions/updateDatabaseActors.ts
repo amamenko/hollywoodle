@@ -6,12 +6,12 @@ export const updateDatabaseActors = async () => {
   const allDbActors = await Actor.find({});
   const allBlacklistedIDs = allDbActors.map((actor) => actor.id);
 
-  // One week ago
-  const weekAgo = format(subDays(new Date(), 7), "MM/dd/yyyy");
+  // Two weeks ago
+  const weekAgo = format(subDays(new Date(), 14), "MM/dd/yyyy");
   // Few extra day padding just in case anything left over for any reason
-  const weekAgoAndDay = format(subDays(new Date(), 8), "MM/dd/yyyy");
-  const weekAgoAndTwoDays = format(subDays(new Date(), 9), "MM/dd/yyyy");
-  const weekAgoAndThreeDays = format(subDays(new Date(), 10), "MM/dd/yyyy");
+  const weekAgoAndDay = format(subDays(new Date(), 15), "MM/dd/yyyy");
+  const weekAgoAndTwoDays = format(subDays(new Date(), 16), "MM/dd/yyyy");
+  const weekAgoAndThreeDays = format(subDays(new Date(), 17), "MM/dd/yyyy");
 
   // Clean up actors from week ago
   await Actor.deleteMany({
