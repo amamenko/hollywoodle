@@ -2,13 +2,13 @@ import { format } from "date-fns";
 import { getMostKnownFor } from "./getMostKnownFor";
 import { getRandomPopularActor } from "./getRandomPopularActor";
 
-export const updateActors = async () => {
+export const updateActors = async (allBlacklistedIDs: number[]) => {
   let newActor1: { [key: string]: any } | undefined =
-    await getRandomPopularActor();
+    await getRandomPopularActor(allBlacklistedIDs);
   let newActor2: { [key: string]: any } | undefined;
 
   if (newActor1) {
-    newActor2 = await getRandomPopularActor(newActor1.name);
+    newActor2 = await getRandomPopularActor(allBlacklistedIDs, newActor1.name);
   }
 
   if (newActor1 && newActor2) {
@@ -56,7 +56,11 @@ export const updateActors = async () => {
     );
 
     if (actor2MostKnownFor.title === actor1MostKnownFor.title) {
-      newActor2 = await getRandomPopularActor(newActor1.name, newActor2.name);
+      newActor2 = await getRandomPopularActor(
+        allBlacklistedIDs,
+        newActor1.name,
+        newActor2.name
+      );
 
       actor2Obj = createActorObject(
         newActor2.name,

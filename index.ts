@@ -6,6 +6,7 @@ import { Actor } from "./models/Actor";
 import cron from "node-cron";
 import cors from "cors";
 import enforce from "express-sslify";
+import { format } from "date-fns";
 
 const app = express();
 
@@ -19,8 +20,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.get("/api/actor", [], async (req: Request, res: Response) => {
-  const actor = await Actor.find().catch((e) => console.error(e));
-  res.send(actor);
+  const currentDate = format(new Date(), "MM/dd/yyyy");
+  const actors = await Actor.find({ date: currentDate }).catch((e) =>
+    console.error(e)
+  );
+  res.send(actors);
 });
 
 // Update actors in MongoDB every night at midnight

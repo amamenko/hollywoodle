@@ -2,12 +2,13 @@ import sample from "lodash.sample";
 import axios from "axios";
 
 export const getRandomPopularActor = async (
+  allBlacklistedIDs: number[],
   exceptedName?: string,
   exceptedName2?: string
 ) => {
   let triesCounter = 0;
 
-  while (triesCounter < 20) {
+  while (triesCounter < 100) {
     console.log(`Try #${triesCounter}`);
 
     const pageArr = [];
@@ -41,6 +42,8 @@ export const getRandomPopularActor = async (
           currentActor.known_for_department === "Acting" &&
           currentActor.profile_path &&
           !currentActor.adult &&
+          currentActor.popularity > 18 &&
+          !allBlacklistedIDs.includes(currentActor.id) &&
           currentActor.name !== exceptedName &&
           currentActor.name !== exceptedName2
       );
