@@ -1,15 +1,26 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../../App";
 import { ReactComponent as LogoWhite } from "../../assets/LogoWhite.svg";
 import { HowToPlayModal } from "../HowToPlayModal/HowToPlayModal";
 import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
+import { BiBarChartAlt2 } from "react-icons/bi";
+import { Statistics } from "./Statistics";
 import "./Header.scss";
 
 export const Header = () => {
   const { currentMoves, darkMode, changeDarkMode } = useContext(AppContext);
+  const [modalOpen, changeModalOpen] = useState(false);
 
   const toggleLightDarkMode = () => {
     changeDarkMode(!darkMode);
+  };
+
+  const openModal = () => {
+    changeModalOpen(true);
+  };
+
+  const closeModal = () => {
+    changeModalOpen(false);
   };
 
   return (
@@ -32,6 +43,13 @@ export const Header = () => {
             onClick={toggleLightDarkMode}
           />
         )}
+        <BiBarChartAlt2
+          className="header_graph_icon"
+          color={"#fff"}
+          size={25}
+          onClick={openModal}
+        />
+        <Statistics modalOpen={modalOpen} closeModal={closeModal} />
       </div>
       <div className={`points_container ${darkMode ? "dark" : ""}`}>
         Total Moves: {currentMoves}

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { AiOutlineQuestionCircle, AiOutlineClose } from "react-icons/ai";
-import "./HowToPlayModal.scss";
 import { CountdownTimer } from "../Countdown/CountdownTimer";
+import { RemoveScroll } from "react-remove-scroll";
+import "./HowToPlayModal.scss";
 
 export const HowToPlayModal = () => {
   const [displayModal, changeDisplayModal] = useState(false);
 
   return (
-    <>
+    <RemoveScroll className="modal_scroll_container" enabled={displayModal}>
       <AiOutlineQuestionCircle
         className="how_to_play_icon"
         color={"#fff"}
@@ -25,7 +26,7 @@ export const HowToPlayModal = () => {
         <div className="how_to_play_text_container">
           <p>
             Each day we’ll give you two actors. The goal is to connect them with
-            films they starred in as few guesses as possible, much like the{" "}
+            films they starred in as few guesses as possible - similar to{" "}
             <a
               href="https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon"
               target="_blank"
@@ -38,13 +39,17 @@ export const HowToPlayModal = () => {
             The <b>LOWER</b> your total moves, the better.
           </p>
           <p>
-            Think you can do it in one? If you can’t — that’s okay! Try to name
-            a movie that the first actor was in that stars an actor who’s made a
-            different movie with the second actor.
+            Think you can do it in one? If you can’t, try to name a movie that
+            the first actor was in that stars an actor who’s made a different
+            movie with the second actor.
           </p>
           <p>
             That’s the way to do it: guess a movie, then an actor, then a movie
             until you’ve completed the chain and connected the two!
+          </p>
+          <p>
+            <b>NOTE:</b> Only your <b>FIRST</b> daily playthrough will impact
+            your game statistics.
           </p>
           <ul className="how_to_play_list">
             <li>
@@ -52,8 +57,8 @@ export const HowToPlayModal = () => {
               <b>1</b> move.
             </li>
             <li>
-              <b>HINTS</b> will also gain you <b>1</b> move but may save you
-              moves later on.
+              Stuck? Use a <b>HINT</b>. Hints will gain you <b>1</b> move but
+              may save you moves later on.
             </li>
             <li>
               An <b className="incorrect">INCORRECT</b> guess will gain you{" "}
@@ -81,6 +86,6 @@ export const HowToPlayModal = () => {
         className={`how_to_play_overlay ${displayModal ? "show" : ""}`}
         onClick={() => changeDisplayModal(!displayModal)}
       />
-    </>
+    </RemoveScroll>
   );
 };

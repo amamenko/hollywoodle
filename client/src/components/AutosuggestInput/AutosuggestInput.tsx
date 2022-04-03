@@ -21,6 +21,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
 import "./Autosuggest.scss";
 import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
+import { format } from "date-fns-tz";
 
 const scroll = Scroll.animateScroll;
 
@@ -204,6 +205,64 @@ export const AutosuggestInput = ({
           incorrect_status = false;
           // User has won and completed the game
           changeWin(true);
+
+          const currentDate = format(new Date(), "MM/dd/yyyy", {
+            timeZone: "America/New_York",
+          });
+
+          if (localStorage.getItem("hollywoodle-statistics")) {
+            const storageStr = localStorage.getItem("hollywoodle-statistics");
+            let storageObj: {
+              [key: string]: number | number[] | string | boolean;
+            } = {};
+
+            try {
+              storageObj = JSON.parse(storageStr ? storageStr : "");
+            } catch (e) {
+              console.error(e);
+            }
+
+            const currentStreak = Number(storageObj.current_streak) + 1;
+            let currentAvgs: number[] = [];
+
+            if (storageObj.avg_moves && Array.isArray(storageObj.avg_moves)) {
+              currentAvgs = storageObj.avg_moves;
+            }
+
+            currentAvgs.push(currentMoves + 1);
+
+            if (
+              currentDate === storageObj.current_date &&
+              !storageObj.played_today
+            ) {
+              localStorage.setItem(
+                "hollywoodle-statistics",
+                JSON.stringify({
+                  current_date: currentDate,
+                  last_played: currentDate,
+                  current_streak: currentStreak,
+                  max_streak: Math.max(
+                    currentStreak,
+                    Number(storageObj.max_streak)
+                  ),
+                  avg_moves: currentAvgs,
+                  played_today: true,
+                })
+              );
+            }
+          } else {
+            localStorage.setItem(
+              "hollywoodle-statistics",
+              JSON.stringify({
+                current_date: currentDate,
+                last_played: currentDate,
+                current_streak: 1,
+                max_streak: 1,
+                avg_moves: [currentMoves + 1],
+                played_today: true,
+              })
+            );
+          }
         }
       } else {
         if (movieCast.find((id) => id === currentActorId)) {

@@ -70,7 +70,7 @@ export const WhoButton = ({
   }, [firstActor, lastActor, typeOfGuess, guesses, hintCollapsed]);
 
   useEffect(() => {
-    if (hintCollapsed === false) {
+    if (hintCollapsed === false || win) {
       changeCollapse(false);
       changeCurrentHint({
         name: "",
@@ -80,7 +80,7 @@ export const WhoButton = ({
         character: "",
       });
     }
-  }, [hintCollapsed]);
+  }, [hintCollapsed, win]);
 
   if (!win) {
     return (

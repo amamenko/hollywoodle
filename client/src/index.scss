@@ -11,6 +11,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-overflow-scrolling: touch;
   background: rgb(200, 200, 200);
   transition: background 0.4s ease;
   overflow-x: hidden;

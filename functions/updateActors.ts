@@ -55,7 +55,19 @@ export const updateActors = async (allBlacklistedIDs: number[]) => {
       newActor2.known_for
     );
 
-    if (actor2MostKnownFor.title === actor1MostKnownFor.title) {
+    const blacklistedMovieTerms: string[] = actor1MostKnownFor.title
+      .toLowerCase()
+      .split(/(\s+)/)
+      .filter((el: string) => el.length >= 5)
+      .map((el: string) => el.replace(/[\W_]+/g, "".trim()))
+      .flat();
+
+    if (
+      blacklistedMovieTerms.some((el) =>
+        actor2MostKnownFor.title.toString().toLowerCase().includes(el)
+      ) ||
+      actor1MostKnownFor.title === actor2MostKnownFor.title
+    ) {
       newActor2 = await getRandomPopularActor(
         allBlacklistedIDs,
         newActor1.name,

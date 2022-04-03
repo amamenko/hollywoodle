@@ -18,9 +18,11 @@ import { Header } from "./components/Header/Header";
 import { Footer } from "./components/Footer/Footer";
 import { AllGuesses } from "./components/AllGuesses/AllGuesses";
 import { format } from "date-fns-tz";
+import { differenceInDays, parse } from "date-fns";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
+import { IntroModal } from "./components/IntroModal/IntroModal";
 
 export interface ActorObj {
   name: string;
@@ -30,29 +32,20 @@ export interface ActorObj {
   gender?: string;
 }
 
+interface GuessObj {
+  [key: string]:
+    | string
+    | number
+    | number[]
+    | boolean
+    | { [key: string]: string | number };
+}
+
 interface ContextProps {
   firstActor: ActorObj;
   lastActor: ActorObj;
-  guesses: {
-    [key: string]:
-      | string
-      | number
-      | number[]
-      | boolean
-      | { [key: string]: string | number };
-  }[];
-  changeGuesses: Dispatch<
-    SetStateAction<
-      {
-        [key: string]:
-          | string
-          | number
-          | number[]
-          | boolean
-          | { [key: string]: string | number };
-      }[]
-    >
-  >;
+  guesses: GuessObj[];
+  changeGuesses: Dispatch<SetStateAction<GuessObj[]>>;
   currentMoves: number;
   changeCurrentMoves: React.Dispatch<React.SetStateAction<number>>;
   win: boolean;
@@ -109,42 +102,86 @@ const App = () => {
     most_popular_recent_movie: {},
     gender: "",
   });
-  const [guesses, changeGuesses] = useState<
-    {
-      [key: string]:
-        | string
-        | number
-        | number[]
-        | boolean
-        | { [key: string]: string | number };
-    }[]
-  >([]);
-  const [mostRecentMovie, changeMostRecentMovie] = useState<{
-    [key: string]:
-      | string
-      | number
-      | boolean
-      | number[]
-      | {
-          [key: string]: string | number;
-        };
-  }>({ guess: "", type: "", year: "" });
-  const [mostRecentActor, changeMostRecentActor] = useState<{
-    [key: string]:
-      | string
-      | number
-      | boolean
-      | number[]
-      | {
-          [key: string]: string | number;
-        };
-  }>({ guess: "", type: "", year: "" });
+  const [guesses, changeGuesses] = useState<GuessObj[]>([]);
+  const [mostRecentMovie, changeMostRecentMovie] = useState<GuessObj>({
+    guess: "",
+    type: "",
+    year: "",
+  });
+  const [mostRecentActor, changeMostRecentActor] = useState<GuessObj>({
+    guess: "",
+    type: "",
+    year: "",
+  });
   const [currentMoves, changeCurrentMoves] = useState<number>(0);
   const [win, changeWin] = useState(false);
   const [darkMode, changeDarkMode] = useState(true);
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
+  const [showIntroModal, changeShowIntroModal] = useState(true);
 
   const rewardEl = useRef<RewardElement>(null);
+
+  useEffect(() => {
+    const currentDate = format(new Date(), "MM/dd/yyyy", {
+      timeZone: "America/New_York",
+    });
+
+    if (!localStorage.getItem("hollywoodle-statistics")) {
+      changeShowIntroModal(true);
+      localStorage.setItem(
+        "hollywoodle-statistics",
+        JSON.stringify({
+          current_date: currentDate,
+          last_played: "",
+          current_streak: 0,
+          max_streak: 0,
+          avg_moves: [],
+          played_today: false,
+        })
+      );
+    } else {
+      const storageStr = localStorage.getItem("hollywoodle-statistics");
+      let storageObj: { [key: string]: number | number[] } = {};
+
+      try {
+        storageObj = JSON.parse(storageStr ? storageStr : "");
+      } catch (e) {
+        console.error(e);
+      }
+
+      if (currentDate !== storageObj.current_date.toString()) {
+        let resetStreak = false;
+
+        if (storageObj.last_played) {
+          const parsedCurrentdDate = parse(
+            currentDate,
+            "MM/dd/yyyy",
+            new Date()
+          );
+          const parsedLastPlayed = parse(
+            storageObj.last_played.toString(),
+            "MM/dd/yyyy",
+            new Date()
+          );
+
+          const difference = differenceInDays(
+            parsedCurrentdDate,
+            parsedLastPlayed
+          );
+          if (difference >= 2) resetStreak = true;
+        }
+
+        localStorage.setItem(
+          "hollywoodle-statistics",
+          JSON.stringify({
+            ...storageObj,
+            current_date: currentDate,
+            current_streak: resetStreak ? 0 : storageObj.current_streak,
+          })
+        );
+      }
+    }
+  }, []);
 
   // Server-side is refreshing actor data, show loading component
   useEffect(() => {
@@ -353,6 +390,10 @@ const App = () => {
           springAnimation: false,
         }}
       >
+        <IntroModal
+          showIntroModal={showIntroModal}
+          changeShowIntroModal={changeShowIntroModal}
+        />
         <div className={`app_container ${darkMode ? "dark" : ""}`}>
           <div className="main_container">
             {firstActor.name && lastActor.name && !refreshingDataTime ? (

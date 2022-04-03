@@ -1,3 +1,7 @@
+.modal_scroll_container {
+  display: contents;
+}
+
 .how_to_play_icon {
   position: absolute;
   left: 1rem;
@@ -79,9 +83,13 @@
 }
 
 .how_to_play_text_container {
-  font-size: 13.5px;
+  font-size: 13px;
   margin: 0 1.5rem;
   color: #fff;
+
+  @media only screen and (min-width: 768px) {
+    font-size: 14px;
+  }
 
   a {
     text-decoration: none;
@@ -115,6 +123,11 @@
     margin-top: 1rem;
     margin-left: 1rem;
   }
+}
+
+.actor_pairing_disclaimer {
+  border-top: 1px solid rgb(65, 65, 65);
+  padding-top: 1rem;
 }
 
 .next_pairing_countdown_container {
