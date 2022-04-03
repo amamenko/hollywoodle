@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import { ReactComponent as ComingSoon } from "../../assets/ComingSoon.svg";
 import { RemoveScroll } from "react-remove-scroll";
 
-export const customModalStyles = {
+const customModalStyles = {
   content: {
     top: "46%",
     left: "50%",

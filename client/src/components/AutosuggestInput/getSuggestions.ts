@@ -94,7 +94,7 @@ export const getSuggestions = async (
             id: item.id,
             name: item.title,
             year: format(parseISO(item.release_date.toString()), "yyyy"),
-            image: `https://www.themoviedb.org/t/p/w1280/${item.poster_path}`,
+            image: `https://www.themoviedb.org/t/p/w154/${item.poster_path}`,
           };
         });
     } else {
@@ -112,7 +112,7 @@ export const getSuggestions = async (
             id: item.id,
             name: item.name,
             year: "",
-            image: `https://www.themoviedb.org/t/p/w1280/${item.profile_path}`,
+            image: `https://www.themoviedb.org/t/p/w154/${item.profile_path}`,
           };
         });
     }

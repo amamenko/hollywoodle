@@ -105,12 +105,13 @@ export const WhoButton = ({
             <h2>HINT</h2>
             {knownFor && gender ? (
               <span className="hint_content_container">
+                One of{" "}
                 {gender === "male"
-                  ? "His"
+                  ? "his"
                   : gender === "female"
-                  ? "Her"
-                  : "Their"}{" "}
-                most popular recent role was the character of{" "}
+                  ? "her"
+                  : "their"}{" "}
+                most popular recent roles was the character of{" "}
                 <b>"{knownFor.character}"</b> in the <b>{knownFor.year}</b> film{" "}
                 <b>{knownFor.title}</b>.
                 <br />

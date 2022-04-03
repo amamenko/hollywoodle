@@ -4,9 +4,11 @@ import axios from "axios";
 export const getRandomPopularActor = async (
   allBlacklistedIDs: number[],
   exceptedName?: string,
-  exceptedName2?: string
+  exceptedName2?: string,
+  blacklistedMovieTerms?: string[]
 ) => {
   let triesCounter = 0;
+  if (!blacklistedMovieTerms) blacklistedMovieTerms = [];
 
   while (triesCounter < 100) {
     console.log(`Try #${triesCounter}`);
@@ -37,7 +39,10 @@ export const getRandomPopularActor = async (
               movie.media_type === "tv" ||
               movie.adult ||
               movie.original_language !== "en" ||
-              movie.vote_count < 10000
+              movie.vote_count < 10000 ||
+              blacklistedMovieTerms.some((str) =>
+                movie.title.toLowerCase().includes(str)
+              )
           ) &&
           currentActor.known_for_department === "Acting" &&
           currentActor.profile_path &&

@@ -1,7 +1,6 @@
 import { AiOutlineClose } from "react-icons/ai";
 import Modal from "react-modal";
 import { RemoveScroll } from "react-remove-scroll";
-import { customModalStyles } from "../Header/Statistics";
 import "../Header/Header.scss";
 
 export const IntroModal = ({
@@ -13,6 +12,24 @@ export const IntroModal = ({
 }) => {
   const handleCloseModal = () => {
     changeShowIntroModal(false);
+  };
+
+  const customModalStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      paddingBottom: "2rem",
+      outline: "none",
+    },
+    overlay: {
+      background: "rgba(0, 0, 0, 0.7)",
+      backdropFilter: "blur(3px)",
+      zIndex: 999999999,
+    },
   };
 
   return (

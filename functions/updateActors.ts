@@ -22,7 +22,7 @@ export const updateActors = async (allBlacklistedIDs: number[]) => {
       return {
         name,
         id,
-        image: `https://image.tmdb.org/t/p/w1280${image_path}`,
+        image: `https://image.tmdb.org/t/p/w154${image_path}`,
         type,
         gender: gender === 1 ? "female" : gender === 2 ? "male" : "other",
         date: format(new Date(), "MM/dd/yyyy"),
@@ -71,7 +71,8 @@ export const updateActors = async (allBlacklistedIDs: number[]) => {
       newActor2 = await getRandomPopularActor(
         allBlacklistedIDs,
         newActor1.name,
-        newActor2.name
+        newActor2.name,
+        blacklistedMovieTerms
       );
 
       actor2Obj = createActorObject(

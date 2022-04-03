@@ -117,7 +117,7 @@ const App = () => {
   const [win, changeWin] = useState(false);
   const [darkMode, changeDarkMode] = useState(true);
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
-  const [showIntroModal, changeShowIntroModal] = useState(true);
+  const [showIntroModal, changeShowIntroModal] = useState(false);
 
   const rewardEl = useRef<RewardElement>(null);
 
