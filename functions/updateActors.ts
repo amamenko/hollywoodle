@@ -2,13 +2,26 @@ import { format } from "date-fns";
 import { getMostKnownFor } from "./getMostKnownFor";
 import { getRandomPopularActor } from "./getRandomPopularActor";
 
-export const updateActors = async (allBlacklistedIDs: number[]) => {
+export const updateActors = async (
+  allBlacklistedIDs: number[],
+  allBlacklistedMovieTerms: string[]
+) => {
   let newActor1: { [key: string]: any } | undefined =
-    await getRandomPopularActor(allBlacklistedIDs);
+    await getRandomPopularActor(
+      allBlacklistedIDs,
+      "",
+      "",
+      allBlacklistedMovieTerms
+    );
   let newActor2: { [key: string]: any } | undefined;
 
   if (newActor1) {
-    newActor2 = await getRandomPopularActor(allBlacklistedIDs, newActor1.name);
+    newActor2 = await getRandomPopularActor(
+      allBlacklistedIDs,
+      newActor1.name,
+      "",
+      allBlacklistedMovieTerms
+    );
   }
 
   if (newActor1 && newActor2) {
@@ -55,7 +68,7 @@ export const updateActors = async (allBlacklistedIDs: number[]) => {
       newActor2.known_for
     );
 
-    const blacklistedMovieTerms: string[] = actor1MostKnownFor.title
+    const additionalBlacklistedMovieTerms: string[] = actor1MostKnownFor.title
       .toLowerCase()
       .split(/(\s+)/)
       .filter((el: string) => el.length >= 5)
@@ -63,7 +76,7 @@ export const updateActors = async (allBlacklistedIDs: number[]) => {
       .flat();
 
     if (
-      blacklistedMovieTerms.some((el) =>
+      additionalBlacklistedMovieTerms.some((el) =>
         actor2MostKnownFor.title.toString().toLowerCase().includes(el)
       ) ||
       actor1MostKnownFor.title === actor2MostKnownFor.title
@@ -72,7 +85,7 @@ export const updateActors = async (allBlacklistedIDs: number[]) => {
         allBlacklistedIDs,
         newActor1.name,
         newActor2.name,
-        blacklistedMovieTerms
+        [...allBlacklistedMovieTerms, ...additionalBlacklistedMovieTerms]
       );
 
       actor2Obj = createActorObject(

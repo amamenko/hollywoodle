@@ -5,6 +5,19 @@ import { format, subDays } from "date-fns";
 export const updateDatabaseActors = async () => {
   const allDbActors = await Actor.find({});
   const allBlacklistedIDs = allDbActors.map((actor) => actor.id);
+  const allBlacklistedMovieTerms = [
+    ...new Set(
+      allDbActors
+        .map((actor) =>
+          actor.most_popular_recent_movie.title
+            .toLowerCase()
+            .split(/(\s+)/)
+            .find((el: string) => el.length >= 6)
+        )
+        .filter((el) => el)
+        .map((el: string) => el.replace(/[\W_]+/g, "".trim()))
+    ),
+  ];
 
   // Two weeks ago
   const weekAgo = format(subDays(new Date(), 14), "MM/dd/yyyy");
@@ -20,7 +33,10 @@ export const updateDatabaseActors = async () => {
     },
   }).catch((e) => console.error(e));
 
-  const resultActors = await updateActors(allBlacklistedIDs);
+  const resultActors = await updateActors(
+    allBlacklistedIDs,
+    allBlacklistedMovieTerms
+  );
 
   // Create first actor document for today
   await Actor.create(resultActors.actor1Obj).catch((e) => console.error(e));
