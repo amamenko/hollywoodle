@@ -148,10 +148,8 @@ const App = () => {
       } catch (e) {
         console.error(e);
       }
-
+      let resetStreak = false;
       if (currentDate !== storageObj.current_date.toString()) {
-        let resetStreak = false;
-
         if (storageObj.last_played) {
           const parsedCurrentdDate = parse(
             currentDate,
@@ -170,16 +168,18 @@ const App = () => {
           );
           if (difference >= 2) resetStreak = true;
         }
-
-        localStorage.setItem(
-          "hollywoodle-statistics",
-          JSON.stringify({
-            ...storageObj,
-            current_date: currentDate,
-            current_streak: resetStreak ? 0 : storageObj.current_streak,
-          })
-        );
       }
+
+      localStorage.setItem(
+        "hollywoodle-statistics",
+        JSON.stringify({
+          ...storageObj,
+          current_date: currentDate,
+          current_streak: resetStreak ? 0 : storageObj.current_streak,
+          played_today:
+            storageObj.last_played.toString() === currentDate ? true : false,
+        })
+      );
     }
   }, []);
 
@@ -429,6 +429,7 @@ const App = () => {
                     name={lastActor.name}
                     knownFor={lastActor.most_popular_recent_movie}
                     gender={lastActor.gender}
+                    lastActor={true}
                   />
                 </div>
                 <Footer />

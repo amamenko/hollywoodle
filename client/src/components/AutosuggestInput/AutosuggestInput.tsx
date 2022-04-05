@@ -19,9 +19,9 @@ import { getMovieCast } from "./getMovieCast";
 import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
-import "./Autosuggest.scss";
 import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
 import { format } from "date-fns-tz";
+import "./Autosuggest.scss";
 
 const scroll = Scroll.animateScroll;
 
@@ -312,9 +312,9 @@ export const AutosuggestInput = ({
         image: "",
       });
 
-      // Only scroll to bottom on click on larger screens
+      // Only scroll more on click on larger screens
       if (!currentIsMobile.any) {
-        scroll.scrollToBottom();
+        scroll.scrollMore(400);
       }
     }
   };

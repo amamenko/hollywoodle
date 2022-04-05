@@ -3,6 +3,7 @@ import { ReactComponent as CircleCheckMark } from "../../assets/CircleCheckMark.
 import { ReactComponent as PartialCredit } from "../../assets/PartialCredit.svg";
 import { WhoButton } from "./WhoButton/WhoButton";
 import "./ActorMovieContainer.scss";
+import { useState } from "react";
 
 export const ActorMovieContainer = ({
   image,
@@ -10,13 +11,16 @@ export const ActorMovieContainer = ({
   incorrect = undefined,
   knownFor,
   gender,
+  lastActor,
 }: {
   image: string;
   name: string;
   incorrect?: boolean | string | undefined;
   knownFor?: { [key: string]: string | number };
   gender?: string;
+  lastActor?: boolean;
 }) => {
+  const [firstHintClicked, changeFirstHintClicked] = useState(false);
   return (
     <>
       <div className="actor_movie_container">
@@ -48,7 +52,18 @@ export const ActorMovieContainer = ({
         />
         <p className="actor_movie_name">{name}</p>
         {knownFor && gender && (
-          <WhoButton knownFor={knownFor} gender={gender} />
+          <WhoButton
+            knownFor={knownFor}
+            gender={gender}
+            changeFirstHintClicked={changeFirstHintClicked}
+          />
+        )}
+        {knownFor && knownFor.costarName && lastActor && firstHintClicked && (
+          <WhoButton
+            knownFor={knownFor}
+            gender={gender}
+            firstHintClicked={firstHintClicked}
+          />
         )}
       </div>
     </>

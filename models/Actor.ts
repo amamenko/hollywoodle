@@ -11,6 +11,8 @@ const actorSchema = new mongoose.Schema({
     title: String,
     year: Number,
     character: String,
+    costarName: String,
+    costarCharacter: String,
   },
 });
 

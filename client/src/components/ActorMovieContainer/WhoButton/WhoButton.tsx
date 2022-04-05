@@ -4,6 +4,8 @@ import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
 import { getHint } from "./getHint";
 import ClipLoader from "react-spinners/ClipLoader";
+import isMobile from "ismobilejs";
+import Scroll from "react-scroll";
 import "./WhoButton.scss";
 
 export const WhoButton = ({
@@ -12,12 +14,16 @@ export const WhoButton = ({
   typeOfGuess,
   hintCollapsed,
   changeHintCollapsed,
+  firstHintClicked,
+  changeFirstHintClicked,
 }: {
   knownFor?: { [key: string]: string | number };
   gender?: string;
   typeOfGuess?: string;
   hintCollapsed?: boolean;
   changeHintCollapsed?: React.Dispatch<React.SetStateAction<boolean>>;
+  firstHintClicked?: boolean;
+  changeFirstHintClicked?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const {
     firstActor,
@@ -28,6 +34,7 @@ export const WhoButton = ({
     win,
     darkMode,
   } = useContext(AppContext);
+  const currentIsMobile = isMobile();
   const [collapse, changeCollapse] = useState(false);
   const [currentHint, changeCurrentHint] = useState({
     name: "",
@@ -43,6 +50,16 @@ export const WhoButton = ({
       changeCurrentMoves(currentMoves + 1);
       if (changeHintCollapsed) {
         changeHintCollapsed(true);
+      }
+      if (!firstHintClicked && changeFirstHintClicked) {
+        changeFirstHintClicked(true);
+      }
+      if (firstHintClicked) {
+        // Only scroll more on click on larger screens
+        if (!currentIsMobile.any) {
+          const scroll = Scroll.animateScroll;
+          scroll.scrollMore(100);
+        }
       }
     }
   };
@@ -79,15 +96,19 @@ export const WhoButton = ({
         year: "",
         character: "",
       });
+
+      if (changeFirstHintClicked) {
+        changeFirstHintClicked(false);
+      }
     }
-  }, [hintCollapsed, win]);
+  }, [hintCollapsed, win, changeFirstHintClicked]);
 
   if (!win) {
     return (
       <div className="who_button_container">
         {!collapse && (
           <p>
-            Stuck? <b>(+1 move)</b>
+            {firstHintClicked ? "Still" : ""} Stuck? <b>(+1 move)</b>
           </p>
         )}
         <Button
@@ -95,32 +116,55 @@ export const WhoButton = ({
           id="who_button"
           onClick={toggleCollapse}
         >
-          GET A HINT
+          GET {firstHintClicked ? "ANOTHER" : "A"} HINT
         </Button>
         <Collapse
           isOpened={collapse}
           initialStyle={{ height: 0, overflow: "hidden" }}
         >
           <div className={`collapse_container ${darkMode ? "dark" : ""}`}>
-            <h2>HINT</h2>
+            <h2>{firstHintClicked ? "ANOTHER HINT" : "HINT"}</h2>
             {knownFor && gender ? (
-              <span className="hint_content_container">
-                One of{" "}
-                {gender === "male"
-                  ? "his"
-                  : gender === "female"
-                  ? "her"
-                  : "their"}{" "}
-                most popular recent roles was the character of{" "}
-                <b>"{knownFor.character}"</b> in the <b>{knownFor.year}</b> film{" "}
-                <b>{knownFor.title}</b>.
-                <br />
-                <br />
-                Your total moves increased by <b className="incorrect">
-                  1
-                </b>{" "}
-                move.
-              </span>
+              firstHintClicked ? (
+                <span className="hint_content_container">
+                  One of{" "}
+                  {gender === "male"
+                    ? "his"
+                    : gender === "female"
+                    ? "her"
+                    : "their"}{" "}
+                  co-stars in{" "}
+                  <b>
+                    {knownFor.title} ({knownFor.year})
+                  </b>{" "}
+                  was <b>{knownFor.costarName}</b>, who played the role of{" "}
+                  <b>"{knownFor.costarCharacter}."</b>
+                  <br />
+                  <br />
+                  Your total moves increased by <b className="incorrect">
+                    1
+                  </b>{" "}
+                  move.
+                </span>
+              ) : (
+                <span className="hint_content_container">
+                  One of{" "}
+                  {gender === "male"
+                    ? "his"
+                    : gender === "female"
+                    ? "her"
+                    : "their"}{" "}
+                  most popular recent roles was the character of{" "}
+                  <b>"{knownFor.character}"</b> in the <b>{knownFor.year}</b>{" "}
+                  film <b>{knownFor.title}</b>.
+                  <br />
+                  <br />
+                  Your total moves increased by <b className="incorrect">
+                    1
+                  </b>{" "}
+                  move.
+                </span>
+              )
             ) : currentHint.name ? (
               <span className="hint_content_container">
                 <b>{currentHint.name}</b> also starred in the film{" "}
