@@ -330,7 +330,11 @@ const App = () => {
           typeof mostRecentActor.last_correct_actor === "object" &&
           !Array.isArray(mostRecentActor.last_correct_actor)
         ) {
-          return mostRecentActor.last_correct_actor.guess.toString();
+          if (mostRecentActor.last_correct_actor.guess) {
+            return mostRecentActor.last_correct_actor.guess.toString();
+          } else {
+            return firstActor.name;
+          }
         } else {
           return firstActor.name;
         }

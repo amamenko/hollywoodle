@@ -29,9 +29,9 @@
 
 In March of 2022, it seemed that the Wordleverse had a dearth of movie-related Wordle spin-offs. With the [94th Academy Awards](https://en.wikipedia.org/wiki/94th_Academy_Awards) (popularly known as the Oscars) quickly approaching, the timing seemed perfect for a Hollywood-themed Wordle-like game to enter the Wordleverse.
 
-Originally the brainchild of Alex Jaloza, Hollywoodle provides users two new daily actors to link either by movie or by co-star with the fewest possible guesses. The user is gains a certain amount of "moves" for each guess - 1 move for a correct guess, 3 moves for an incorrect guess, and 2 moves for a guess of a movie that only features the final actor and not the first or current one (partial credit). If a user needs a hint they are penalized 3 moves.
+Originally the brainchild of Alex Jaloza, Hollywoodle provides users two new daily actors to link either by movie or by co-star with the fewest possible guesses. The user is gains a certain amount of "moves" for each guess - 1 move for a correct guess, 3 moves for an incorrect guess, and 2 moves for a guess of a movie that only features the final actor and not the first or current one (partial credit). If a user needs a hint they are penalized 1 move.
 
-In essence, the objective of the game is to link the two given actors with as few moves as possible.
+In essence, the objective of the game is to link the two given actors with as few moves as possible - similar to the [Six Degrees of Kevin Bacon](https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon).
 
 ## Functionality
 
