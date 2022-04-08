@@ -38,7 +38,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
 
     let newArr = currentEmojiGrid.slice();
     const winEmoji = currentEmojiGrid[currentEmojiGrid.length - 1];
-    const lastRow = `\n${fillerEmoji}${winEmoji}${fillerEmoji}${winEmoji}${fillerEmoji}`;
+    const lastRow = `\n${winEmoji}${winEmoji}${winEmoji}${winEmoji}${winEmoji}`;
     newArr.pop();
 
     let counter = 0;
