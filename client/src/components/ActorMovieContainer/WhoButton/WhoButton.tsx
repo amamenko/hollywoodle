@@ -33,6 +33,8 @@ export const WhoButton = ({
     changeCurrentMoves,
     win,
     darkMode,
+    currentEmojiGrid,
+    changeEmojiGrid,
   } = useContext(AppContext);
   const currentIsMobile = isMobile();
   const [collapse, changeCollapse] = useState(false);
@@ -48,6 +50,7 @@ export const WhoButton = ({
     if (!collapse && !win) {
       changeCollapse(true);
       changeCurrentMoves(currentMoves + 1);
+      changeEmojiGrid([...currentEmojiGrid, "🟨"]);
       if (changeHintCollapsed) {
         changeHintCollapsed(true);
       }

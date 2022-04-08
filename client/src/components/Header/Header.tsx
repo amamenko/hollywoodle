@@ -4,16 +4,18 @@ import { ReactComponent as LogoWhite } from "../../assets/LogoWhite.svg";
 import { HowToPlayModal } from "../HowToPlayModal/HowToPlayModal";
 import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 import { BiBarChartAlt2 } from "react-icons/bi";
-import { GiBackwardTime } from "react-icons/gi";
+// import { GiBackwardTime } from "react-icons/gi";
 import { BiHeart } from "react-icons/bi";
 import { Statistics } from "./Statistics";
-import "./Header.scss";
 import { Support } from "./Support";
+// import { ArchivedModal } from "./ArchiveModal/ArchivedModal";
+import "./Header.scss";
 
 export const Header = () => {
   const { currentMoves, darkMode, changeDarkMode } = useContext(AppContext);
   const [modalOpen, changeModalOpen] = useState(false);
   const [showSupportModal, changeShowSupportModal] = useState(false);
+  // const [showArchivedModal, changeShowArchivedModal] = useState(false);
 
   const toggleLightDarkMode = () => {
     changeDarkMode(!darkMode);
@@ -27,18 +29,33 @@ export const Header = () => {
     <div className={`header ${darkMode ? "dark" : ""}`}>
       <div className="inner_header_container">
         <HowToPlayModal />
-        {/* <GiBackwardTime className="archive_icon" color={"#fff"} size={28.5} /> */}
         <BiHeart
           className="support_icon"
           color={"#fff"}
           size={27}
           onClick={() => changeShowSupportModal(true)}
         />
+        <LogoWhite className="hollywoodle_logo" />
+        {/* <GiBackwardTime
+          className="archive_icon"
+          color={"#fff"}
+          size={28}
+          onClick={() => changeShowArchivedModal(true)}
+        />
+        <ArchivedModal
+          showArchivedModal={showArchivedModal}
+          changeShowArchivedModal={changeShowArchivedModal}
+        /> */}
         <Support
           showSupportModal={showSupportModal}
           changeShowSupportModal={changeShowSupportModal}
         />
-        <LogoWhite className="hollywoodle_logo" />
+        <BiBarChartAlt2
+          className="header_graph_icon"
+          color={"#fff"}
+          size={25}
+          onClick={() => changeModalOpen(true)}
+        />
         {darkMode ? (
           <MdDarkMode
             className="light_dark_mode_icon"
@@ -54,12 +71,6 @@ export const Header = () => {
             onClick={toggleLightDarkMode}
           />
         )}
-        <BiBarChartAlt2
-          className="header_graph_icon"
-          color={"#fff"}
-          size={25}
-          onClick={() => changeModalOpen(true)}
-        />
         <Statistics modalOpen={modalOpen} closeModal={closeModal} />
       </div>
       <div className={`points_container ${darkMode ? "dark" : ""}`}>

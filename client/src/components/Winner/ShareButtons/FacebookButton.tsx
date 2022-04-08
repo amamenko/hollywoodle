@@ -17,11 +17,7 @@ const FacebookButton: FC<FacebookButtonProps> = ({
           facebookShareLink
             ? `https://www.facebook.com/sharer.php?u=${encodeURI(
                 facebookShareLink
-              )}${
-                facebookShareText
-                  ? `&quote=${encodeURI(facebookShareText)}`
-                  : ""
-              }`
+              )}&quote=${facebookShareText ? encodeURI(facebookShareText) : ""}`
             : ""
         }
         target="_blank"

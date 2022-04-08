@@ -58,6 +58,8 @@ interface ContextProps {
   changeMostRecentMovie: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >;
+  currentEmojiGrid: string[];
+  changeEmojiGrid: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -85,6 +87,8 @@ export const AppContext = createContext<ContextProps>({
   changeDarkMode: () => [],
   changeMostRecentActor: () => [],
   changeMostRecentMovie: () => [],
+  currentEmojiGrid: [],
+  changeEmojiGrid: () => [],
 });
 
 const App = () => {
@@ -118,6 +122,7 @@ const App = () => {
   const [darkMode, changeDarkMode] = useState(true);
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
   const [showIntroModal, changeShowIntroModal] = useState(false);
+  const [currentEmojiGrid, changeEmojiGrid] = useState<string[]>([]);
 
   const rewardEl = useRef<RewardElement>(null);
 
@@ -374,6 +379,8 @@ const App = () => {
         changeDarkMode,
         changeMostRecentActor,
         changeMostRecentMovie,
+        currentEmojiGrid,
+        changeEmojiGrid,
       }}
     >
       <ToastContainer limit={1} />

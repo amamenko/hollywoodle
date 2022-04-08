@@ -9,28 +9,19 @@ interface TwitterButtonProps {
 const TwitterButton: FC<TwitterButtonProps> = ({
   twitterShareLink,
   twitterShareText,
-  twitterShareHashtags,
 }) => {
   return (
     <li className="share_button_outer_container">
       <a
         href={
           twitterShareLink
-            ? `https://twitter.com/intent/tweet?url=${encodeURI(
-                twitterShareLink
-              )}${
+            ? `https://twitter.com/intent/tweet?${
                 twitterShareText
-                  ? `&text=${encodeURIComponent(twitterShareText)}`
+                  ? `&text=${encodeURIComponent(
+                      twitterShareText.trim()
+                    )}%0A${twitterShareLink}`
                   : ""
-              }${
-                twitterShareHashtags
-                  ? twitterShareHashtags.length > 0
-                    ? `&hashtags=${twitterShareHashtags
-                        .map((item) => encodeURIComponent(item))
-                        .join()}`
-                    : ""
-                  : ""
-              }`
+              } `
             : ""
         }
         target="_blank"

@@ -70,6 +70,8 @@ export const AutosuggestInput = ({
     changeCurrentMoves,
     changeWin,
     darkMode,
+    currentEmojiGrid,
+    changeEmojiGrid,
   } = useContext(AppContext);
 
   const debounceFn = (type: "movie" | "actor") => {
@@ -197,14 +199,16 @@ export const AutosuggestInput = ({
           : Number(firstActor.id);
       }
 
-      let incorrect_status: boolean | string = true;
+      let incorrectStatus: boolean | string = true;
+      let gameOver = false;
 
       if (movieCast.find((id) => id === lastActor.id)) {
-        incorrect_status = "partial";
+        incorrectStatus = "partial";
         if (movieCast.find((id) => id === currentActorId)) {
-          incorrect_status = false;
+          incorrectStatus = false;
           // User has won and completed the game
           changeWin(true);
+          gameOver = true;
 
           const currentDate = format(new Date(), "MM/dd/yyyy", {
             timeZone: "America/New_York",
@@ -266,20 +270,13 @@ export const AutosuggestInput = ({
         }
       } else {
         if (movieCast.find((id) => id === currentActorId)) {
-          incorrect_status = false;
+          incorrectStatus = false;
         } else {
-          incorrect_status = true;
+          incorrectStatus = true;
         }
       }
 
-      const newGuess: {
-        [key: string]:
-          | string
-          | number
-          | number[]
-          | boolean
-          | { [key: string]: string | number };
-      } = {
+      const newGuess: GuessType = {
         guess_number: guesses.length,
         id,
         guess: name,
@@ -292,16 +289,42 @@ export const AutosuggestInput = ({
         ),
         year,
         image,
-        incorrect: incorrect_status,
+        incorrect: incorrectStatus,
         cast: movieCast,
         type: typeOfGuess,
       };
 
       const pointsAlloted =
-        incorrect_status === "partial" ? 2 : incorrect_status ? 3 : 1;
+        incorrectStatus === "partial" ? 2 : incorrectStatus ? 3 : 1;
 
+      const currentTotalMoves = currentMoves + pointsAlloted;
+
+      const emojiGridClone = currentEmojiGrid.slice();
+
+      if (incorrectStatus === "partial") {
+        emojiGridClone.push("🟧");
+        emojiGridClone.push("🟧");
+      } else if (incorrectStatus) {
+        emojiGridClone.push("🟥");
+        emojiGridClone.push("🟥");
+        emojiGridClone.push("🟥");
+      } else {
+        emojiGridClone.push("🟩");
+      }
+
+      if (gameOver) {
+        if (currentTotalMoves > 10) {
+          emojiGridClone.push("💣");
+        } else if (currentTotalMoves >= 5) {
+          emojiGridClone.push("🍸");
+        } else {
+          emojiGridClone.push("🏆");
+        }
+      }
+
+      changeEmojiGrid(emojiGridClone);
       changeInputInitiallyFocused(true);
-      changeCurrentMoves(currentMoves + pointsAlloted);
+      changeCurrentMoves(currentTotalMoves);
       changeHintCollapsed(false);
       changeGuesses([...guesses, newGuess]);
       changeInputValue("");

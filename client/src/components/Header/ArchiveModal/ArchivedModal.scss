@@ -1,0 +1,142 @@
+.archived_game_table {
+  margin-top: 1rem;
+  font-size: 0.7rem;
+
+  thead {
+    &.th {
+      border-bottom: none !important;
+    }
+  }
+
+  th {
+    color: rgb(150, 150, 150);
+    text-align: center;
+    vertical-align: middle !important;
+    font-size: 0.6rem;
+    border: none !important;
+  }
+
+  th[scope="row"] {
+    border-right: 1px solid #fff;
+    max-width: 6rem;
+    text-align: center;
+    vertical-align: middle;
+    border-right: 1px solid #fff !important;
+  }
+
+  tr {
+    color: #fff;
+    text-align: center;
+  }
+
+  td {
+    border: none;
+    border-right: 1px solid #fff;
+    text-align: center;
+    vertical-align: middle;
+  }
+}
+
+.close_modal_button {
+  &.archived_game {
+    top: 0.5rem;
+  }
+}
+
+.Collapsible__contentInner {
+  padding: 10px;
+  border-top: 0;
+
+  p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 20px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.collapse_trigger_element {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .collapse_caret {
+    &.open {
+      transform: rotate(180deg);
+    }
+    transition: transform 300ms;
+  }
+}
+
+.Collapsible__trigger {
+  display: block;
+  font-weight: 400;
+  text-decoration: none;
+  position: relative;
+  border: 1px solid #dedede;
+  padding: 0 2rem;
+  color: white;
+  cursor: pointer;
+  background: rgb(25, 25, 25);
+  transition: background 0.4s ease;
+
+  &:after {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: block;
+    transition: transform 300ms;
+  }
+
+  &:hover {
+    background: rgb(40, 40, 40);
+  }
+
+  &:active,
+  &:focus {
+    background: rgb(50, 50, 50);
+  }
+
+  &:after {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: block;
+    transition: transform 300ms;
+  }
+
+  &.is-open {
+    &:after {
+      transform: rotateZ(180deg);
+    }
+  }
+
+  &.is-disabled {
+    opacity: 0.5;
+    background-color: grey;
+  }
+}
+
+.Collapsible__contentInner {
+  background: rgb(35, 35, 35);
+  padding-bottom: 2rem;
+}
+
+.CustomTriggerCSS {
+  background-color: lightcoral;
+  transition: background-color 200ms ease;
+}
+
+.CustomTriggerCSS--open {
+  background-color: darkslateblue;
+}
+
+.Collapsible__custom-sibling {
+  padding: 5px;
+  font-size: 12px;
+  background-color: #cbb700;
+  color: black;
+}

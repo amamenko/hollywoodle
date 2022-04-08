@@ -16,7 +16,7 @@ export const customModalStyles = {
     outline: "none",
   },
   overlay: {
-    background: "rgba(0, 0, 0, 0.7)",
+    background: "rgba(0, 0, 0, 0.85)",
     backdropFilter: "blur(3px)",
     zIndex: 999999999,
   },

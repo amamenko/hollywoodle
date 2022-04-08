@@ -26,15 +26,54 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     changeCurrentMoves,
     changeMostRecentActor,
     changeMostRecentMovie,
+    currentEmojiGrid,
+    changeEmojiGrid,
   } = useContext(AppContext);
   const [shareLinkClicked, changeShareLinkClicked] = useState(false);
   const [shareLinkAnimatingOut, changeShareLinkAnimatingOut] = useState(false);
+  const [finalEmojiGrid, changeFinalEmojiGrid] = useState("");
+
+  useEffect(() => {
+    const fillerEmoji = darkMode ? "⬛" : "⬜";
+
+    let newArr = currentEmojiGrid.slice();
+    const winEmoji = currentEmojiGrid[currentEmojiGrid.length - 1];
+    const lastRow = `\n${fillerEmoji}${winEmoji}${fillerEmoji}${winEmoji}${fillerEmoji}`;
+    newArr.pop();
+
+    let counter = 0;
+    for (let i = 0; i < newArr.length; i++) {
+      counter++;
+      if (counter === 6) {
+        counter = 0;
+        newArr.splice(i, 0, "\n");
+      }
+    }
+
+    const onlyEmojiArr = newArr.filter((el) => el !== "\n");
+    // Fill empty space with black emojis for formatting consistency
+    if (onlyEmojiArr.length % 5 !== 0) {
+      const lastNewLineIndex =
+        newArr.lastIndexOf("\n") !== -1 ? newArr.lastIndexOf("\n") : 0;
+      const lastLine = newArr
+        .slice(lastNewLineIndex)
+        .filter((el) => el !== "\n");
+      while (lastLine.length < 5) {
+        lastLine.push(fillerEmoji);
+      }
+
+      newArr.splice(lastNewLineIndex);
+      newArr = [...newArr, "\n", ...lastLine];
+    }
+    changeFinalEmojiGrid(`${newArr.join("")}${lastRow}`);
+  }, [currentEmojiGrid, darkMode]);
 
   const handleRetake = () => {
     window.scrollTo(0, 0);
     changeGuesses([]);
     changeMostRecentActor({ guess: "", type: "", year: "" });
     changeMostRecentMovie({ guess: "", type: "", year: "" });
+    changeEmojiGrid([]);
     changeWin(false);
     changeCurrentMoves(0);
 
@@ -85,7 +124,11 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
 
   const shareText = `I connected ${firstActor.name} to ${
     lastActor.name
-  } in ${currentMoves} ${currentMoves === 1 ? "move" : "moves"} on Hollywoodle`;
+  } in ${currentMoves} ${
+    currentMoves === 1 ? "move" : "moves"
+  } on Hollywoodle.`;
+
+  const finalShareText = `${shareText}\n${finalEmojiGrid}\nThink you can beat that?`;
 
   return (
     <div className={`winner_container ${darkMode ? "dark" : ""}`}>
@@ -153,15 +196,15 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
             shareLinkClicked={shareLinkClicked}
             changeShareLinkClicked={changeShareLinkClicked}
             shareLinkAnimatingOut={shareLinkAnimatingOut}
-            copyShareLink={`${shareText} https://hollywoodle.ml/`}
+            copyShareLink={`${finalShareText.trim()}\nhttps://hollywoodle.ml/`}
           />
           <TwitterButton
+            twitterShareText={finalShareText}
             twitterShareLink={"https://hollywoodle.ml/"}
-            twitterShareText={shareText}
           />
           <FacebookButton
             facebookShareLink={"https://hollywoodle.ml/"}
-            facebookShareText={shareText}
+            facebookShareText={`${shareText}\nThink you can beat that?`}
           />
         </ul>
       </div>
