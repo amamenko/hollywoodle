@@ -1,13 +1,38 @@
 import { updateActors } from "./updateActors";
 import { Actor } from "../models/Actor";
-import { format, subDays } from "date-fns";
+import { eachDayOfInterval, format, subDays } from "date-fns";
 
 export const updateDatabaseActors = async () => {
-  const allDbActors = await Actor.find({});
-  const allBlacklistedIDs = allDbActors.map((actor) => actor.id);
+  const monthAgo = subDays(new Date(), 31);
+  const result = eachDayOfInterval({
+    start: monthAgo,
+    end: new Date(),
+  });
+
+  const pastMonthArr = result
+    .map((date) => format(date, "MM/dd/yyyy"))
+    .sort((a: string, b: string) => b.localeCompare(a));
+
+  // Look up actors featured in the past month and blacklist IDs
+  const allDbActors =
+    (await Actor.find({
+      date: {
+        $in: pastMonthArr,
+      },
+    }).catch((e) => console.error(e))) || [];
+
+  const allBlacklistedIDs = allDbActors.map(
+    (actor: { [key: string]: number }) => actor.id
+  );
+
+  // Look up longer movie terms featured in the past 3 weeks and blacklist terms
+  const pastThreeWeeksArr = pastMonthArr.slice(0, 22);
   const allBlacklistedMovieTerms = [
     ...new Set(
       allDbActors
+        .filter((actor: { [key: string]: string }) =>
+          pastThreeWeeksArr.includes(actor.date)
+        )
         .map((actor) =>
           actor.most_popular_recent_movie.title
             .toLowerCase()
@@ -16,23 +41,9 @@ export const updateDatabaseActors = async () => {
         )
         .filter((el) => el)
         .map((el: string) => el.replace(/[\W_]+/g, "".trim()))
+        .filter((el: string) => el.length >= 6)
     ),
   ];
-
-  // Two weeks ago
-  const weekAgo = format(subDays(new Date(), 14), "MM/dd/yyyy");
-  // Few extra day padding just in case anything left over for any reason
-  const weekAgoAndDay = format(subDays(new Date(), 15), "MM/dd/yyyy");
-  const weekAgoAndTwoDays = format(subDays(new Date(), 16), "MM/dd/yyyy");
-  const weekAgoAndThreeDays = format(subDays(new Date(), 17), "MM/dd/yyyy");
-
-  // Clean up actors from week ago
-  await Actor.deleteMany({
-    date: {
-      $in: [weekAgo, weekAgoAndDay, weekAgoAndTwoDays, weekAgoAndThreeDays],
-    },
-  }).catch((e) => console.error(e));
-
   const resultActors = await updateActors(
     allBlacklistedIDs,
     allBlacklistedMovieTerms

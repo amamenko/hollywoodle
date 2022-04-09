@@ -35,12 +35,15 @@ export const getRandomPopularActor = async (
       const filteredResults = results.filter(
         (currentActor: { [key: string]: any }) =>
           currentActor.known_for &&
+          currentActor.known_for.length >= 3 &&
           !currentActor.known_for.some(
             (movie: { [key: string]: any }) =>
               movie.video ||
               movie.adult ||
               movie.original_language !== "en" ||
-              movie.vote_count < 5000 ||
+              (movie.media_type === "movie"
+                ? movie.vote_count < 5000
+                : movie.vote_count < 3000) ||
               blacklistedMovieTerms.some((str) =>
                 movie.title
                   ? movie.title.toLowerCase().includes(str)
@@ -61,6 +64,7 @@ export const getRandomPopularActor = async (
           currentActor.name !== exceptedName &&
           currentActor.name !== exceptedName2
       );
+
       if (filteredResults.length > 0) {
         const foundActor = sample(filteredResults);
         if (foundActor.profile_path) {
