@@ -81,6 +81,29 @@
     border-bottom: 1px solid #30363d;
     border-top: none;
   }
+
+  .archived_denotation {
+    color: rgb(125, 125, 125);
+    text-align: center;
+    position: absolute;
+    font-weight: 500;
+    left: 1rem;
+    font-size: 0.6rem;
+    transition: color 0.4s ease;
+
+    @media only screen and (min-width: 768px) {
+      font-size: 0.75rem;
+    }
+
+    &.dark {
+      color: rgb(100, 100, 100);
+    }
+
+    &.date {
+      left: auto;
+      right: 1rem;
+    }
+  }
 }
 
 @mixin header_icon {

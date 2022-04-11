@@ -72,6 +72,7 @@ export const AutosuggestInput = ({
     darkMode,
     currentEmojiGrid,
     changeEmojiGrid,
+    currentlyPlayingDate,
   } = useContext(AppContext);
 
   const debounceFn = (type: "movie" | "actor") => {
@@ -214,58 +215,60 @@ export const AutosuggestInput = ({
             timeZone: "America/New_York",
           });
 
-          if (localStorage.getItem("hollywoodle-statistics")) {
-            const storageStr = localStorage.getItem("hollywoodle-statistics");
-            let storageObj: {
-              [key: string]: number | number[] | string | boolean;
-            } = {};
+          if (currentlyPlayingDate === currentDate) {
+            if (localStorage.getItem("hollywoodle-statistics")) {
+              const storageStr = localStorage.getItem("hollywoodle-statistics");
+              let storageObj: {
+                [key: string]: number | number[] | string | boolean;
+              } = {};
 
-            try {
-              storageObj = JSON.parse(storageStr ? storageStr : "");
-            } catch (e) {
-              console.error(e);
-            }
+              try {
+                storageObj = JSON.parse(storageStr ? storageStr : "");
+              } catch (e) {
+                console.error(e);
+              }
 
-            const currentStreak = Number(storageObj.current_streak) + 1;
-            let currentAvgs: number[] = [];
+              const currentStreak = Number(storageObj.current_streak) + 1;
+              let currentAvgs: number[] = [];
 
-            if (storageObj.avg_moves && Array.isArray(storageObj.avg_moves)) {
-              currentAvgs = storageObj.avg_moves;
-            }
+              if (storageObj.avg_moves && Array.isArray(storageObj.avg_moves)) {
+                currentAvgs = storageObj.avg_moves;
+              }
 
-            currentAvgs.push(currentMoves + 1);
+              currentAvgs.push(currentMoves + 1);
 
-            if (
-              currentDate === storageObj.current_date &&
-              !storageObj.played_today
-            ) {
+              if (
+                currentDate === storageObj.current_date &&
+                !storageObj.played_today
+              ) {
+                localStorage.setItem(
+                  "hollywoodle-statistics",
+                  JSON.stringify({
+                    current_date: currentDate,
+                    last_played: currentDate,
+                    current_streak: currentStreak,
+                    max_streak: Math.max(
+                      currentStreak,
+                      Number(storageObj.max_streak)
+                    ),
+                    avg_moves: currentAvgs,
+                    played_today: true,
+                  })
+                );
+              }
+            } else {
               localStorage.setItem(
                 "hollywoodle-statistics",
                 JSON.stringify({
                   current_date: currentDate,
                   last_played: currentDate,
-                  current_streak: currentStreak,
-                  max_streak: Math.max(
-                    currentStreak,
-                    Number(storageObj.max_streak)
-                  ),
-                  avg_moves: currentAvgs,
+                  current_streak: 1,
+                  max_streak: 1,
+                  avg_moves: [currentMoves + 1],
                   played_today: true,
                 })
               );
             }
-          } else {
-            localStorage.setItem(
-              "hollywoodle-statistics",
-              JSON.stringify({
-                current_date: currentDate,
-                last_played: currentDate,
-                current_streak: 1,
-                max_streak: 1,
-                avg_moves: [currentMoves + 1],
-                played_today: true,
-              })
-            );
           }
         }
       } else {

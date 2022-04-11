@@ -1,12 +1,25 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Modal from "react-modal";
-import { CollapsibleArchive } from "./CollapsibleArchive";
-import { eachDayOfInterval, subDays } from "date-fns";
+import Calendar from "react-calendar";
+import {
+  CgChevronLeftO,
+  CgChevronDoubleLeftO,
+  CgChevronRightO,
+  CgChevronDoubleRightO,
+} from "react-icons/cg";
+import { AiFillStar } from "react-icons/ai";
+import { BsArrowRight } from "react-icons/bs";
 import { format } from "date-fns-tz";
-import ReactPaginate from "react-paginate";
+import { startOfToday } from "date-fns";
+import { ActorMovieContainer } from "../../ActorMovieContainer/ActorMovieContainer";
+import { Button } from "reactstrap";
+import ClipLoader from "react-spinners/ClipLoader";
+import axios from "axios";
+import { ActorObj, AppContext } from "../../../App";
 import "./ArchivedModal.scss";
 import "../Header.scss";
+import "react-calendar/dist/Calendar.css";
 
 export const customModalStyles = {
   content: {
@@ -33,51 +46,126 @@ export const ArchivedModal = ({
   showArchivedModal: boolean;
   changeShowArchivedModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [pastTwoWeeksDates, changePastTwoWeeksDates] = useState<string[]>([]);
-  const [currentDates, changeCurrentDates] = useState<string[]>([]);
-  const [pageCount, changePageCount] = useState(0);
-  const [dateOffset, changeDateOffset] = useState(0);
+  const {
+    firstActor,
+    lastActor,
+    currentlyPlayingDate,
+    changeCurrentlyPlayingDate,
+    currentArchivedActorsResults,
+    changeCurrentArchivedActorsResults,
+    changeGuesses,
+    changeCurrentMoves,
+    changeWin,
+    changeEmojiGrid,
+    changeMostRecentMovie,
+    changeMostRecentActor,
+  } = useContext(AppContext);
 
-  // const allDates = ({ currentDates }) => {
-  //   return (
-  //     <>
-  //       {currentDates &&
-  //         currentDates.map((date, i) => (
-  //           <CollapsibleArchive key={i} date={date} />
-  //         ))}
-  //     </>
-  //   );
-  // }
+  const formatDate = (someDate: Date) => {
+    return format(someDate, "MM/dd/yyyy", {
+      timeZone: "America/New_York",
+    });
+  };
+
+  const [value, onChange] = useState(startOfToday());
+  const [resultsLoading, changeResultsLoading] = useState(false);
+  const [currentArchiveDate, changeCurrentArchiveDate] = useState(
+    formatDate(value)
+  );
+  const [firstActorShown, changeFirstActorShown] =
+    useState<ActorObj>(firstActor);
+  const [lastActorShown, changeLastActorShown] = useState<ActorObj>(lastActor);
 
   const handleCloseModal = () => {
     changeShowArchivedModal(false);
   };
 
-  useEffect(() => {
-    const twoWeeksAgo = subDays(new Date(), 14);
-    const result = eachDayOfInterval({
-      start: twoWeeksAgo,
-      end: new Date(),
-    });
-
-    const pastTwoWeeksArr = result.map((date) =>
-      format(date, "MM/dd/yyyy", {
-        timeZone: "America/New_York",
-      })
-    );
-    changePastTwoWeeksDates(pastTwoWeeksArr.sort((a, b) => b.localeCompare(a)));
-  }, []);
-
-  useEffect(() => {
-    const endOffset = dateOffset + 5;
-    changeCurrentDates(pastTwoWeeksDates.slice(dateOffset, endOffset));
-    changePageCount(Math.ceil(pastTwoWeeksDates.length / 5));
-  }, [dateOffset, pastTwoWeeksDates]);
-
-  const handlePageClick = (event: { selected: number }) => {
-    const newOffset = (event.selected * 5) % pastTwoWeeksDates.length;
-    changeDateOffset(newOffset);
+  const handlePlayButton = () => {
+    if (currentArchiveDate !== currentlyPlayingDate) {
+      changeCurrentlyPlayingDate(currentArchiveDate);
+      changeShowArchivedModal(false);
+      changeGuesses([]);
+      changeCurrentMoves(0);
+      changeWin(false);
+      changeEmojiGrid([]);
+      changeMostRecentMovie({
+        guess: "",
+        type: "",
+        year: "",
+      });
+      changeMostRecentActor({
+        guess: "",
+        type: "",
+        year: "",
+      });
+    }
   };
+
+  useEffect(() => {
+    const matchingDateActorsArr = currentArchivedActorsResults.filter(
+      (actor) => actor.date === currentArchiveDate
+    );
+
+    if (currentArchiveDate && matchingDateActorsArr.length === 0) {
+      const source = axios.CancelToken.source();
+
+      const nodeEnv = process.env.REACT_APP_NODE_ENV
+        ? process.env.REACT_APP_NODE_ENV
+        : "";
+
+      const fetchData = async () => {
+        await axios
+          .get(
+            nodeEnv && nodeEnv === "production"
+              ? `${process.env.REACT_APP_PROD_SERVER}/api/archive_actor`
+              : "http://localhost:4000/api/archive_actor",
+            {
+              params: { date: currentArchiveDate },
+            }
+          )
+          .then((res) => res.data)
+          .then((data) => {
+            if (data) {
+              changeCurrentArchivedActorsResults([
+                ...currentArchivedActorsResults,
+                ...data,
+              ]);
+              const firstType = data.find(
+                (el: ActorObj) => el.type === "first"
+              );
+              const lastType = data.find((el: ActorObj) => el.type === "last");
+              if (firstType && firstType.name) changeFirstActorShown(firstType);
+              if (lastType && lastType.name) changeLastActorShown(lastType);
+            }
+            changeResultsLoading(false);
+          })
+          .catch((e) => {
+            changeResultsLoading(false);
+            console.error(e);
+          });
+      };
+
+      changeResultsLoading(true);
+      fetchData();
+
+      return () => source.cancel();
+    } else {
+      const firstType = matchingDateActorsArr.find(
+        (el: ActorObj) => el.type === "first"
+      );
+      const lastType = matchingDateActorsArr.find(
+        (el: ActorObj) => el.type === "last"
+      );
+
+      if (firstType && firstType.name) changeFirstActorShown(firstType);
+      if (lastType && lastType.name) changeLastActorShown(lastType);
+    }
+  }, [
+    currentArchiveDate,
+    currentArchivedActorsResults,
+    changeCurrentArchivedActorsResults,
+  ]);
+
   return (
     <Modal
       isOpen={showArchivedModal}
@@ -94,18 +182,80 @@ export const ArchivedModal = ({
       >
         <AiOutlineClose size={20} color="#fff" />
       </button>
-      {pastTwoWeeksDates.map((date, i) => (
-        <CollapsibleArchive key={i} date={date} />
-      ))}
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={0}
-        previousLabel="< previous"
-        // renderOnZeroPageCount={() => {}}
+      <p className="archive_prompt">
+        Select a past Hollywoodle game by picking an available date from the
+        calendar.
+      </p>
+      <Calendar
+        onChange={onChange}
+        value={value}
+        calendarType={"US"}
+        defaultView={"month"}
+        minDetail={"year"}
+        activeStartDate={startOfToday()}
+        defaultValue={startOfToday()}
+        maxDate={startOfToday()}
+        minDate={new Date(2022, 3, 1)}
+        prevLabel={<CgChevronLeftO size={25} color="#fff" />}
+        prev2Label={<CgChevronDoubleLeftO size={25} color="#fff" />}
+        nextLabel={<CgChevronRightO size={25} color="#fff" />}
+        next2Label={<CgChevronDoubleRightO size={25} color="#fff" />}
+        tileContent={({ activeStartDate, date, view }) => {
+          return formatDate(date) === formatDate(startOfToday()) ? (
+            <AiFillStar size={25} className="current_date_star" />
+          ) : null;
+        }}
+        onClickDay={(value) => changeCurrentArchiveDate(formatDate(value))}
       />
+      <div className="archive_results_container">
+        <div className="archive_date_container">
+          <p>Selected Date:</p>
+          <h3>{formatDate(value)}</h3>
+        </div>
+        <div className="archive_date_actors_container">
+          {resultsLoading ? (
+            <div className="archive_loading_container">
+              <ClipLoader color="#fff" size={100} />
+            </div>
+          ) : firstActorShown && lastActorShown ? (
+            <>
+              <div className="archive_individual_actor_container">
+                <h2>Starting Actor</h2>
+                <ActorMovieContainer
+                  name={firstActorShown.name}
+                  image={firstActorShown.image}
+                />
+              </div>
+              <div className="archive_individual_actor_container">
+                <BsArrowRight
+                  className="achive_actor_separator_arrow"
+                  color={"#fff"}
+                  size={30}
+                />
+              </div>
+              <div className="archive_individual_actor_container">
+                <h2>Goal Actor</h2>
+                <ActorMovieContainer
+                  name={lastActorShown.name}
+                  image={lastActorShown.image}
+                />
+              </div>
+            </>
+          ) : (
+            <p>No available results for that date!</p>
+          )}
+        </div>
+        {!resultsLoading && (
+          <Button
+            onClick={handlePlayButton}
+            className={`guess_button archived_play_button dark ${
+              currentArchiveDate === currentlyPlayingDate ? "disabled" : ""
+            }`}
+          >
+            PLAY
+          </Button>
+        )}
+      </div>
     </Modal>
   );
 };

@@ -27,6 +27,19 @@ app.get("/api/actor", [], async (req: Request, res: Response) => {
   res.send(actors);
 });
 
+app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
+  const requestedDate = req.query.date;
+  const dateRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/gim;
+  if (typeof requestedDate === "string" && dateRegex.test(requestedDate)) {
+    const actors = await Actor.find({ date: requestedDate }).catch((e) =>
+      console.error(e)
+    );
+    res.send(actors);
+  } else {
+    res.send([]);
+  }
+});
+
 // Update actors in MongoDB every night at midnight
 cron.schedule("0 0 * * *", () => {
   updateDatabaseActors();

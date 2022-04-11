@@ -35,6 +35,7 @@ export const WhoButton = ({
     darkMode,
     currentEmojiGrid,
     changeEmojiGrid,
+    currentlyPlayingDate,
   } = useContext(AppContext);
   const currentIsMobile = isMobile();
   const [collapse, changeCollapse] = useState(false);
@@ -90,7 +91,7 @@ export const WhoButton = ({
   }, [firstActor, lastActor, typeOfGuess, guesses, hintCollapsed]);
 
   useEffect(() => {
-    if (hintCollapsed === false || win) {
+    if (hintCollapsed === false || win || currentlyPlayingDate) {
       changeCollapse(false);
       changeCurrentHint({
         name: "",
@@ -104,7 +105,7 @@ export const WhoButton = ({
         changeFirstHintClicked(false);
       }
     }
-  }, [hintCollapsed, win, changeFirstHintClicked]);
+  }, [hintCollapsed, win, changeFirstHintClicked, currentlyPlayingDate]);
 
   if (!win) {
     return (

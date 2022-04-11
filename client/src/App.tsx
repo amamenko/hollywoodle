@@ -19,15 +19,17 @@ import { Footer } from "./components/Footer/Footer";
 import { AllGuesses } from "./components/AllGuesses/AllGuesses";
 import { format } from "date-fns-tz";
 import { differenceInDays, parse } from "date-fns";
+import { IntroModal } from "./components/IntroModal/IntroModal";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
-import { IntroModal } from "./components/IntroModal/IntroModal";
 
 export interface ActorObj {
   name: string;
   image: string;
   id: number;
+  date: string;
+  type: string;
   most_popular_recent_movie?: { [key: string]: string | number };
   gender?: string;
 }
@@ -60,6 +62,12 @@ interface ContextProps {
   >;
   currentEmojiGrid: string[];
   changeEmojiGrid: React.Dispatch<React.SetStateAction<string[]>>;
+  currentlyPlayingDate: string;
+  changeCurrentlyPlayingDate: React.Dispatch<React.SetStateAction<string>>;
+  currentArchivedActorsResults: ActorObj[];
+  changeCurrentArchivedActorsResults: React.Dispatch<
+    React.SetStateAction<ActorObj[]>
+  >;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -69,6 +77,8 @@ export const AppContext = createContext<ContextProps>({
     id: 0,
     most_popular_recent_movie: {},
     gender: "",
+    type: "",
+    date: "",
   },
   lastActor: {
     name: "",
@@ -76,6 +86,8 @@ export const AppContext = createContext<ContextProps>({
     id: 0,
     most_popular_recent_movie: {},
     gender: "",
+    type: "",
+    date: "",
   },
   guesses: [{}],
   changeGuesses: () => [],
@@ -89,22 +101,30 @@ export const AppContext = createContext<ContextProps>({
   changeMostRecentMovie: () => [],
   currentEmojiGrid: [],
   changeEmojiGrid: () => [],
+  currentlyPlayingDate: "",
+  changeCurrentlyPlayingDate: () => {},
+  currentArchivedActorsResults: [],
+  changeCurrentArchivedActorsResults: () => {},
 });
 
 const App = () => {
-  const [firstActor, changeFirstActor] = useState({
+  const [firstActor, changeFirstActor] = useState<ActorObj>({
     name: "",
     image: "",
     id: 0,
     most_popular_recent_movie: {},
     gender: "",
+    type: "",
+    date: "",
   });
-  const [lastActor, changeLastActor] = useState({
+  const [lastActor, changeLastActor] = useState<ActorObj>({
     name: "",
     image: "",
     id: 0,
     most_popular_recent_movie: {},
     gender: "",
+    type: "",
+    date: "",
   });
   const [guesses, changeGuesses] = useState<GuessObj[]>([]);
   const [mostRecentMovie, changeMostRecentMovie] = useState<GuessObj>({
@@ -123,6 +143,15 @@ const App = () => {
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
   const [showIntroModal, changeShowIntroModal] = useState(false);
   const [currentEmojiGrid, changeEmojiGrid] = useState<string[]>([]);
+
+  // For use in archived games
+  const [currentArchivedActorsResults, changeCurrentArchivedActorsResults] =
+    useState<ActorObj[]>([]);
+  const [currentlyPlayingDate, changeCurrentlyPlayingDate] = useState(
+    format(new Date(), "MM/dd/yyyy", {
+      timeZone: "America/New_York",
+    })
+  );
 
   const rewardEl = useRef<RewardElement>(null);
 
@@ -257,7 +286,7 @@ const App = () => {
     const actorObjects = await axios
       .get(
         nodeEnv && nodeEnv === "production"
-          ? process.env.REACT_APP_PROD_SERVER
+          ? `${process.env.REACT_APP_PROD_SERVER}/api/actor`
           : "http://localhost:4000/api/actor"
       )
       .then((res) => res.data)
@@ -278,13 +307,35 @@ const App = () => {
           (actor: { [key: string]: string | number }) => actor.type === "last"
         );
         changeLastActor(currentLast);
+        changeCurrentArchivedActorsResults([currentFirst, currentLast]);
       } catch (e) {
         console.error(e);
       }
     };
 
-    fetchData();
-  }, []);
+    const relevantDateActors = currentArchivedActorsResults.filter(
+      (el: ActorObj) => el.date === currentlyPlayingDate
+    );
+
+    if (currentlyPlayingDate && relevantDateActors.length !== 2) {
+      fetchData();
+    } else {
+      const foundFirst = relevantDateActors.find(
+        (el: ActorObj) => el.type === "first"
+      );
+      const foundLast = relevantDateActors.find(
+        (el: ActorObj) => el.type === "last"
+      );
+
+      if (foundFirst) {
+        changeFirstActor(foundFirst);
+      }
+
+      if (foundLast) {
+        changeLastActor(foundLast);
+      }
+    }
+  }, [currentArchivedActorsResults, currentlyPlayingDate]);
 
   useEffect(() => {
     const sortedGuesses = guesses.sort((a, b) => {
@@ -385,6 +436,10 @@ const App = () => {
         changeMostRecentMovie,
         currentEmojiGrid,
         changeEmojiGrid,
+        currentlyPlayingDate,
+        changeCurrentlyPlayingDate,
+        currentArchivedActorsResults,
+        changeCurrentArchivedActorsResults,
       }}
     >
       <ToastContainer limit={1} />
