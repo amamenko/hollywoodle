@@ -17,18 +17,17 @@ import { Button } from "reactstrap";
 import ClipLoader from "react-spinners/ClipLoader";
 import axios from "axios";
 import { ActorObj, AppContext } from "../../../App";
+import { RemoveScroll } from "react-remove-scroll";
 import "./ArchivedModal.scss";
 import "../Header.scss";
 import "react-calendar/dist/Calendar.css";
 
 export const customModalStyles = {
   content: {
-    top: "50%",
-    left: "50%",
+    top: "10%",
+    left: "auto",
     right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
+    margin: "0 auto",
     paddingBottom: "2rem",
     outline: "none",
   },
@@ -36,6 +35,8 @@ export const customModalStyles = {
     background: "rgba(0, 0, 0, 0.85)",
     backdropFilter: "blur(3px)",
     zIndex: 999999999,
+    // Extra height to cover footer
+    height: "105vh",
   },
 };
 
@@ -102,11 +103,18 @@ export const ArchivedModal = ({
   };
 
   useEffect(() => {
+    const currentDate = format(new Date(), "MM/dd/yyyy", {
+      timeZone: "America/New_York",
+    });
     const matchingDateActorsArr = currentArchivedActorsResults.filter(
       (actor) => actor.date === currentArchiveDate
     );
 
-    if (currentArchiveDate && matchingDateActorsArr.length === 0) {
+    if (
+      currentArchiveDate &&
+      currentArchiveDate !== currentDate &&
+      matchingDateActorsArr.length === 0
+    ) {
       const source = axios.CancelToken.source();
 
       const nodeEnv = process.env.REACT_APP_NODE_ENV
@@ -167,95 +175,97 @@ export const ArchivedModal = ({
   ]);
 
   return (
-    <Modal
-      isOpen={showArchivedModal}
-      onRequestClose={handleCloseModal}
-      contentLabel="Support Modal"
-      className="modal_container"
-      shouldFocusAfterRender={false}
-      style={customModalStyles}
-    >
-      <h2 className="archived_game_title">PLAY AN ARCHIVED GAME</h2>
-      <button
-        className="close_modal_button archived_game"
-        onClick={handleCloseModal}
+    <RemoveScroll enabled={showArchivedModal}>
+      <Modal
+        isOpen={showArchivedModal}
+        onRequestClose={handleCloseModal}
+        contentLabel="Support Modal"
+        className="modal_container archived_modal"
+        shouldFocusAfterRender={false}
+        style={customModalStyles}
       >
-        <AiOutlineClose size={20} color="#fff" />
-      </button>
-      <p className="archive_prompt">
-        Select a past Hollywoodle game by picking an available date from the
-        calendar.
-      </p>
-      <Calendar
-        onChange={onChange}
-        value={value}
-        calendarType={"US"}
-        defaultView={"month"}
-        minDetail={"year"}
-        activeStartDate={startOfToday()}
-        defaultValue={startOfToday()}
-        maxDate={startOfToday()}
-        minDate={new Date(2022, 3, 1)}
-        prevLabel={<CgChevronLeftO size={25} color="#fff" />}
-        prev2Label={<CgChevronDoubleLeftO size={25} color="#fff" />}
-        nextLabel={<CgChevronRightO size={25} color="#fff" />}
-        next2Label={<CgChevronDoubleRightO size={25} color="#fff" />}
-        tileContent={({ activeStartDate, date, view }) => {
-          return formatDate(date) === formatDate(startOfToday()) ? (
-            <AiFillStar size={25} className="current_date_star" />
-          ) : null;
-        }}
-        onClickDay={(value) => changeCurrentArchiveDate(formatDate(value))}
-      />
-      <div className="archive_results_container">
-        <div className="archive_date_container">
-          <p>Selected Date:</p>
-          <h3>{formatDate(value)}</h3>
-        </div>
-        <div className="archive_date_actors_container">
-          {resultsLoading ? (
-            <div className="archive_loading_container">
-              <ClipLoader color="#fff" size={100} />
-            </div>
-          ) : firstActorShown && lastActorShown ? (
-            <>
-              <div className="archive_individual_actor_container">
-                <h2>Starting Actor</h2>
-                <ActorMovieContainer
-                  name={firstActorShown.name}
-                  image={firstActorShown.image}
-                />
+        <h2 className="archived_game_title">PLAY AN ARCHIVED GAME</h2>
+        <button
+          className="close_modal_button archived_game"
+          onClick={handleCloseModal}
+        >
+          <AiOutlineClose size={20} color="#fff" />
+        </button>
+        <p className="archive_prompt">
+          Select a past Hollywoodle game by picking an available date from the
+          calendar.
+        </p>
+        <Calendar
+          onChange={onChange}
+          value={value}
+          calendarType={"US"}
+          defaultView={"month"}
+          minDetail={"year"}
+          activeStartDate={startOfToday()}
+          defaultValue={startOfToday()}
+          maxDate={startOfToday()}
+          minDate={new Date(2022, 3, 1)}
+          prevLabel={<CgChevronLeftO size={25} color="#fff" />}
+          prev2Label={<CgChevronDoubleLeftO size={25} color="#fff" />}
+          nextLabel={<CgChevronRightO size={25} color="#fff" />}
+          next2Label={<CgChevronDoubleRightO size={25} color="#fff" />}
+          tileContent={({ activeStartDate, date, view }) => {
+            return formatDate(date) === formatDate(startOfToday()) ? (
+              <AiFillStar size={25} className="current_date_star" />
+            ) : null;
+          }}
+          onClickDay={(value) => changeCurrentArchiveDate(formatDate(value))}
+        />
+        <div className="archive_results_container">
+          <div className="archive_date_container">
+            <p>Selected Date:</p>
+            <h3>{formatDate(value)}</h3>
+          </div>
+          <div className="archive_date_actors_container">
+            {resultsLoading ? (
+              <div className="archive_loading_container">
+                <ClipLoader color="#fff" size={100} />
               </div>
-              <div className="archive_individual_actor_container">
-                <BsArrowRight
-                  className="achive_actor_separator_arrow"
-                  color={"#fff"}
-                  size={30}
-                />
-              </div>
-              <div className="archive_individual_actor_container">
-                <h2>Goal Actor</h2>
-                <ActorMovieContainer
-                  name={lastActorShown.name}
-                  image={lastActorShown.image}
-                />
-              </div>
-            </>
-          ) : (
-            <p>No available results for that date!</p>
+            ) : firstActorShown && lastActorShown ? (
+              <>
+                <div className="archive_individual_actor_container">
+                  <h2>Starting Actor</h2>
+                  <ActorMovieContainer
+                    name={firstActorShown.name}
+                    image={firstActorShown.image}
+                  />
+                </div>
+                <div className="archive_individual_actor_container">
+                  <BsArrowRight
+                    className="achive_actor_separator_arrow"
+                    color={"#fff"}
+                    size={30}
+                  />
+                </div>
+                <div className="archive_individual_actor_container">
+                  <h2>Goal Actor</h2>
+                  <ActorMovieContainer
+                    name={lastActorShown.name}
+                    image={lastActorShown.image}
+                  />
+                </div>
+              </>
+            ) : (
+              <p>No available results for that date!</p>
+            )}
+          </div>
+          {!resultsLoading && (
+            <Button
+              onClick={handlePlayButton}
+              className={`guess_button archived_play_button dark ${
+                currentArchiveDate === currentlyPlayingDate ? "disabled" : ""
+              }`}
+            >
+              PLAY
+            </Button>
           )}
         </div>
-        {!resultsLoading && (
-          <Button
-            onClick={handlePlayButton}
-            className={`guess_button archived_play_button dark ${
-              currentArchiveDate === currentlyPlayingDate ? "disabled" : ""
-            }`}
-          >
-            PLAY
-          </Button>
-        )}
-      </div>
-    </Modal>
+      </Modal>
+    </RemoveScroll>
   );
 };

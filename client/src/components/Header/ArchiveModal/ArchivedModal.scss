@@ -14,6 +14,12 @@
   }
 }
 
+.archived_modal {
+  @media only screen and (max-width: 400px) {
+    max-height: 550px;
+  }
+}
+
 .react-calendar {
   font-family: "Helvetica Neue" !important;
   color: #000;
