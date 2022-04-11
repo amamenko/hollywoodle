@@ -25,13 +25,13 @@ export const updateDatabaseActors = async () => {
     (actor: { [key: string]: number }) => actor.id
   );
 
-  // Look up longer movie terms featured in the past 3 weeks and blacklist terms
-  const pastThreeWeeksArr = pastMonthArr.slice(0, 22);
+  // Look up longer movie terms featured in the past 2 weeks and blacklist terms
+  const pastTwoWeeksArr = pastMonthArr.slice(0, 15);
   const allBlacklistedMovieTerms = [
     ...new Set(
       allDbActors
         .filter((actor: { [key: string]: string }) =>
-          pastThreeWeeksArr.includes(actor.date)
+          pastTwoWeeksArr.includes(actor.date)
         )
         .map((actor) =>
           actor.most_popular_recent_movie.title

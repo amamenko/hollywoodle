@@ -11,18 +11,18 @@ export const getRandomPopularActor = async (
 
   if (!blacklistedMovieTerms) blacklistedMovieTerms = [];
 
-  while (triesCounter < 50) {
+  while (triesCounter < 25) {
     console.log(`Try #${triesCounter}`);
 
     const pageArr = [];
 
-    for (let i = 1; i <= 50; i++) {
+    for (let i = 1; i <= 25; i++) {
       pageArr.push(i);
     }
 
     const randomPage = sample(pageArr);
 
-    // Get random popular actor between pages 1-50 of TMDB's Popular Actors list
+    // Get random popular actor between pages 1-25 of TMDB's Popular Actors list
     const searchURL = `https://api.themoviedb.org/3/person/popular?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=${randomPage}`;
 
     const results = await axios
@@ -58,6 +58,7 @@ export const getRandomPopularActor = async (
             .filter((el: string) => el === "movie").length >= 2 &&
           currentActor.known_for_department === "Acting" &&
           currentActor.profile_path &&
+          currentActor.id <= 1200000 &&
           !currentActor.adult &&
           currentActor.popularity >= 16.35 &&
           !allBlacklistedIDs.includes(currentActor.id) &&
