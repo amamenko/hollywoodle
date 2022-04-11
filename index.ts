@@ -31,7 +31,6 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
   const requestedDate = req.query.date;
   const dateRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/gim;
   if (typeof requestedDate === "string" && dateRegex.test(requestedDate)) {
-    console.log("HIT");
     const actors = await Actor.find({ date: requestedDate }).catch((e) =>
       console.error(e)
     );
