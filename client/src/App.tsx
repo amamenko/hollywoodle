@@ -143,6 +143,7 @@ const App = () => {
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
   const [showIntroModal, changeShowIntroModal] = useState(false);
   const [currentEmojiGrid, changeEmojiGrid] = useState<string[]>([]);
+  const [initialAppMounted, changeInitialAppMounted] = useState(false);
 
   // For use in archived games
   const [currentArchivedActorsResults, changeCurrentArchivedActorsResults] =
@@ -311,13 +312,14 @@ const App = () => {
       } catch (e) {
         console.error(e);
       }
+      changeInitialAppMounted(true);
     };
 
     const relevantDateActors = currentArchivedActorsResults.filter(
       (el: ActorObj) => el.date === currentlyPlayingDate
     );
 
-    if (currentlyPlayingDate && relevantDateActors.length !== 2) {
+    if (!initialAppMounted && relevantDateActors.length < 2) {
       fetchData();
     } else {
       const foundFirst = relevantDateActors.find(
@@ -335,7 +337,7 @@ const App = () => {
         changeLastActor(foundLast);
       }
     }
-  }, [currentArchivedActorsResults, currentlyPlayingDate]);
+  }, [currentArchivedActorsResults, currentlyPlayingDate, initialAppMounted]);
 
   useEffect(() => {
     const sortedGuesses = guesses.sort((a, b) => {
