@@ -16,8 +16,31 @@ export const getRandomPopularActor = async (
 
     const pageArr = [];
 
-    for (let i = 1; i <= 25; i++) {
-      pageArr.push(i);
+    // First run, try very top actors
+    if (triesCounter <= 5) {
+      for (let i = 1; i <= 5; i++) {
+        pageArr.push(i);
+      }
+      // No luck after first run, try second tier popularity
+    } else if (triesCounter <= 10) {
+      for (let i = 6; i <= 10; i++) {
+        pageArr.push(i);
+      }
+      // Again no luck after second run - try third tier popularity
+    } else if (triesCounter <= 15) {
+      for (let i = 11; i <= 15; i++) {
+        pageArr.push(i);
+      }
+      // Again no luck after third run - try fourth tier popularity
+    } else if (triesCounter <= 20) {
+      for (let i = 16; i <= 20; i++) {
+        pageArr.push(i);
+      }
+      // Final try to loop through pages 21-25 of popularity
+    } else {
+      for (let i = 21; i <= 25; i++) {
+        pageArr.push(i);
+      }
     }
 
     const randomPage = sample(pageArr);

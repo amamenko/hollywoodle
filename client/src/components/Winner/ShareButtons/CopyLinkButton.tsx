@@ -1,12 +1,14 @@
 import { Dispatch, FC, SetStateAction } from "react";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { HiLink } from "react-icons/hi";
+import { IoFootstepsSharp } from "react-icons/io5";
 
 interface CopyLinkButtonProps {
   shareLinkClicked: boolean;
   changeShareLinkClicked: Dispatch<SetStateAction<boolean>>;
   shareLinkAnimatingOut: boolean;
   copyShareLink?: string;
+  path?: boolean;
 }
 
 const CopyLinkButton: FC<CopyLinkButtonProps> = ({
@@ -14,6 +16,7 @@ const CopyLinkButton: FC<CopyLinkButtonProps> = ({
   changeShareLinkClicked,
   shareLinkAnimatingOut,
   copyShareLink,
+  path,
 }) => {
   const handleShareLinkClicked = (shareLink: string) => {
     // Handle copy to clipboard
@@ -70,7 +73,11 @@ const CopyLinkButton: FC<CopyLinkButtonProps> = ({
           }
         }}
       >
-        <HiLink className="link_share_button_icon" />
+        {path ? (
+          <IoFootstepsSharp className="link_share_button_icon" />
+        ) : (
+          <HiLink className="link_share_button_icon" />
+        )}
         {shareLinkClicked && (
           <div
             className={`tooltip_container ${
@@ -80,7 +87,7 @@ const CopyLinkButton: FC<CopyLinkButtonProps> = ({
             <div className="tooltip_outer_wrapper">
               <div className="tooltip_inner_wrapper">
                 <IoIosCheckmarkCircle />
-                <span>Link copied!</span>
+                <span>{path ? "Path" : "Link"} copied!</span>
               </div>
             </div>
           </div>
