@@ -91,7 +91,7 @@ export const WhoButton = ({
   }, [firstActor, lastActor, typeOfGuess, guesses, hintCollapsed]);
 
   useEffect(() => {
-    if (hintCollapsed === false || win || currentlyPlayingDate) {
+    if (!hintCollapsed || win) {
       changeCollapse(false);
       changeCurrentHint({
         name: "",

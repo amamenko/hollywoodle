@@ -4,6 +4,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import Modal from "react-modal";
 import { ReactComponent as ComingSoon } from "../../assets/ComingSoon.svg";
 import { RemoveScroll } from "react-remove-scroll";
+import { Button } from "reactstrap";
+import { format } from "date-fns-tz";
 
 const customModalStyles = {
   content: {
@@ -33,6 +35,7 @@ export const Statistics = ({
   const [currentStreak, changeCurrentStreak] = useState(0);
   const [maxStreak, changeMaxStreak] = useState(0);
   const [averageMoves, changeAverageMoves] = useState<number[]>([]);
+  const [resetStatsModalOpen, changeResetStatsModalOpen] = useState(false);
 
   let storageObj: { [key: string]: number | number[] } = {};
 
@@ -70,9 +73,37 @@ export const Statistics = ({
 
   Modal.setAppElement("#root");
 
-  const measureAverageMoves =
+  let measureAverageMoves =
     Math.round(averageMoves.reduce((a, b) => a + b, 0) / averageMoves.length) ||
     0;
+
+  const handleToggleResetStatsModal = () => {
+    changeResetStatsModalOpen(!resetStatsModalOpen);
+  };
+
+  const handleResetStatistics = () => {
+    measureAverageMoves = 0;
+    changeAverageMoves([]);
+    changeCurrentStreak(0);
+    changeMaxStreak(0);
+    const currentDate = format(new Date(), "MM/dd/yyyy", {
+      timeZone: "America/New_York",
+    });
+
+    localStorage.setItem(
+      "hollywoodle-statistics",
+      JSON.stringify({
+        current_date: currentDate,
+        last_played: "",
+        current_streak: 0,
+        max_streak: 0,
+        avg_moves: [],
+        played_today: false,
+      })
+    );
+
+    handleToggleResetStatsModal();
+  };
 
   return (
     <RemoveScroll enabled={modalOpen}>
@@ -112,6 +143,39 @@ export const Statistics = ({
           <h2>NEXT HOLLYWOODLE</h2>
           <CountdownTimer />
         </div>
+        <div
+          className="reset_statistics_container"
+          onClick={handleToggleResetStatsModal}
+        >
+          <p>Reset Statistics</p>
+        </div>
+        <Modal
+          isOpen={resetStatsModalOpen}
+          onRequestClose={handleToggleResetStatsModal}
+          contentLabel="Reset Statistics Modal"
+          className="modal_container reset_statistics_modal"
+          shouldFocusAfterRender={false}
+          style={customModalStyles}
+        >
+          <div className="reset_statistics_content_container">
+            <button
+              className="close_modal_button"
+              onClick={handleToggleResetStatsModal}
+            >
+              <AiOutlineClose size={20} color="#fff" />
+            </button>
+            <p>Are you sure you want to reset your Hollywoodle statistics?</p>
+            <Button className={"who_button"} onClick={handleResetStatistics}>
+              RESET STATISTICS
+            </Button>
+            <Button
+              className={"who_button"}
+              onClick={handleToggleResetStatsModal}
+            >
+              GO BACK
+            </Button>
+          </div>
+        </Modal>
       </Modal>
     </RemoveScroll>
   );
