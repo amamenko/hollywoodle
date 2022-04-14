@@ -40,13 +40,13 @@ export const getSuggestions = async (
         : "";
 
       if (a.popularity < b.popularity) {
-        if (inputValue === aLower) {
+        if (inputValue === aLower && inputValue !== bLower) {
           return -1;
         } else {
           return 1;
         }
       } else if (a.popularity > b.popularity) {
-        if (inputValue === bLower) {
+        if (inputValue === bLower && inputValue !== aLower) {
           return 1;
         } else {
           return -1;
