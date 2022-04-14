@@ -10,6 +10,7 @@ import TwitterButton from "./ShareButtons/TwitterButton";
 import CopyLinkButton from "./ShareButtons/CopyLinkButton";
 import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
+import { sortAsc } from "../AutosuggestInput/AutosuggestInput";
 
 export interface FullRewardElement extends RewardElement {
   container?: HTMLElement;
@@ -22,6 +23,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     lastActor,
     darkMode,
     changeWin,
+    guesses,
     changeGuesses,
     changeCurrentMoves,
     changeMostRecentActor,
@@ -29,6 +31,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     currentEmojiGrid,
     changeEmojiGrid,
   } = useContext(AppContext);
+  const [lastClicked, changeLastClicked] = useState("");
   // Regular share link
   const [shareLinkClicked, changeShareLinkClicked] = useState(false);
   const [shareLinkAnimatingOut, changeShareLinkAnimatingOut] = useState(false);
@@ -39,6 +42,23 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     useState(false);
 
   const [finalEmojiGrid, changeFinalEmojiGrid] = useState("");
+  const [finalPath, changeFinalPath] = useState("");
+
+  useEffect(() => {
+    let pathArr = [];
+    pathArr.push(firstActor.name);
+    const correctGuesses = guesses
+      .sort(sortAsc)
+      .filter((guess) => !guess.incorrect && guess.incorrect !== "partial");
+    pathArr = [
+      ...pathArr,
+      ...correctGuesses.map((guess) =>
+        guess.type === "movie" ? `${guess.guess} (${guess.year})` : guess.guess
+      ),
+    ];
+    pathArr.push(lastActor.name);
+    changeFinalPath(pathArr.join(" ➡️ "));
+  }, [firstActor.name, guesses, lastActor.name]);
 
   useEffect(() => {
     const fillerEmoji = darkMode ? "⬛" : "⬜";
@@ -99,6 +119,8 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     if (pathShareLinkAnimatingOut) {
       changePathShareLinkAnimatingOut(false);
     }
+
+    changeLastClicked("");
   };
 
   // Throw popcorn as soon as the winner component mounts
@@ -125,43 +147,50 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
   }, [ref]);
 
   useEffect(() => {
-    if (shareLinkClicked) {
-      if (pathShareLinkClicked) {
-        changePathShareLinkClicked(false);
-        changePathShareLinkAnimatingOut(false);
-        changeShareLinkClicked(true);
-        changeShareLinkAnimatingOut(false);
-      }
-
+    const handleAnimateOutTimeout = (
+      clickedFn: (value: React.SetStateAction<boolean>) => void,
+      animatingOutFn: (value: React.SetStateAction<boolean>) => void
+    ) => {
       setTimeout(() => {
-        changeShareLinkAnimatingOut(true);
+        animatingOutFn(true);
       }, 4500);
 
       setTimeout(() => {
-        changeShareLinkClicked(false);
-        changeShareLinkAnimatingOut(false);
+        clickedFn(false);
+        animatingOutFn(false);
       }, 4800);
-    }
-  }, [shareLinkClicked, pathShareLinkClicked]);
+    };
 
-  useEffect(() => {
-    if (pathShareLinkClicked) {
-      if (shareLinkClicked) {
-        changeShareLinkClicked(false);
-        changeShareLinkAnimatingOut(false);
-        changePathShareLinkClicked(true);
-        changePathShareLinkAnimatingOut(false);
+    const resetOppositeCopyShareLink = (
+      clickedFn: (value: React.SetStateAction<boolean>) => void,
+      animatingOutFn: (value: React.SetStateAction<boolean>) => void
+    ) => {
+      clickedFn(false);
+      animatingOutFn(false);
+    };
+
+    if (lastClicked === "link" && shareLinkClicked) {
+      handleAnimateOutTimeout(
+        changeShareLinkClicked,
+        changeShareLinkAnimatingOut
+      );
+      resetOppositeCopyShareLink(
+        changePathShareLinkClicked,
+        changePathShareLinkAnimatingOut
+      );
+    } else {
+      if (lastClicked === "path" && pathShareLinkClicked) {
+        handleAnimateOutTimeout(
+          changePathShareLinkClicked,
+          changePathShareLinkAnimatingOut
+        );
+        resetOppositeCopyShareLink(
+          changeShareLinkClicked,
+          changeShareLinkAnimatingOut
+        );
       }
-      setTimeout(() => {
-        changePathShareLinkAnimatingOut(true);
-      }, 4500);
-
-      setTimeout(() => {
-        changePathShareLinkClicked(false);
-        changePathShareLinkAnimatingOut(false);
-      }, 4800);
     }
-  }, [pathShareLinkClicked, shareLinkClicked]);
+  }, [shareLinkClicked, pathShareLinkClicked, lastClicked]);
 
   const shareText = `I connected ${firstActor.name} to ${
     lastActor.name
@@ -236,16 +265,18 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
           <CopyLinkButton
             shareLinkClicked={shareLinkClicked}
             changeShareLinkClicked={changeShareLinkClicked}
+            changeLastClicked={changeLastClicked}
             shareLinkAnimatingOut={shareLinkAnimatingOut}
             copyShareLink={`${finalShareText.trim()}\nhttps://hollywoodle.ml/`}
           />
-          {/* <CopyLinkButton
+          <CopyLinkButton
             shareLinkClicked={pathShareLinkClicked}
             changeShareLinkClicked={changePathShareLinkClicked}
+            changeLastClicked={changeLastClicked}
             shareLinkAnimatingOut={pathShareLinkAnimatingOut}
-            copyShareLink={`${finalShareText.trim()}\nhttps://hollywoodle.ml/`}
+            copyShareLink={finalPath}
             path={true}
-          /> */}
+          />
           <TwitterButton
             twitterShareText={finalShareText}
             twitterShareLink={"https://hollywoodle.ml/"}

@@ -48,7 +48,7 @@
 .Toastify__toast-container {
   position: fixed;
   top: 70px;
-  z-index: 999999999999999999999;
+  z-index: 99999999999 !important;
 }
 
 .Toastify__toast-theme--dark {

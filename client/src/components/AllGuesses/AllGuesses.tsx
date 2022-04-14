@@ -79,12 +79,12 @@ export const AllGuesses = ({ mostRecentMovie }: { [key: string]: any }) => {
               movie={determinedMovie}
               incorrect={el.incorrect}
               year={
-                determinedMovie
-                  ? mostRecentMovie &&
-                    typeof mostRecentMovie === "object" &&
-                    !Array.isArray(mostRecentMovie)
-                    ? mostRecentMovie.year.toString()
-                    : " "
+                el.year
+                  ? el.year.toString()
+                  : el.last_correct_movie &&
+                    typeof el.last_correct_movie === "object" &&
+                    !Array.isArray(el.last_correct_movie)
+                  ? el.last_correct_movie.year.toString()
                   : ""
               }
               points={el.incorrect === "partial" ? 2 : el.incorrect ? 3 : 1}

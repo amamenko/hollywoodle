@@ -6,6 +6,7 @@ import { IoFootstepsSharp } from "react-icons/io5";
 interface CopyLinkButtonProps {
   shareLinkClicked: boolean;
   changeShareLinkClicked: Dispatch<SetStateAction<boolean>>;
+  changeLastClicked: Dispatch<SetStateAction<string>>;
   shareLinkAnimatingOut: boolean;
   copyShareLink?: string;
   path?: boolean;
@@ -14,6 +15,7 @@ interface CopyLinkButtonProps {
 const CopyLinkButton: FC<CopyLinkButtonProps> = ({
   shareLinkClicked,
   changeShareLinkClicked,
+  changeLastClicked,
   shareLinkAnimatingOut,
   copyShareLink,
   path,
@@ -60,6 +62,7 @@ const CopyLinkButton: FC<CopyLinkButtonProps> = ({
 
     if (!shareLinkClicked) {
       changeShareLinkClicked(true);
+      changeLastClicked(path ? "path" : "link");
     }
   };
 
