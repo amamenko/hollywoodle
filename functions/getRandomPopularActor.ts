@@ -75,13 +75,17 @@ export const getRandomPopularActor = async (
                   : ""
               )
           ) &&
-          currentActor.known_for[0].media_type === "movie" &&
+          (currentActor.known_for[0].media_type === "movie" ||
+            // The Simpsons almost always gets bumped to the top for actors' most known for roles
+            currentActor.known_for[0].name
+              .toLowerCase()
+              .includes("simpsons")) &&
           currentActor.known_for
             .map((movie: { [key: string]: any }) => movie.media_type)
             .filter((el: string) => el === "movie").length >= 2 &&
           currentActor.known_for_department === "Acting" &&
           currentActor.profile_path &&
-          currentActor.id <= 1200000 &&
+          currentActor.id <= 2000000 &&
           !currentActor.adult &&
           currentActor.popularity >= 16.35 &&
           !allBlacklistedIDs.includes(currentActor.id) &&
