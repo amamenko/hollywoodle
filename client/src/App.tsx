@@ -153,7 +153,6 @@ const App = () => {
       timeZone: "America/New_York",
     })
   );
-
   const rewardEl = useRef<RewardElement>(null);
 
   useEffect(() => {

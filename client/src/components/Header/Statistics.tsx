@@ -6,6 +6,7 @@ import { ReactComponent as ComingSoon } from "../../assets/ComingSoon.svg";
 import { RemoveScroll } from "react-remove-scroll";
 import { Button } from "reactstrap";
 import { format } from "date-fns-tz";
+import { toast } from "react-toastify";
 
 const customModalStyles = {
   content: {
@@ -48,6 +49,11 @@ export const Statistics = ({
       console.error(e);
     }
   }
+
+  // Remove all displayed toasts on modal open
+  useEffect(() => {
+    if (modalOpen) toast.dismiss();
+  }, [modalOpen]);
 
   useEffect(() => {
     if (
@@ -142,6 +148,11 @@ export const Statistics = ({
         <div className="modal_statistics_countdown">
           <h2>NEXT HOLLYWOODLE</h2>
           <CountdownTimer />
+        </div>
+        <div className="statistics_time_disclaimer">
+          <p>Until 12:00 AM Eastern Time (GMT-4),</p>
+          <p>11:00 PM Central Daylight Time (GMT-5),</p>
+          <p>9:00 PM Pacific Daylight Time (GMT-7)</p>
         </div>
         <div
           className="reset_statistics_container"

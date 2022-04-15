@@ -10,8 +10,8 @@ import {
 } from "react-icons/cg";
 import { AiFillStar } from "react-icons/ai";
 import { BsArrowRight } from "react-icons/bs";
-import { format } from "date-fns-tz";
 import { startOfToday } from "date-fns";
+import { format, zonedTimeToUtc } from "date-fns-tz";
 import { ActorMovieContainer } from "../../ActorMovieContainer/ActorMovieContainer";
 import { Button } from "reactstrap";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -21,6 +21,7 @@ import { RemoveScroll } from "react-remove-scroll";
 import "./ArchivedModal.scss";
 import "../Header.scss";
 import "react-calendar/dist/Calendar.css";
+import { toast } from "react-toastify";
 
 export const customModalStyles = {
   content: {
@@ -68,7 +69,9 @@ export const ArchivedModal = ({
     });
   };
 
-  const [value, onChange] = useState(startOfToday());
+  const [value, onChange] = useState(
+    zonedTimeToUtc(startOfToday(), "America/New_York")
+  );
   const [resultsLoading, changeResultsLoading] = useState(false);
   const [currentArchiveDate, changeCurrentArchiveDate] = useState(
     formatDate(value)
@@ -102,10 +105,13 @@ export const ArchivedModal = ({
     }
   };
 
+  // Remove all displayed toasts on modal open
   useEffect(() => {
-    const currentDate = format(new Date(), "MM/dd/yyyy", {
-      timeZone: "America/New_York",
-    });
+    if (showArchivedModal) toast.dismiss();
+  }, [showArchivedModal]);
+
+  useEffect(() => {
+    const currentDate = formatDate(new Date());
     const matchingDateActorsArr = currentArchivedActorsResults.filter(
       (actor) => actor.date === currentArchiveDate
     );
@@ -201,16 +207,17 @@ export const ArchivedModal = ({
           calendarType={"US"}
           defaultView={"month"}
           minDetail={"year"}
-          activeStartDate={startOfToday()}
-          defaultValue={startOfToday()}
-          maxDate={startOfToday()}
+          activeStartDate={zonedTimeToUtc(startOfToday(), "America/New_York")}
+          defaultValue={zonedTimeToUtc(startOfToday(), "America/New_York")}
+          maxDate={zonedTimeToUtc(startOfToday(), "America/New_York")}
           minDate={new Date(2022, 3, 1)}
           prevLabel={<CgChevronLeftO size={25} color="#fff" />}
           prev2Label={<CgChevronDoubleLeftO size={25} color="#fff" />}
           nextLabel={<CgChevronRightO size={25} color="#fff" />}
           next2Label={<CgChevronDoubleRightO size={25} color="#fff" />}
           tileContent={({ activeStartDate, date, view }) => {
-            return formatDate(date) === formatDate(startOfToday()) ? (
+            return formatDate(date) ===
+              formatDate(zonedTimeToUtc(startOfToday(), "America/New_York")) ? (
               <AiFillStar size={25} className="current_date_star" />
             ) : null;
           }}

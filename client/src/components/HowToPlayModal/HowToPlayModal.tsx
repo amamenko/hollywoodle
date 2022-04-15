@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineQuestionCircle, AiOutlineClose } from "react-icons/ai";
 import { CountdownTimer } from "../Countdown/CountdownTimer";
 import { RemoveScroll } from "react-remove-scroll";
 import "./HowToPlayModal.scss";
+import { toast } from "react-toastify";
 
 export const HowToPlayModal = () => {
   const [displayModal, changeDisplayModal] = useState(false);
+
+  // Remove all displayed toasts on modal open
+  useEffect(() => {
+    if (displayModal) toast.dismiss();
+  }, [displayModal]);
 
   return (
     <RemoveScroll className="modal_scroll_container" enabled={displayModal}>
