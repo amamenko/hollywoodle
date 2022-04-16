@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CountdownTimer } from "../Countdown/CountdownTimer";
 import { AiOutlineClose } from "react-icons/ai";
 import Modal from "react-modal";
@@ -7,6 +7,7 @@ import { RemoveScroll } from "react-remove-scroll";
 import { Button } from "reactstrap";
 import { format } from "date-fns-tz";
 import { toast } from "react-toastify";
+import { AppContext } from "../../App";
 
 const customModalStyles = {
   content: {
@@ -37,6 +38,8 @@ export const Statistics = ({
   const [maxStreak, changeMaxStreak] = useState(0);
   const [averageMoves, changeAverageMoves] = useState<number[]>([]);
   const [resetStatsModalOpen, changeResetStatsModalOpen] = useState(false);
+
+  const { fullTimezoneDate, objectiveCurrentDate } = useContext(AppContext);
 
   let storageObj: { [key: string]: number | number[] } = {};
 
@@ -92,14 +95,11 @@ export const Statistics = ({
     changeAverageMoves([]);
     changeCurrentStreak(0);
     changeMaxStreak(0);
-    const currentDate = format(new Date(), "MM/dd/yyyy", {
-      timeZone: "America/New_York",
-    });
 
     localStorage.setItem(
       "hollywoodle-statistics",
       JSON.stringify({
-        current_date: currentDate,
+        current_date: objectiveCurrentDate,
         last_played: "",
         current_streak: 0,
         max_streak: 0,
@@ -150,9 +150,15 @@ export const Statistics = ({
           <CountdownTimer />
         </div>
         <div className="statistics_time_disclaimer">
-          <p>Until 12:00 AM Eastern Time (GMT-4),</p>
-          <p>11:00 PM Central Daylight Time (GMT-5),</p>
-          <p>9:00 PM Pacific Daylight Time (GMT-7)</p>
+          <p>
+            Until 12:00 AM Eastern Time (GMT-4)
+            {!fullTimezoneDate.includes("12:00 AM") && " or"}
+          </p>
+          {!fullTimezoneDate.includes("12:00 AM") && (
+            <>
+              <p>{fullTimezoneDate}</p>
+            </>
+          )}
         </div>
         <div
           className="reset_statistics_container"

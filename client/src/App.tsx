@@ -68,6 +68,10 @@ interface ContextProps {
   changeCurrentArchivedActorsResults: React.Dispatch<
     React.SetStateAction<ActorObj[]>
   >;
+  fullTimezoneDate: string;
+  changeFullTimezoneDate: React.Dispatch<React.SetStateAction<string>>;
+  objectiveCurrentDate: string;
+  changeObjectiveCurrentDate: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -105,6 +109,10 @@ export const AppContext = createContext<ContextProps>({
   changeCurrentlyPlayingDate: () => {},
   currentArchivedActorsResults: [],
   changeCurrentArchivedActorsResults: () => {},
+  fullTimezoneDate: "",
+  changeFullTimezoneDate: () => {},
+  objectiveCurrentDate: "",
+  changeObjectiveCurrentDate: () => {},
 });
 
 const App = () => {
@@ -145,77 +153,77 @@ const App = () => {
   const [currentEmojiGrid, changeEmojiGrid] = useState<string[]>([]);
   const [initialAppMounted, changeInitialAppMounted] = useState(false);
 
+  // For use in statistics/game logic
+  const [fullTimezoneDate, changeFullTimezoneDate] = useState("");
+  const [objectiveCurrentDate, changeObjectiveCurrentDate] = useState("");
+
   // For use in archived games
   const [currentArchivedActorsResults, changeCurrentArchivedActorsResults] =
     useState<ActorObj[]>([]);
-  const [currentlyPlayingDate, changeCurrentlyPlayingDate] = useState(
-    format(new Date(), "MM/dd/yyyy", {
-      timeZone: "America/New_York",
-    })
-  );
+  const [currentlyPlayingDate, changeCurrentlyPlayingDate] = useState("");
   const rewardEl = useRef<RewardElement>(null);
 
   useEffect(() => {
-    const currentDate = format(new Date(), "MM/dd/yyyy", {
-      timeZone: "America/New_York",
-    });
+    if (objectiveCurrentDate) {
+      if (!localStorage.getItem("hollywoodle-statistics")) {
+        changeShowIntroModal(true);
+        localStorage.setItem(
+          "hollywoodle-statistics",
+          JSON.stringify({
+            current_date: objectiveCurrentDate,
+            last_played: "",
+            current_streak: 0,
+            max_streak: 0,
+            avg_moves: [],
+            played_today: false,
+          })
+        );
+      } else {
+        const storageStr = localStorage.getItem("hollywoodle-statistics");
+        let storageObj: { [key: string]: number | number[] } = {};
 
-    if (!localStorage.getItem("hollywoodle-statistics")) {
-      changeShowIntroModal(true);
-      localStorage.setItem(
-        "hollywoodle-statistics",
-        JSON.stringify({
-          current_date: currentDate,
-          last_played: "",
-          current_streak: 0,
-          max_streak: 0,
-          avg_moves: [],
-          played_today: false,
-        })
-      );
-    } else {
-      const storageStr = localStorage.getItem("hollywoodle-statistics");
-      let storageObj: { [key: string]: number | number[] } = {};
-
-      try {
-        storageObj = JSON.parse(storageStr ? storageStr : "");
-      } catch (e) {
-        console.error(e);
-      }
-      let resetStreak = false;
-      if (currentDate !== storageObj.current_date.toString()) {
-        if (storageObj.last_played) {
-          const parsedCurrentdDate = parse(
-            currentDate,
-            "MM/dd/yyyy",
-            new Date()
-          );
-          const parsedLastPlayed = parse(
-            storageObj.last_played.toString(),
-            "MM/dd/yyyy",
-            new Date()
-          );
-
-          const difference = differenceInDays(
-            parsedCurrentdDate,
-            parsedLastPlayed
-          );
-          if (difference >= 2) resetStreak = true;
+        try {
+          storageObj = JSON.parse(storageStr ? storageStr : "");
+        } catch (e) {
+          console.error(e);
         }
-      }
+        let resetStreak = false;
+        if (objectiveCurrentDate !== storageObj.current_date.toString()) {
+          if (storageObj.last_played) {
+            const parsedCurrentdDate = parse(
+              objectiveCurrentDate,
+              "MM/dd/yyyy",
+              new Date()
+            );
+            const parsedLastPlayed = parse(
+              storageObj.last_played.toString(),
+              "MM/dd/yyyy",
+              new Date()
+            );
 
-      localStorage.setItem(
-        "hollywoodle-statistics",
-        JSON.stringify({
-          ...storageObj,
-          current_date: currentDate,
-          current_streak: resetStreak ? 0 : storageObj.current_streak,
-          played_today:
-            storageObj.last_played.toString() === currentDate ? true : false,
-        })
-      );
+            const difference = differenceInDays(
+              parsedCurrentdDate,
+              parsedLastPlayed
+            );
+            if (difference >= 2) resetStreak = true;
+          }
+        }
+
+        localStorage.setItem(
+          "hollywoodle-statistics",
+          JSON.stringify({
+            ...storageObj,
+            current_date: objectiveCurrentDate,
+            current_streak: resetStreak ? 0 : storageObj.current_streak,
+            played_today:
+              storageObj.last_played.toString() === objectiveCurrentDate
+                ? true
+                : false,
+          })
+        );
+      }
     }
-  }, []);
+  }, [objectiveCurrentDate]);
 
   // Server-side is refreshing actor data, show loading component
   useEffect(() => {
@@ -441,6 +449,10 @@ const App = () => {
         changeCurrentlyPlayingDate,
         currentArchivedActorsResults,
         changeCurrentArchivedActorsResults,
+        fullTimezoneDate,
+        changeFullTimezoneDate,
+        objectiveCurrentDate,
+        changeObjectiveCurrentDate,
       }}
     >
       <ToastContainer limit={1} />

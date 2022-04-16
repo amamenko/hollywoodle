@@ -73,6 +73,7 @@ export const AutosuggestInput = ({
     currentEmojiGrid,
     changeEmojiGrid,
     currentlyPlayingDate,
+    objectiveCurrentDate,
   } = useContext(AppContext);
 
   const debounceFn = (type: "movie" | "actor") => {
@@ -211,11 +212,7 @@ export const AutosuggestInput = ({
           changeWin(true);
           gameOver = true;
 
-          const currentDate = format(new Date(), "MM/dd/yyyy", {
-            timeZone: "America/New_York",
-          });
-
-          if (currentlyPlayingDate === currentDate) {
+          if (currentlyPlayingDate === objectiveCurrentDate) {
             if (localStorage.getItem("hollywoodle-statistics")) {
               const storageStr = localStorage.getItem("hollywoodle-statistics");
               let storageObj: {
@@ -238,14 +235,14 @@ export const AutosuggestInput = ({
               currentAvgs.push(currentMoves + 1);
 
               if (
-                currentDate === storageObj.current_date &&
+                objectiveCurrentDate === storageObj.current_date &&
                 !storageObj.played_today
               ) {
                 localStorage.setItem(
                   "hollywoodle-statistics",
                   JSON.stringify({
-                    current_date: currentDate,
-                    last_played: currentDate,
+                    current_date: objectiveCurrentDate,
+                    last_played: objectiveCurrentDate,
                     current_streak: currentStreak,
                     max_streak: Math.max(
                       currentStreak,
@@ -260,8 +257,8 @@ export const AutosuggestInput = ({
               localStorage.setItem(
                 "hollywoodle-statistics",
                 JSON.stringify({
-                  current_date: currentDate,
-                  last_played: currentDate,
+                  current_date: objectiveCurrentDate,
+                  last_played: objectiveCurrentDate,
                   current_streak: 1,
                   max_streak: 1,
                   avg_moves: [currentMoves + 1],

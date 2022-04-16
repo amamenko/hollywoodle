@@ -29,6 +29,25 @@
   align-self: center;
   margin: 0 auto;
 
+  .react-calendar__tile--now:not(.react-calendar__tile--active) {
+    abbr {
+      color: #fff !important;
+    }
+  }
+
+  .react-calendar__tile--active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    abbr {
+      position: absolute;
+      z-index: 1;
+      color: #000;
+    }
+  }
+
   .react-calendar__month-view__weekdays {
     background: rgb(30, 30, 30) !important;
     font-weight: 500;

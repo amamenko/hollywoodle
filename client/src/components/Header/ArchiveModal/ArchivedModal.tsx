@@ -10,18 +10,18 @@ import {
 } from "react-icons/cg";
 import { AiFillStar } from "react-icons/ai";
 import { BsArrowRight } from "react-icons/bs";
-import { startOfToday } from "date-fns";
-import { format, zonedTimeToUtc } from "date-fns-tz";
+import { parse } from "date-fns";
+import { format } from "date-fns-tz";
 import { ActorMovieContainer } from "../../ActorMovieContainer/ActorMovieContainer";
 import { Button } from "reactstrap";
 import ClipLoader from "react-spinners/ClipLoader";
 import axios from "axios";
 import { ActorObj, AppContext } from "../../../App";
 import { RemoveScroll } from "react-remove-scroll";
+import { toast } from "react-toastify";
 import "./ArchivedModal.scss";
 import "../Header.scss";
 import "react-calendar/dist/Calendar.css";
-import { toast } from "react-toastify";
 
 export const customModalStyles = {
   content: {
@@ -61,6 +61,7 @@ export const ArchivedModal = ({
     changeEmojiGrid,
     changeMostRecentMovie,
     changeMostRecentActor,
+    objectiveCurrentDate,
   } = useContext(AppContext);
 
   const formatDate = (someDate: Date) => {
@@ -69,16 +70,24 @@ export const ArchivedModal = ({
     });
   };
 
-  const [value, onChange] = useState(
-    zonedTimeToUtc(startOfToday(), "America/New_York")
+  const [calendarLimit, changeCalendarLimit] = useState<Date | undefined>(
+    undefined
   );
+  const [value, onChange] = useState<Date | undefined>(undefined);
   const [resultsLoading, changeResultsLoading] = useState(false);
-  const [currentArchiveDate, changeCurrentArchiveDate] = useState(
-    formatDate(value)
-  );
+  const [currentArchiveDate, changeCurrentArchiveDate] = useState("");
   const [firstActorShown, changeFirstActorShown] =
     useState<ActorObj>(firstActor);
   const [lastActorShown, changeLastActorShown] = useState<ActorObj>(lastActor);
+
+  useEffect(() => {
+    if (objectiveCurrentDate && !value) {
+      const parsedDate = parse(objectiveCurrentDate, "MM/dd/yyyy", new Date());
+      changeCalendarLimit(parsedDate);
+      onChange(parsedDate);
+      changeCurrentArchiveDate(formatDate(parsedDate));
+    }
+  }, [objectiveCurrentDate, value]);
 
   const handleCloseModal = () => {
     changeShowArchivedModal(false);
@@ -111,14 +120,13 @@ export const ArchivedModal = ({
   }, [showArchivedModal]);
 
   useEffect(() => {
-    const currentDate = formatDate(new Date());
     const matchingDateActorsArr = currentArchivedActorsResults.filter(
       (actor) => actor.date === currentArchiveDate
     );
 
     if (
       currentArchiveDate &&
-      currentArchiveDate !== currentDate &&
+      currentArchiveDate !== objectiveCurrentDate &&
       matchingDateActorsArr.length === 0
     ) {
       const source = axios.CancelToken.source();
@@ -175,6 +183,7 @@ export const ArchivedModal = ({
       if (lastType && lastType.name) changeLastActorShown(lastType);
     }
   }, [
+    objectiveCurrentDate,
     currentArchiveDate,
     currentArchivedActorsResults,
     changeCurrentArchivedActorsResults,
@@ -201,32 +210,34 @@ export const ArchivedModal = ({
           Select a past Hollywoodle game by picking an available date from the
           calendar.
         </p>
-        <Calendar
-          onChange={onChange}
-          value={value}
-          calendarType={"US"}
-          defaultView={"month"}
-          minDetail={"year"}
-          activeStartDate={zonedTimeToUtc(startOfToday(), "America/New_York")}
-          defaultValue={zonedTimeToUtc(startOfToday(), "America/New_York")}
-          maxDate={zonedTimeToUtc(startOfToday(), "America/New_York")}
-          minDate={new Date(2022, 3, 1)}
-          prevLabel={<CgChevronLeftO size={25} color="#fff" />}
-          prev2Label={<CgChevronDoubleLeftO size={25} color="#fff" />}
-          nextLabel={<CgChevronRightO size={25} color="#fff" />}
-          next2Label={<CgChevronDoubleRightO size={25} color="#fff" />}
-          tileContent={({ activeStartDate, date, view }) => {
-            return formatDate(date) ===
-              formatDate(zonedTimeToUtc(startOfToday(), "America/New_York")) ? (
-              <AiFillStar size={25} className="current_date_star" />
-            ) : null;
-          }}
-          onClickDay={(value) => changeCurrentArchiveDate(formatDate(value))}
-        />
+        {objectiveCurrentDate && calendarLimit && value && (
+          <Calendar
+            onChange={onChange}
+            value={value}
+            calendarType={"US"}
+            defaultView={"month"}
+            minDetail={"year"}
+            activeStartDate={calendarLimit}
+            defaultValue={calendarLimit}
+            maxDate={calendarLimit}
+            minDate={new Date(2022, 3, 1)}
+            prevLabel={<CgChevronLeftO size={25} color="#fff" />}
+            prev2Label={<CgChevronDoubleLeftO size={25} color="#fff" />}
+            nextLabel={<CgChevronRightO size={25} color="#fff" />}
+            next2Label={<CgChevronDoubleRightO size={25} color="#fff" />}
+            tileContent={({ activeStartDate, date, view }) => {
+              return calendarLimit &&
+                formatDate(date) === formatDate(calendarLimit) ? (
+                <AiFillStar size={25} className="current_date_star" />
+              ) : null;
+            }}
+            onClickDay={(value) => changeCurrentArchiveDate(formatDate(value))}
+          />
+        )}
         <div className="archive_results_container">
           <div className="archive_date_container">
             <p>Selected Date:</p>
-            <h3>{formatDate(value)}</h3>
+            <h3>{currentArchiveDate}</h3>
           </div>
           <div className="archive_date_actors_container">
             {resultsLoading ? (

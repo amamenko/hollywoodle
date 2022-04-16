@@ -9,12 +9,16 @@ import { BiHeart } from "react-icons/bi";
 import { Statistics } from "./Statistics";
 import { Support } from "./Support";
 import { ArchivedModal } from "./ArchiveModal/ArchivedModal";
-import { format } from "date-fns-tz";
 import "./Header.scss";
 
 export const Header = () => {
-  const { currentMoves, darkMode, changeDarkMode, currentlyPlayingDate } =
-    useContext(AppContext);
+  const {
+    currentMoves,
+    darkMode,
+    changeDarkMode,
+    currentlyPlayingDate,
+    objectiveCurrentDate,
+  } = useContext(AppContext);
   const [modalOpen, changeModalOpen] = useState(false);
   const [showSupportModal, changeShowSupportModal] = useState(false);
   const [showArchivedModal, changeShowArchivedModal] = useState(false);
@@ -29,16 +33,17 @@ export const Header = () => {
   };
 
   useEffect(() => {
-    const currentDate = format(new Date(), "MM/dd/yyyy", {
-      timeZone: "America/New_York",
-    });
-
-    if (currentlyPlayingDate && currentlyPlayingDate !== currentDate) {
-      changeArchivedGame(true);
-    } else {
-      if (archivedGame) changeArchivedGame(false);
+    if (objectiveCurrentDate) {
+      if (
+        currentlyPlayingDate &&
+        currentlyPlayingDate !== objectiveCurrentDate
+      ) {
+        changeArchivedGame(true);
+      } else {
+        if (archivedGame) changeArchivedGame(false);
+      }
     }
-  }, [archivedGame, currentlyPlayingDate]);
+  }, [archivedGame, currentlyPlayingDate, objectiveCurrentDate]);
 
   return (
     <div className={`header ${darkMode ? "dark" : ""}`}>
