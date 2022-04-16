@@ -5,7 +5,6 @@ import Modal from "react-modal";
 import { ReactComponent as ComingSoon } from "../../assets/ComingSoon.svg";
 import { RemoveScroll } from "react-remove-scroll";
 import { Button } from "reactstrap";
-import { format } from "date-fns-tz";
 import { toast } from "react-toastify";
 import { AppContext } from "../../App";
 

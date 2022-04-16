@@ -20,7 +20,6 @@ import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
 import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
-import { format } from "date-fns-tz";
 import "./Autosuggest.scss";
 
 const scroll = Scroll.animateScroll;
