@@ -6,9 +6,11 @@ import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 import { BiBarChartAlt2 } from "react-icons/bi";
 import { GiBackwardTime } from "react-icons/gi";
 import { BiHeart } from "react-icons/bi";
+// import { GrTrophy } from "react-icons/gr";
 import { Statistics } from "./Statistics";
 import { Support } from "./Support";
 import { ArchivedModal } from "./ArchiveModal/ArchivedModal";
+// import { Leaderboard } from "./Leaderboard/Leaderboard";
 import "./Header.scss";
 
 export const Header = () => {
@@ -22,6 +24,7 @@ export const Header = () => {
   const [modalOpen, changeModalOpen] = useState(false);
   const [showSupportModal, changeShowSupportModal] = useState(false);
   const [showArchivedModal, changeShowArchivedModal] = useState(false);
+  // const [showLeaderboardModal, changeShowLeaderboardModal] = useState(false);
   const [archivedGame, changeArchivedGame] = useState(false);
 
   const toggleLightDarkMode = () => {
@@ -55,6 +58,15 @@ export const Header = () => {
           size={27}
           onClick={() => changeShowSupportModal(true)}
         />
+        {/* <GrTrophy
+          className="leaderboard_icon"
+          size={20}
+          onClick={() => changeShowLeaderboardModal(true)}
+        />
+        <Leaderboard
+          showLeaderboardModal={showLeaderboardModal}
+          changeShowLeaderboardModal={changeShowLeaderboardModal}
+        /> */}
         <LogoWhite className="hollywoodle_logo" />
         <GiBackwardTime
           className="archive_icon"

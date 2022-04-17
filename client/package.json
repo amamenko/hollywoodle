@@ -18,6 +18,7 @@
     "lodash.debounce": "^4.0.8",
     "react": "^17.0.2",
     "react-autosuggest": "^10.1.0",
+    "react-avatar": "^4.0.0",
     "react-calendar": "^3.7.0",
     "react-collapse": "^5.1.1",
     "react-collapsible": "^2.8.4",
@@ -30,8 +31,10 @@
     "react-rewards": "^1.1.2",
     "react-scripts": "5.0.0",
     "react-scroll": "^1.8.6",
+    "react-shimmer": "^3.2.0",
     "react-spinners": "^0.11.0",
     "react-toastify": "^8.2.0",
+    "react-world-flags": "^1.4.0",
     "react-xarrows": "^2.0.2",
     "reactstrap": "^9.0.1",
     "sass": "^1.49.9",
@@ -70,6 +73,7 @@
     "@types/react-collapse": "^5.0.1",
     "@types/react-modal": "^3.13.1",
     "@types/react-scroll": "^1.8.3",
+    "@types/react-world-flags": "^1.4.2",
     "@types/string-similarity": "^4.0.0"
   }
 }

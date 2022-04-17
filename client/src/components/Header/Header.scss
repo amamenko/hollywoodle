@@ -43,11 +43,17 @@
   @media only screen and (min-width: 768px) {
     &:hover {
       fill: rgb(200, 200, 200);
+      path {
+        stroke: rgb(200, 200, 200);
+      }
     }
 
     &:focus,
     &:active {
       fill: rgb(150, 150, 150);
+      path {
+        stroke: rgb(200, 200, 200);
+      }
     }
   }
 }
@@ -126,9 +132,16 @@
 }
 
 .support_icon {
-  // left: 5.2rem;
   left: 3rem;
   @include header_icon;
+}
+
+.leaderboard_icon {
+  left: 5.2rem;
+  @include header_icon;
+  path {
+    stroke: #fff;
+  }
 }
 
 .kofi_button_container {

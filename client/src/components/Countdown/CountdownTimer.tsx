@@ -1,5 +1,5 @@
 import { parse, addDays, format } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import { formatInTimeZone, toDate } from "date-fns-tz";
 import { useContext, useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import { AppContext } from "../../App";
@@ -9,7 +9,7 @@ export const CountdownTimer = ({
 }: {
   handleComplete?: () => void;
 }) => {
-  const [endDate, changeEndDate] = useState("");
+  const [endDate, changeEndDate] = useState<string | Date>("");
   const [countdownHours, changeCountdownHours] = useState(0);
   const [countdownMinutes, changeCountdownMinutes] = useState(0);
 
@@ -47,7 +47,7 @@ export const CountdownTimer = ({
       1
     );
     const formattedTomorrow = format(tomorrowDate, "yyyy-MM-dd");
-    const endDate = `${formattedTomorrow} 00:00:00${dateZoneArr[1]}`;
+    const finalEndDate = `${formattedTomorrow} 00:00:00${dateZoneArr[1]}`;
 
     const currentDateStr = formatInTimeZone(
       date,
@@ -60,7 +60,17 @@ export const CountdownTimer = ({
       changeCurrentlyPlayingDate(currentDateStr);
     }
 
-    changeEndDate(endDate);
+    const lastIndex = finalEndDate.lastIndexOf("-");
+    const trimmedEnd = finalEndDate.toString().substring(0, lastIndex);
+    const trimmedEndArr = trimmedEnd.split(" ");
+    const finalDateFormat = trimmedEndArr[0] + "T" + trimmedEndArr[1];
+
+    if (trimmedEndArr.length > 0) {
+      changeEndDate(toDate(finalDateFormat, { timeZone: "America/New_York" }));
+    } else {
+      const currentDate = new Date();
+      changeEndDate(toDate(currentDate, { timeZone: "America/New_York" }));
+    }
 
     const currentDateFull = format(new Date(), "HH:mm:ss");
     const hoursMinutesSecondsArr = currentDateFull.split(":");
