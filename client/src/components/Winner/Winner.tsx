@@ -5,12 +5,11 @@ import Dicaprio from "../../assets/Dicaprio.png";
 import Cats from "../../assets/Cats.jpg";
 import { RewardElement } from "react-rewards";
 import { CountdownTimer } from "../Countdown/CountdownTimer";
-import FacebookButton from "./ShareButtons/FacebookButton";
 import TwitterButton from "./ShareButtons/TwitterButton";
 import CopyLinkButton from "./ShareButtons/CopyLinkButton";
+import { sortAsc } from "../AutosuggestInput/AutosuggestInput";
 import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
-import { sortAsc } from "../AutosuggestInput/AutosuggestInput";
 
 export interface FullRewardElement extends RewardElement {
   container?: HTMLElement;
@@ -198,7 +197,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     currentMoves === 1 ? "move" : "moves"
   } on Hollywoodle.`;
 
-  const finalShareText = `${shareText}\n${finalEmojiGrid}\nThink you can beat that?`;
+  const finalShareText = `${shareText}\n${finalEmojiGrid}\n`;
 
   return (
     <div className={`winner_container ${darkMode ? "dark" : ""}`}>
@@ -280,10 +279,6 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
           <TwitterButton
             twitterShareText={finalShareText}
             twitterShareLink={"https://hollywoodle.ml/"}
-          />
-          <FacebookButton
-            facebookShareLink={"https://hollywoodle.ml/"}
-            facebookShareText={`${shareText}\nThink you can beat that?`}
           />
         </ul>
       </div>
