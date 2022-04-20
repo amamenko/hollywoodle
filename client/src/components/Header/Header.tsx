@@ -24,7 +24,7 @@ export const Header = () => {
   const [modalOpen, changeModalOpen] = useState(false);
   const [showSupportModal, changeShowSupportModal] = useState(false);
   const [showArchivedModal, changeShowArchivedModal] = useState(false);
-  const [showLeaderboardModal, changeShowLeaderboardModal] = useState(false);
+  // const [showLeaderboardModal, changeShowLeaderboardModal] = useState(false);
   const [archivedGame, changeArchivedGame] = useState(false);
 
   const toggleLightDarkMode = () => {

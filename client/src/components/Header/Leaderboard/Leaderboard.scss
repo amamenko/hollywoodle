@@ -1,23 +1,117 @@
-.main_leaderboard {
-  font-size: 0.9rem;
-  width: 100%;
-  .table_path {
-    max-height: 0px;
-    transition: max-height 0.5s ease;
-    &.expanded {
-      td {
-        max-height: 100px;
-        overflow: hidden;
-        transition: max-height 0.5s;
-        background-color: lightgray;
-        display: table-row;
-      }
+.leaderboard_modal {
+  padding-top: 2rem !important;
+  padding: 0;
+  overflow: auto;
+
+  .leaderboard_container {
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .leaderboard_disclaimer {
+    margin: 0;
+    padding: 1rem;
+    &:first-child {
+      border-top: 1px solid rgb(50, 50, 50);
+      padding-bottom: 0;
+    }
+    font-size: 0.7rem;
+
+    @media only screen and (min-width: 550px) {
+      font-size: 0.85rem;
+    }
+  }
+
+  .leadboard_title_container {
+    position: relative;
+    z-index: 99999;
+
+    .leaderboard_title {
+      padding-bottom: 1rem;
+      z-index: 9999999;
+      overflow: hidden;
     }
 
-    &.hide {
-      height: 0px !important;
-      max-height: 0px !important;
+    .spotlight_image {
+      position: absolute;
+      top: -3.75rem;
+      right: 0rem;
+      width: 8rem;
+      -webkit-transform: scaleX(-1) rotateZ(180deg);
+      transform: scaleX(-1) rotateZ(180deg);
+      opacity: 0.5;
+
+      &.left {
+        left: 0rem;
+        right: auto;
+        transform: rotateZ(180deg);
+      }
+
+      @media only screen and (min-width: 768px) {
+        right: 2rem;
+
+        &.left {
+          left: 2rem;
+          right: auto;
+        }
+      }
+    }
+  }
+}
+
+.main_leaderboard {
+  font-size: 0.9rem;
+  overflow-x: hidden;
+
+  .expanded_td_container {
+    position: relative;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none;
+  }
+  .table_path {
+    height: 0px;
+    max-height: 0px;
+    transition: height 0.25s ease-in, max-height 0.25s ease-in;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    h2 {
+      margin: 1rem 0rem 0.5rem 0rem;
+      padding: 0 0 0.75rem 0;
+      border-bottom: 1px solid rgb(100, 100, 100);
+      width: max-content;
+    }
+
+    p {
+      margin: 0 1.5rem 1rem 1.5rem;
+      padding-top: 0.25rem;
+      cursor: text;
+    }
+
+    &.expanded {
+      height: 100%;
+      max-height: 200px;
+      transition: height 0.25s ease-in, max-height 0.25s ease-in;
+      background: rgb(30, 30, 30) !important;
       overflow: hidden;
+      cursor: default;
+    }
+  }
+
+  .table_row {
+    th {
+      &:first-child {
+        width: 10px !important;
+        max-width: 10px !important;
+      }
     }
   }
 
@@ -27,6 +121,18 @@
     color: #fff;
     border-top: 1px solid #30363d !important;
     border-bottom: 2px solid #30363d !important;
+    vertical-align: middle !important;
+  }
+
+  .collapse_trigger_element {
+    .collapse_caret {
+      transform: rotateZ(0deg);
+      transition: transform 0.5s ease;
+
+      &.expanded {
+        transform: rotateZ(180deg);
+      }
+    }
   }
 
   tbody {
@@ -40,11 +146,21 @@
   tbody tr {
     position: relative;
 
-    &:hover {
+    @mixin activeSection {
       th,
-      td {
+      td:not(.expanded) {
         background: rgb(75, 75, 75) !important;
         cursor: pointer;
+      }
+    }
+
+    &:active {
+      @include activeSection;
+    }
+
+    @media only screen and (min-width: 768px) {
+      &:hover {
+        @include activeSection;
       }
     }
     th,
@@ -66,6 +182,10 @@
     td {
       background: rgb(10, 10, 10);
       color: #fff;
+
+      width: 100px !important;
+      max-width: 100px !important;
+      text-align: center;
     }
   }
 
@@ -80,14 +200,18 @@
   @media only screen and (max-width: 540px) {
     font-size: 0.65rem;
 
+    h2 {
+      font-size: 0.8rem;
+    }
+
     thead th {
-      font-size: 6px;
+      font-size: 8px;
     }
 
     tbody {
       th,
       td {
-        padding: 0.3rem !important;
+        padding: 0.45rem !important;
       }
     }
 
