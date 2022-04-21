@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { RemoveScroll } from "react-remove-scroll";
 import Modal from "react-modal";
 import Flag from "react-world-flags";
@@ -7,7 +7,10 @@ import { customModalStyles } from "../ArchiveModal/ArchivedModal";
 import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "reactstrap";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
+import { MdArrowBackIosNew } from "react-icons/md";
 import Spotlight from "../../../assets/Spotlight.png";
+import { LeaderNavigation } from "./LeaderNavigation";
+import { toast } from "react-toastify";
 import "./Leaderboard.scss";
 
 export const Leaderboard = ({
@@ -17,10 +20,16 @@ export const Leaderboard = ({
   showLeaderboardModal: boolean;
   changeShowLeaderboardModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [userCountryCode, changeUserCountryCode] = useState("");
-  const [userCountryName, changeUserCountryName] = useState("");
+  // const [userCountryCode, changeUserCountryCode] = useState("");
+  // const [userCountryName, changeUserCountryName] = useState("");
   const [collapseOpen, changeCollapseOpen] = useState(false);
   const [currentlyExpanded, changeCurrentlyExpanded] = useState(0);
+  const [leaderboardPage, changeLeaderboardPage] = useState("");
+
+  // Remove all displayed toasts on modal open
+  useEffect(() => {
+    if (showLeaderboardModal) toast.dismiss();
+  }, [showLeaderboardModal]);
 
   //   useEffect(() => {
   //     if (!userCountryCode) {
@@ -47,6 +56,7 @@ export const Leaderboard = ({
 
   const handleCloseModal = () => {
     changeShowLeaderboardModal(false);
+    changeLeaderboardPage("");
   };
 
   const collapseTriggerElement = (rank: number) => {
@@ -158,86 +168,105 @@ export const Leaderboard = ({
         shouldFocusAfterRender={false}
         style={customModalStyles}
       >
-        <div className="leadboard_title_container">
-          <img
-            className="spotlight_image left"
-            src={Spotlight}
-            alt="Spotlight"
-          />
-          <h2 className="leaderboard_title">TODAY'S LEADERBOARD</h2>
-          <img className="spotlight_image" src={Spotlight} alt="Spotlight" />
-        </div>
-        <button
-          className="close_modal_button archived_game"
-          onClick={handleCloseModal}
-        >
-          <AiOutlineClose size={20} color="#fff" />
-        </button>
-        <div className="leaderboard_container">
-          <p className="leaderboard_disclaimer">
-            The Hollywoodle leaderboard is reserved for the day's best players.
-            The fewer your moves and the sooner you complete the actor
-            connection after the game restarts at 12 AM Eastern Time, the more
-            likely your chances are of having your name up in lights!
-          </p>
-          <p className="leaderboard_disclaimer">
-            Click on any leaderboard user's row to view their full correct actor
-            connection path (you will not be able to be considered for that
-            day's leaderboard if you do.) Keep in mind that only your first
-            daily game attempt qualifies you for that day's leaderboard.
-          </p>
-          <Table className="main_leaderboard">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>User</th>
-                <th>Country</th>
-                <th>Moves</th>
-                <th>Time (ET)</th>
-                <th>Path</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((row, index) => {
-                return (
-                  <React.Fragment key={index}>
-                    <tr
-                      onClick={() => {
-                        if (row.rank === currentlyExpanded) {
-                          changeCurrentlyExpanded(0);
-                        } else {
-                          changeCurrentlyExpanded(row.rank);
-                        }
-                      }}
-                      className="table_row"
-                    >
-                      <th scope="row">{row.rank}</th>
-                      <td>{row.user}</td>
-                      <td>
-                        <Flag code={row.countryCode} height="16" />
-                      </td>
-                      <td>{row.moves}</td>
-                      <td>{row.time}</td>
-                      <td>{collapseTriggerElement(row.rank)}</td>
-                    </tr>
+        <>
+          <div className="leadboard_title_container">
+            <img
+              className="spotlight_image left"
+              src={Spotlight}
+              alt="Spotlight"
+            />
+            <h2 className="leaderboard_title">
+              {leaderboardPage === "today" ? "TODAY'S" : ""} HOLLYWOODLE
+              <br />
+              LEADERBOARD
+            </h2>
+            <img className="spotlight_image" src={Spotlight} alt="Spotlight" />
+          </div>
+          <button
+            className="close_modal_button archived_game"
+            onClick={handleCloseModal}
+          >
+            <AiOutlineClose size={20} color="#fff" />
+          </button>
+          {leaderboardPage && (
+            <button
+              className="back_modal_button"
+              onClick={() => changeLeaderboardPage("")}
+            >
+              <MdArrowBackIosNew size={20} color="#fff" />
+            </button>
+          )}
+          <div className="leaderboard_container">
+            {leaderboardPage === "" ? (
+              <LeaderNavigation changeLeaderboardPage={changeLeaderboardPage} />
+            ) : (
+              <>
+                <p className="leaderboard_disclaimer">
+                  Click on any leaderboard user's row to view their full correct
+                  actor connection path (although you won't be able to be
+                  considered for that day's leaderboard if you do.)
+                  <br />
+                  <br />
+                  Keep in mind that only your <b>first</b> daily game attempt
+                  qualifies you for that day's leaderboard.
+                </p>
+                <Table className="main_leaderboard">
+                  <thead>
                     <tr>
-                      <td colSpan={6} className="expanded_td_container">
-                        <div
-                          className={`table_path ${
-                            row.rank === currentlyExpanded ? "expanded" : ""
-                          }`}
-                        >
-                          <h2>{row.user}'s Path</h2>
-                          <p>{row.path}</p>
-                        </div>
-                      </td>
+                      <th>Rank</th>
+                      <th>User</th>
+                      <th>Country</th>
+                      <th>Moves</th>
+                      <th>Time (ET)</th>
+                      <th>Path</th>
                     </tr>
-                  </React.Fragment>
-                );
-              })}
-            </tbody>
-          </Table>
-        </div>
+                  </thead>
+                  <tbody>
+                    {tableData.map((row, index) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <tr
+                            onClick={() => {
+                              if (row.rank === currentlyExpanded) {
+                                changeCurrentlyExpanded(0);
+                              } else {
+                                changeCurrentlyExpanded(row.rank);
+                              }
+                            }}
+                            className="table_row"
+                          >
+                            <th scope="row">{row.rank}</th>
+                            <td>{row.user}</td>
+                            <td>
+                              <Flag code={row.countryCode} height="16" />
+                            </td>
+                            <td>{row.moves}</td>
+                            <td>{row.time}</td>
+                            <td>{collapseTriggerElement(row.rank)}</td>
+                          </tr>
+                          <tr>
+                            <td colSpan={6} className="expanded_td_container">
+                              <div
+                                className={`table_path ${
+                                  row.rank === currentlyExpanded
+                                    ? "expanded"
+                                    : ""
+                                }`}
+                              >
+                                <h2>{row.user}'s Path</h2>
+                                <p>{row.path}</p>
+                              </div>
+                            </td>
+                          </tr>
+                        </React.Fragment>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </>
+            )}
+          </div>
+        </>
       </Modal>
     </RemoveScroll>
   );
