@@ -2,7 +2,9 @@ import { useRef, useState } from "react";
 import { Button } from "reactstrap";
 import { Collapse } from "react-collapse";
 import { Form, FormGroup, Input, FormFeedback, FormText } from "reactstrap";
+import { cuss } from "cuss";
 import "./Leaderboard.scss";
+import { exceptedArr } from "./exceptedArr";
 
 export const LeaderNavigation = ({
   changeLeaderboardPage,
@@ -15,6 +17,23 @@ export const LeaderNavigation = ({
 
   const inputElement = useRef<HTMLInputElement | null>(null);
 
+  const validateUsername = () => {
+    const allCussWordEntries = Object.entries(cuss).filter((el) => el[1] >= 1);
+    const newCussObj = Object.fromEntries(allCussWordEntries);
+
+    const allFilteredCussWordsArr = Object.keys(newCussObj).filter(
+      (el) => !exceptedArr.includes(el)
+    );
+
+    if (
+      allFilteredCussWordsArr.some((el) =>
+        usernameInput.toLowerCase().includes(el)
+      )
+    ) {
+      changeUsernameInvalid(true);
+    }
+  };
+
   const handleUsernameButton = () => {
     if (inputElement.current) inputElement.current.focus();
     changeUsernameCollapsed(!usernameCollapsed);
@@ -25,7 +44,7 @@ export const LeaderNavigation = ({
   ) => {
     if (usernameInvalid) changeUsernameInvalid(false);
     changeUsernameInput(
-      e.target.value.toUpperCase().replace(/[^a-z0-9]/gi, "")
+      e.target.value.toUpperCase().replace(/[^a-z0-9]/gim, "")
     );
   };
 
@@ -60,22 +79,24 @@ export const LeaderNavigation = ({
                 invalid={usernameInvalid}
               />
               <FormFeedback>
-                Whoa! What do you think this is, a Tarantino movie? Keep it PG.
+                Whoa! What do you think this is, a Tarantino movie? Keep it G,
+                keep it light.
               </FormFeedback>
               <FormText>
                 Usernames must contain at least 5 characters and no more than 12
-                characters. They must also contain at least one letter.
+                characters. They must also contain at least 4 letters.
               </FormText>
             </FormGroup>
           </Form>
           <Button
             className={`guess_button dark leaderboard_set_username ${
-              (usernameInput.length < 5 ||
+              (usernameInput.replace(/\d/gim, "").length < 4 ||
+                usernameInput.length < 5 ||
                 usernameInput.length > 12 ||
                 usernameInvalid) &&
               "invalid"
             }`}
-            onClick={() => changeUsernameInvalid(true)}
+            onClick={validateUsername}
           >
             SET AS USERNAME
           </Button>
