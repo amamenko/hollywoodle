@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // import axios from "axios";
 import { RemoveScroll } from "react-remove-scroll";
 import Modal from "react-modal";
@@ -11,6 +11,7 @@ import { MdArrowBackIosNew } from "react-icons/md";
 import Spotlight from "../../../assets/Spotlight.png";
 import { LeaderNavigation } from "./LeaderNavigation";
 import { toast } from "react-toastify";
+import { AppContext } from "../../../App";
 import "./Leaderboard.scss";
 
 export const Leaderboard = ({
@@ -20,6 +21,9 @@ export const Leaderboard = ({
   showLeaderboardModal: boolean;
   changeShowLeaderboardModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const { firstActor, lastActor, objectiveCurrentDate } =
+    useContext(AppContext);
+
   // const [userCountryCode, changeUserCountryCode] = useState("");
   // const [userCountryName, changeUserCountryName] = useState("");
   const [collapseOpen, changeCollapseOpen] = useState(false);
@@ -176,7 +180,7 @@ export const Leaderboard = ({
               alt="Spotlight"
             />
             <h2 className="leaderboard_title">
-              {leaderboardPage === "today" ? "TODAY'S" : ""} HOLLYWOODLE
+              {leaderboardPage === "today" ? "TODAY'S" : "THE"} HOLLYWOODLE
               <br />
               LEADERBOARD
             </h2>
@@ -201,6 +205,12 @@ export const Leaderboard = ({
               <LeaderNavigation changeLeaderboardPage={changeLeaderboardPage} />
             ) : (
               <>
+                <span className="leaderboard_connection_header">
+                  <p>{objectiveCurrentDate}</p>
+                  <p>
+                    {firstActor.name} → {lastActor.name}
+                  </p>
+                </span>
                 <p className="leaderboard_disclaimer">
                   Click on any leaderboard user's row to view their full correct
                   actor connection path (although you won't be able to be
@@ -214,7 +224,7 @@ export const Leaderboard = ({
                   <thead>
                     <tr>
                       <th>Rank</th>
-                      <th>User</th>
+                      <th>Username</th>
                       <th>Country</th>
                       <th>Moves</th>
                       <th>Time (ET)</th>

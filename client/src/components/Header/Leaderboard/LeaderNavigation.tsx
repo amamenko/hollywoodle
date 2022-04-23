@@ -1,21 +1,56 @@
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "reactstrap";
 import { Collapse } from "react-collapse";
 import { Form, FormGroup, Input, FormFeedback, FormText } from "reactstrap";
 import { cuss } from "cuss";
-import "./Leaderboard.scss";
 import { exceptedArr } from "./exceptedArr";
+import * as Ladda from "ladda";
+import { AppContext } from "../../../App";
+import isMobile from "ismobilejs";
+import "./Leaderboard.scss";
+import "ladda/dist/ladda.min.css";
 
 export const LeaderNavigation = ({
   changeLeaderboardPage,
 }: {
   changeLeaderboardPage: React.Dispatch<React.SetStateAction<string>>;
 }) => {
+  const currentIsMobile = isMobile();
+
+  const { fullTimezoneDate } = useContext(AppContext);
   const [usernameCollapsed, changeUsernameCollapsed] = useState(false);
   const [usernameInput, changeUsernameInput] = useState("");
   const [usernameInvalid, changeUsernameInvalid] = useState(false);
+  const [usernameAllowChange, changeUsernameAllowChange] = useState(true);
+  const [currentActiveUsername, changeCurrentActiveUsername] = useState("");
 
   const inputElement = useRef<HTMLInputElement | null>(null);
+  const laddaRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    const storageStr = localStorage.getItem("hollywoodle-statistics");
+    let storageObj: { [key: string]: number | number[] } = {};
+
+    try {
+      storageObj = JSON.parse(storageStr ? storageStr : "");
+    } catch (e) {
+      console.error(e);
+    }
+
+    if (storageObj.username && !currentActiveUsername) {
+      changeCurrentActiveUsername(storageObj.username.toString());
+      changeUsernameAllowChange(false);
+    }
+
+    const currentTime = new Date().getTime();
+    if (storageObj.username_can_be_changed) {
+      if (currentTime > storageObj.username_can_be_changed) {
+        if (!usernameAllowChange) {
+          changeUsernameAllowChange(true);
+        }
+      }
+    }
+  }, [currentActiveUsername, usernameAllowChange]);
 
   const validateUsername = () => {
     const allCussWordEntries = Object.entries(cuss).filter((el) => el[1] >= 1);
@@ -31,11 +66,54 @@ export const LeaderNavigation = ({
       )
     ) {
       changeUsernameInvalid(true);
+    } else {
+      const storageStr = localStorage.getItem("hollywoodle-statistics");
+      let storageObj: { [key: string]: number | number[] } = {};
+
+      try {
+        storageObj = JSON.parse(storageStr ? storageStr : "");
+      } catch (e) {
+        console.error(e);
+      }
+
+      const numWeeks = 2;
+      let now = new Date();
+      const twoWeeksFromNow = now.setDate(now.getDate() + numWeeks * 7);
+
+      if (storageObj) {
+        localStorage.setItem(
+          "hollywoodle-statistics",
+          JSON.stringify({
+            ...storageObj,
+            username: usernameInput,
+            username_can_be_changed: twoWeeksFromNow,
+          })
+        );
+      }
+
+      changeCurrentActiveUsername(usernameInput);
+      changeUsernameCollapsed(false);
+      changeUsernameAllowChange(false);
+    }
+  };
+
+  const handleLaddaClick = () => {
+    if (laddaRef && laddaRef.current) {
+      var l = Ladda.create(laddaRef.current);
+      l.start();
+      setTimeout(() => {
+        validateUsername();
+        l.stop();
+        l.remove();
+      }, 500);
     }
   };
 
   const handleUsernameButton = () => {
-    if (inputElement.current) inputElement.current.focus();
+    // Only auto-focus input on non-mobile devices
+    if (!currentIsMobile.any) {
+      if (inputElement.current) inputElement.current.focus();
+    }
     changeUsernameCollapsed(!usernameCollapsed);
   };
 
@@ -50,17 +128,38 @@ export const LeaderNavigation = ({
 
   return (
     <div className="leadboard_navigation_container">
-      <p className="leaderboard_disclaimer ">
-        The Hollywoodle leaderboard is reserved for the day's best players.
+      <p className="leaderboard_disclaimer">
+        The Hollywoodle leaderboard is reserved for the day's best players. The
+        most efficient user paths are displayed here.
         <br />
         <br />
         The fewer your moves and the sooner you complete the actor connection
-        after the game restarts at 12 AM Eastern Time, the more likely your
-        chances are of having your name up in lights!
+        after the game restarts at 12:00 AM Eastern Time
+        {fullTimezoneDate.includes("12:00 AM") ? "" : ` or ${fullTimezoneDate}`}
+        , the more likely your chances are of having your name up in lights!
+        <br />
+        <br />
+        All players with a username who are playing today's game for the first
+        time and have not looked at any player's leadboard path are eligible.
+        <br />
+        <br />
+        Your username can only be changed <b>once</b> every <b>two</b> weeks, so
+        make it a good one!
       </p>
       <div className="leadboard_navigation_buttons">
-        <Button className={"who_button"} onClick={handleUsernameButton}>
-          ADD USERNAME
+        {currentActiveUsername && (
+          <>
+            <p>Your username is:</p>
+            <h2>{currentActiveUsername}</h2>
+          </>
+        )}
+        <Button
+          className={`who_button leaderboard_set_username ${
+            usernameAllowChange ? "" : "invalid"
+          }`}
+          onClick={handleUsernameButton}
+        >
+          {currentActiveUsername ? "CHANGE" : "ADD"} USERNAME
         </Button>
         <Collapse
           isOpened={usernameCollapsed}
@@ -69,7 +168,6 @@ export const LeaderNavigation = ({
           <Form className="autosuggest_input_container leaderboard_username_input_container">
             <FormGroup className="leaderboard_username_inner_container">
               <Input
-                autoFocus
                 innerRef={inputElement}
                 type="text"
                 className="autosuggest_input form-control dark"
@@ -88,18 +186,20 @@ export const LeaderNavigation = ({
               </FormText>
             </FormGroup>
           </Form>
-          <Button
-            className={`guess_button dark leaderboard_set_username ${
+          <button
+            className={`guess_button ladda-button dark leaderboard_set_username ${
               (usernameInput.replace(/\d/gim, "").length < 4 ||
                 usernameInput.length < 5 ||
                 usernameInput.length > 12 ||
                 usernameInvalid) &&
               "invalid"
             }`}
-            onClick={validateUsername}
+            data-style="expand-right"
+            ref={laddaRef}
+            onClick={handleLaddaClick}
           >
-            SET AS USERNAME
-          </Button>
+            <span className="ladda-label">SET AS USERNAME</span>
+          </button>
         </Collapse>
         <Button
           className={"who_button"}
