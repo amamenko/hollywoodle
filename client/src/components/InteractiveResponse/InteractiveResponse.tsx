@@ -1,6 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { AutosuggestInput } from "../AutosuggestInput/AutosuggestInput";
+import axios from "axios";
+import { getMovieCast } from "./getMovieCast";
 import "./InteractiveResponse.scss";
 
 interface InteractiveResponseProps {
@@ -21,6 +23,15 @@ export const InteractiveResponse = ({
   points = 0,
 }: InteractiveResponseProps) => {
   const { guesses, firstActor, lastActor, darkMode } = useContext(AppContext);
+  // Handle in-game selections and associated data fetching for movies
+  const [currentSelection, changeCurrentSelection] = useState({
+    id: 0,
+    name: "",
+    year: "",
+    image: "",
+  });
+  const [movieCast, changeMovieCast] = useState<number[]>([]);
+
   const mostRecentGuess = guesses.sort((a, b) => {
     return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
   })[guesses.length - 1];
@@ -34,6 +45,26 @@ export const InteractiveResponse = ({
     : mostRecentGuess.type === "actor"
     ? "movie"
     : "actor";
+
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+
+    // Refetch cast list when current selection changes and the type of guess is a movie
+    if (currentSelection && currentSelection.id && typeOfGuess === "movie") {
+      const fetchData = async () => {
+        try {
+          const results = await getMovieCast(currentSelection.id);
+          changeMovieCast(results);
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      fetchData();
+    }
+
+    return () => source.cancel();
+  }, [currentSelection, typeOfGuess]);
 
   return (
     <div
@@ -62,7 +93,13 @@ export const InteractiveResponse = ({
               </p>
             </div>
           )}
-          <AutosuggestInput typeOfGuess={typeOfGuess} />
+          <AutosuggestInput
+            typeOfGuess={typeOfGuess}
+            currentSelection={currentSelection}
+            changeCurrentSelection={changeCurrentSelection}
+            movieCast={movieCast}
+            changeMovieCast={changeMovieCast}
+          />
         </>
       ) : (
         <p className="points_statement">

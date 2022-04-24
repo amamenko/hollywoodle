@@ -1,10 +1,4 @@
-import React, {
-  KeyboardEvent,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { KeyboardEvent, useContext, useRef, useState } from "react";
 import Autosuggest, {
   GetSuggestionValue,
   SuggestionsFetchRequested,
@@ -15,10 +9,8 @@ import { toast } from "react-toastify";
 import Scroll from "react-scroll";
 import { getSuggestions } from "./getSuggestions";
 import debounce from "lodash.debounce";
-import { getMovieCast } from "./getMovieCast";
 import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
-import axios from "axios";
 import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
 import "./Autosuggest.scss";
 
@@ -35,14 +27,29 @@ export interface GuessType {
       };
 }
 
+interface SelectionObj {
+  id: number;
+  name: string;
+  year: string;
+  image: string;
+}
+
 export const sortAsc = (a: GuessType, b: GuessType) => {
   return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
 };
 
 export const AutosuggestInput = ({
   typeOfGuess = "movie",
+  currentSelection,
+  changeCurrentSelection,
+  movieCast,
+  changeMovieCast,
 }: {
   typeOfGuess: "movie" | "actor";
+  currentSelection: SelectionObj;
+  changeCurrentSelection: React.Dispatch<React.SetStateAction<SelectionObj>>;
+  movieCast: number[];
+  changeMovieCast: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   const currentIsMobile = isMobile();
 
@@ -51,13 +58,6 @@ export const AutosuggestInput = ({
   const [suggestions, changeSuggestions] = useState<
     { [key: string]: string | number | boolean }[]
   >([]);
-  const [currentSelection, changeCurrentSelection] = useState({
-    id: 0,
-    name: "",
-    year: "",
-    image: "",
-  });
-  const [movieCast, changeMovieCast] = useState<number[]>([]);
   const [hintCollapsed, changeHintCollapsed] = useState(false);
 
   const {
@@ -87,25 +87,6 @@ export const AutosuggestInput = ({
   // Stores reference to the debounced callback
   const movieDebouncedSearch = useRef(debounceFn("movie")).current;
   const actorDebouncedSearch = useRef(debounceFn("actor")).current;
-
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-
-    if (currentSelection && currentSelection.id && typeOfGuess === "movie") {
-      const fetchData = async () => {
-        try {
-          const results = await getMovieCast(currentSelection.id);
-          changeMovieCast(results);
-        } catch (e) {
-          console.error(e);
-        }
-      };
-
-      fetchData();
-    }
-
-    return () => source.cancel();
-  }, [currentSelection, typeOfGuess]);
 
   const onSuggestionsFetchRequested = async (
     value: string,
