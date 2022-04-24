@@ -266,7 +266,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
             changeShareLinkClicked={changeShareLinkClicked}
             changeLastClicked={changeLastClicked}
             shareLinkAnimatingOut={shareLinkAnimatingOut}
-            copyShareLink={`${finalShareText.trim()}\nhttps://hollywoodle.ml/`}
+            copyShareLink={`${finalShareText.trim()}`}
           />
           <CopyLinkButton
             shareLinkClicked={pathShareLinkClicked}
@@ -276,10 +276,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
             copyShareLink={finalPath}
             path={true}
           />
-          <TwitterButton
-            twitterShareText={finalShareText}
-            twitterShareLink={"https://hollywoodle.ml/"}
-          />
+          <TwitterButton twitterShareText={finalShareText} />
         </ul>
       </div>
     </div>

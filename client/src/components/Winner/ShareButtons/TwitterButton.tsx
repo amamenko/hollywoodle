@@ -13,17 +13,11 @@ const TwitterButton: FC<TwitterButtonProps> = ({
   return (
     <li className="share_button_outer_container">
       <a
-        href={
-          twitterShareLink
-            ? `https://twitter.com/intent/tweet?${
-                twitterShareText
-                  ? `&text=${encodeURIComponent(
-                      twitterShareText.trim()
-                    )}%0A${twitterShareLink}`
-                  : ""
-              } `
+        href={`https://twitter.com/intent/tweet?${
+          twitterShareText
+            ? `&text=${encodeURIComponent(twitterShareText.trim())}`
             : ""
-        }
+        }`}
         target="_blank"
         rel="noopener noreferrer"
       >

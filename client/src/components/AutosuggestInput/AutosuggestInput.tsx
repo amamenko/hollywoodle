@@ -159,14 +159,7 @@ export const AutosuggestInput = ({
         (el) => el.type === "actor" && !el.incorrect
       );
 
-      const formatGuessObj = (guess: {
-        [key: string]:
-          | string
-          | number
-          | boolean
-          | number[]
-          | { [key: string]: string | number };
-      }) => {
+      const formatGuessObj = (guess: GuessType) => {
         if (guess && guess.guess) {
           return {
             id: Number(guess.id),

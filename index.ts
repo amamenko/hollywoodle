@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import { updateDatabaseActors } from "./functions/updateDatabaseActors";
 import { Actor } from "./models/Actor";
+import { Leaderboard } from "./models/Leaderboard";
 import cron from "node-cron";
 import cors from "cors";
 import enforce from "express-sslify";
@@ -38,6 +39,14 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
   } else {
     res.send([]);
   }
+});
+
+app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
+  const currentDate = format(new Date(), "MM/dd/yyyy");
+  const leaderboard = await Leaderboard.find({ date: currentDate }).catch((e) =>
+    console.error(e)
+  );
+  res.send(leaderboard);
 });
 
 // Update actors in MongoDB every night at midnight
