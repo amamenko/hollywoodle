@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-// import axios from "axios";
+import axios from "axios";
 import { RemoveScroll } from "react-remove-scroll";
 import Modal from "react-modal";
 import Flag from "react-world-flags";
@@ -12,6 +12,7 @@ import Spotlight from "../../../assets/Spotlight.png";
 import { LeaderNavigation } from "./LeaderNavigation";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
+import { io } from "socket.io-client";
 import "./Leaderboard.scss";
 
 export const Leaderboard = ({
@@ -29,6 +30,9 @@ export const Leaderboard = ({
   const [collapseOpen, changeCollapseOpen] = useState(false);
   const [currentlyExpanded, changeCurrentlyExpanded] = useState(0);
   const [leaderboardPage, changeLeaderboardPage] = useState("");
+  const [tableData, changeTableData] = useState<
+    { [key: string]: number | string }[]
+  >([]);
 
   // Remove all displayed toasts on modal open
   useEffect(() => {
@@ -79,88 +83,59 @@ export const Leaderboard = ({
     );
   };
 
-  const tableData = [
-    {
-      rank: 1,
-      user: "RandyTsunami",
-      countryCode: "US",
-      moves: 1,
-      time: "12:01 AM",
-      path: "Rebecca Ferguson ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya  ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya  ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya",
-    },
-    {
-      rank: 2,
-      user: "SomeoneElse",
-      countryCode: "UKR",
-      moves: 1,
-      time: "12:02 AM",
-      path: "Rebecca Ferguson ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya",
-    },
-    {
-      rank: 3,
-      user: "RandomGuy",
-      countryCode: "RUS",
-      moves: 1,
-      time: "12:05 AM",
-      path: "Rebecca Ferguson ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya",
-    },
-    {
-      rank: 4,
-      user: "TesterMcTest",
-      countryCode: "LT",
-      moves: 1,
-      time: "12:05 AM",
-      path: "",
-    },
-    {
-      rank: 5,
-      user: "OneMore",
-      countryCode: "CA",
-      moves: 1,
-      time: "12:06 AM",
-      path: "",
-    },
-    {
-      rank: 6,
-      user: "WhatsitToya",
-      countryCode: "MX",
-      moves: 1,
-      time: "12:07 AM",
-      path: "",
-    },
-    {
-      rank: 7,
-      user: "Not Me",
-      countryCode: "IND",
-      moves: 2,
-      time: "12:08 AM",
-      path: "",
-    },
-    {
-      rank: 8,
-      user: "Fake Name",
-      countryCode: "CN",
-      moves: 3,
-      time: "12:08 AM",
-      path: "",
-    },
-    {
-      rank: 9,
-      user: "Filler Noun",
-      countryCode: "JP",
-      moves: 3,
-      time: "12:09 AM",
-      path: "",
-    },
-    {
-      rank: 10,
-      user: "John Doe",
-      countryCode: "FI",
-      moves: 3,
-      time: "12:15 AM",
-      path: "Rebecca Ferguson ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya  ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya  ➡️ The Greatest Showman (2017) ➡️ Zendaya ➡️ The Greatest Showman (2017) ➡️ Zendaya",
-    },
-  ];
+  useEffect(() => {
+    if (showLeaderboardModal && leaderboardPage === "today") {
+      const source = axios.CancelToken.source();
+
+      const nodeEnv = process.env.REACT_APP_NODE_ENV
+        ? process.env.REACT_APP_NODE_ENV
+        : "";
+
+      const fetchData = async () => {
+        await axios
+          .get(
+            nodeEnv && nodeEnv === "production"
+              ? `${process.env.REACT_APP_PROD_SERVER}/api/leaderboard`
+              : "http://localhost:4000/api/leaderboard"
+          )
+          .then((res) => res.data)
+          .then((data) => {
+            if (data && data[0] && data[0].leaderboard) {
+              changeTableData(data[0].leaderboard);
+            }
+          })
+          .catch((e) => {
+            // changeResultsLoading(false);
+            console.error(e);
+          });
+      };
+
+      fetchData();
+
+      const socket = io(
+        nodeEnv && nodeEnv === "production"
+          ? `${process.env.REACT_APP_PROD_SERVER}`
+          : "http://localhost:4000"
+      );
+
+      socket.on("connect", () => {
+        console.log(socket.id);
+      });
+
+      socket.on("changeData", (arg) => {
+        if (arg && Array.isArray(arg)) {
+          changeTableData(arg);
+        }
+      });
+
+      return () => {
+        socket.close();
+        source.cancel();
+      };
+    }
+
+    return () => {};
+  }, [showLeaderboardModal, leaderboardPage]);
 
   return (
     <RemoveScroll enabled={showLeaderboardModal}>
@@ -240,19 +215,22 @@ export const Leaderboard = ({
                               if (row.rank === currentlyExpanded) {
                                 changeCurrentlyExpanded(0);
                               } else {
-                                changeCurrentlyExpanded(row.rank);
+                                changeCurrentlyExpanded(Number(row.rank));
                               }
                             }}
                             className="table_row"
                           >
                             <th scope="row">{row.rank}</th>
-                            <td>{row.user}</td>
+                            <td>{row.username}</td>
                             <td>
-                              <Flag code={row.countryCode} height="16" />
+                              <Flag
+                                code={row.countryCode.toString()}
+                                height="16"
+                              />
                             </td>
                             <td>{row.moves}</td>
                             <td>{row.time}</td>
-                            <td>{collapseTriggerElement(row.rank)}</td>
+                            <td>{collapseTriggerElement(Number(row.rank))}</td>
                           </tr>
                           <tr>
                             <td colSpan={6} className="expanded_td_container">
@@ -263,7 +241,7 @@ export const Leaderboard = ({
                                     : ""
                                 }`}
                               >
-                                <h2>{row.user}'s Path</h2>
+                                <h2>{`${row.username}'s Path`}</h2>
                                 <p>{row.path}</p>
                               </div>
                             </td>

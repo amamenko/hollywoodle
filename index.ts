@@ -8,8 +8,12 @@ import cron from "node-cron";
 import cors from "cors";
 import enforce from "express-sslify";
 import { format } from "date-fns";
+import http from "http";
+import { Server } from "socket.io";
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
 
 // Cross-Origin Requests
 app.use(cors());
@@ -19,6 +23,29 @@ const port = process.env.PORT || 4000;
 if (process.env.NODE_ENV === "production") {
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
+
+io.on("connection", () => {
+  console.log("connected");
+});
+
+io.on("connection", (socket) => {
+  console.log(`A user connected: ${socket.id}`);
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+});
+
+const changeStream = Leaderboard.watch();
+
+changeStream.on("change", (change) => {
+  if (change.operationType === "update") {
+    const allUpdatedFields = change.updateDescription.updatedFields;
+    if (allUpdatedFields) {
+      io.emit("changeData", allUpdatedFields.leaderboard);
+    }
+  }
+});
 
 app.get("/api/actor", [], async (req: Request, res: Response) => {
   const currentDate = format(new Date(), "MM/dd/yyyy");
@@ -68,6 +95,6 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Listening on port ${port}...`);
 });
