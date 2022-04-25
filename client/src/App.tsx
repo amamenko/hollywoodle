@@ -211,7 +211,9 @@ const App = () => {
           }
         }
 
-        const hasUsername = storageObj.username.toString();
+        const hasUsername = storageObj.username
+          ? storageObj.username.toString()
+          : "";
 
         localStorage.setItem(
           "hollywoodle-statistics",
