@@ -8,7 +8,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Table } from "reactstrap";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { MdArrowBackIosNew } from "react-icons/md";
-import Spotlight from "../../../assets/Spotlight.png";
+import { ReactComponent as Spotlight } from "../../../assets/Spotlight.svg";
 import { LeaderNavigation } from "./LeaderNavigation";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
@@ -32,7 +32,88 @@ export const Leaderboard = ({
   const [leaderboardPage, changeLeaderboardPage] = useState("");
   const [tableData, changeTableData] = useState<
     { [key: string]: number | string }[]
-  >([]);
+  >([
+    {
+      rank: 1,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 2,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 3,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 4,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 5,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 6,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 7,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 8,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 9,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+    {
+      rank: 10,
+      username: "",
+      countryCode: "",
+      moves: 0,
+      time: "",
+      path: "",
+    },
+  ]);
 
   // Remove all displayed toasts on modal open
   useEffect(() => {
@@ -105,7 +186,6 @@ export const Leaderboard = ({
             }
           })
           .catch((e) => {
-            // changeResultsLoading(false);
             console.error(e);
           });
       };
@@ -125,6 +205,7 @@ export const Leaderboard = ({
       socket.on("changeData", (arg) => {
         if (arg && Array.isArray(arg)) {
           changeTableData(arg);
+          changeCurrentlyExpanded(0);
         }
       });
 
@@ -136,6 +217,34 @@ export const Leaderboard = ({
 
     return () => {};
   }, [showLeaderboardModal, leaderboardPage]);
+
+  const handleRowClick = (rank: number, path: string) => {
+    if (rank === currentlyExpanded || !path) {
+      if (currentlyExpanded !== 0) changeCurrentlyExpanded(0);
+    } else {
+      changeCurrentlyExpanded(Number(rank));
+
+      const storageStr = localStorage.getItem("hollywoodle-statistics");
+      let storageObj: { [key: string]: number | number[] } = {};
+
+      try {
+        storageObj = JSON.parse(storageStr ? storageStr : "");
+      } catch (e) {
+        console.error(e);
+      }
+
+      if (storageObj && !storageObj.leaderboard_viewed) {
+        localStorage.setItem(
+          "hollywoodle-statistics",
+          JSON.stringify({
+            ...storageObj,
+            leaderboard_viewed: objectiveCurrentDate,
+            leaderboard_eligible: false,
+          })
+        );
+      }
+    }
+  };
 
   return (
     <RemoveScroll enabled={showLeaderboardModal}>
@@ -149,17 +258,13 @@ export const Leaderboard = ({
       >
         <>
           <div className="leadboard_title_container">
-            <img
-              className="spotlight_image left"
-              src={Spotlight}
-              alt="Spotlight"
-            />
+            <Spotlight className="spotlight_image left" />
             <h2 className="leaderboard_title">
               {leaderboardPage === "today" ? "TODAY'S" : "THE"} HOLLYWOODLE
               <br />
               LEADERBOARD
             </h2>
-            <img className="spotlight_image" src={Spotlight} alt="Spotlight" />
+            <Spotlight className="spotlight_image" />
           </div>
           <button
             className="close_modal_button archived_game"
@@ -188,8 +293,9 @@ export const Leaderboard = ({
                 </span>
                 <p className="leaderboard_disclaimer">
                   Click on any leaderboard user's row to view their full correct
-                  actor connection path (although you won't be able to be
-                  considered for that day's leaderboard if you do.)
+                  actor connection path (although if you haven't yet played
+                  today's game, you will no longer remain eligible for today's
+                  leaderboard.)
                   <br />
                   <br />
                   Keep in mind that only your <b>first</b> daily game attempt
@@ -211,26 +317,33 @@ export const Leaderboard = ({
                       return (
                         <React.Fragment key={index}>
                           <tr
-                            onClick={() => {
-                              if (row.rank === currentlyExpanded) {
-                                changeCurrentlyExpanded(0);
-                              } else {
-                                changeCurrentlyExpanded(Number(row.rank));
-                              }
-                            }}
+                            onClick={() =>
+                              handleRowClick(
+                                Number(row.rank),
+                                row.path.toString()
+                              )
+                            }
                             className="table_row"
                           >
                             <th scope="row">{row.rank}</th>
-                            <td>{row.username}</td>
+                            <td>{row.username ? row.username : "-"}</td>
                             <td>
-                              <Flag
-                                code={row.countryCode.toString()}
-                                height="16"
-                              />
+                              {row.countryCode ? (
+                                <Flag
+                                  code={row.countryCode.toString()}
+                                  height="16"
+                                />
+                              ) : (
+                                "-"
+                              )}
                             </td>
-                            <td>{row.moves}</td>
-                            <td>{row.time}</td>
-                            <td>{collapseTriggerElement(Number(row.rank))}</td>
+                            <td>{row.moves ? row.moves : "-"}</td>
+                            <td>{row.time ? row.time : "-"}</td>
+                            <td>
+                              {row.path
+                                ? collapseTriggerElement(Number(row.rank))
+                                : "-"}
+                            </td>
                           </tr>
                           <tr>
                             <td colSpan={6} className="expanded_td_container">

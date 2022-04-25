@@ -42,12 +42,18 @@
   }
 
   .leaderboard_disclaimer {
-    margin: 0 0 0.25rem 0;
-    padding: 1rem;
+    &:not(ul) {
+      margin: 0 0 0.25rem 0;
+      padding: 1rem;
+    }
 
     &:first-child {
       border-top: 1px solid rgb(50, 50, 50);
       padding-bottom: 0;
+    }
+
+    &:nth-child(3) {
+      padding-top: 0;
     }
     font-size: 0.85rem;
 
@@ -87,12 +93,25 @@
 
     .spotlight_image {
       position: absolute;
-      top: -3.6rem;
+      top: -4.5rem;
       right: 0rem;
-      width: 8rem;
+      width: 9rem;
       -webkit-transform: scaleX(-1) rotateZ(180deg);
       transform: scaleX(-1) rotateZ(180deg);
       opacity: 0.5;
+
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .spotlight_svg_light_path {
+        animation: fadeIn linear 0.5s;
+      }
 
       &.left {
         left: 0rem;

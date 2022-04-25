@@ -17,7 +17,7 @@ export const LeaderNavigation = ({
 }) => {
   const currentIsMobile = isMobile();
 
-  const { fullTimezoneDate } = useContext(AppContext);
+  const { fullTimezoneDate, objectiveCurrentDate } = useContext(AppContext);
   const [usernameCollapsed, changeUsernameCollapsed] = useState(false);
   const [usernameInput, changeUsernameInput] = useState("");
   const [usernameInvalid, changeUsernameInvalid] = useState(false);
@@ -87,6 +87,18 @@ export const LeaderNavigation = ({
             ...storageObj,
             username: usernameInput,
             username_can_be_changed: twoWeeksFromNow,
+            leaderboard_viewed: storageObj.leaderboard_viewed
+              ? storageObj.leaderboard_viewed.toString() ===
+                objectiveCurrentDate
+                ? objectiveCurrentDate
+                : ""
+              : "",
+            leaderboard_eligible: storageObj.leaderboard_viewed
+              ? storageObj.leaderboard_viewed.toString() ===
+                objectiveCurrentDate
+                ? false
+                : true
+              : true,
           })
         );
       }
@@ -139,10 +151,16 @@ export const LeaderNavigation = ({
         , the more likely your chances are of having your name up in lights!
         <br />
         <br />
-        All players with a username who are playing today's game for the first
-        time and have not looked at any player's leadboard path are eligible.
-        <br />
-        <br />
+        The criteria for leaderboard eligibiility are as follows:
+      </p>
+      <ul className="leaderboard_disclaimer">
+        <li>Must have a username.</li>
+        <li>Must be playing today's game for the first time today.</li>
+        <li>
+          Must not have already looked at any other player's leadboard path.
+        </li>
+      </ul>
+      <p className="leaderboard_disclaimer">
         Your username can only be changed <b>once</b> every <b>two</b> weeks, so
         make it a good one!
       </p>

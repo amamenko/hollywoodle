@@ -211,6 +211,19 @@ export const AutosuggestInput = ({
                 objectiveCurrentDate === storageObj.current_date &&
                 !storageObj.played_today
               ) {
+                // if (
+                //   storageObj.username &&
+                //   storageObj.leaderboard_eligible &&
+                //   !storageObj.leaderboard_viewed
+                // ) {
+                //   // User is eligible for today's leaderboard - check if qualifies
+                //   const currentDate = new Date();
+                //   const currentETTime = currentDate.toLocaleString("en-US", {
+                //     timeZone: "America/New_York",
+                //     timeStyle: "short",
+                //   });
+                // }
+
                 localStorage.setItem(
                   "hollywoodle-statistics",
                   JSON.stringify({
@@ -223,6 +236,7 @@ export const AutosuggestInput = ({
                     ),
                     avg_moves: currentAvgs,
                     played_today: true,
+                    // leaderboard_eligible: false,
                   })
                 );
               }

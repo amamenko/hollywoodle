@@ -176,11 +176,13 @@ const App = () => {
             max_streak: 0,
             avg_moves: [],
             played_today: false,
+            leaderboard_viewed: "",
+            leaderboard_eligible: false,
           })
         );
       } else {
         const storageStr = localStorage.getItem("hollywoodle-statistics");
-        let storageObj: { [key: string]: number | number[] } = {};
+        let storageObj: { [key: string]: number | number[] | string } = {};
 
         try {
           storageObj = JSON.parse(storageStr ? storageStr : "");
@@ -209,6 +211,8 @@ const App = () => {
           }
         }
 
+        const hasUsername = storageObj.username.toString();
+
         localStorage.setItem(
           "hollywoodle-statistics",
           JSON.stringify({
@@ -219,6 +223,22 @@ const App = () => {
               storageObj.last_played.toString() === objectiveCurrentDate
                 ? true
                 : false,
+            leaderboard_viewed: storageObj.leaderboard_viewed
+              ? storageObj.leaderboard_viewed.toString() ===
+                objectiveCurrentDate
+                ? objectiveCurrentDate
+                : ""
+              : "",
+            leaderboard_eligible: storageObj.leaderboard_viewed
+              ? storageObj.leaderboard_viewed.toString() ===
+                objectiveCurrentDate
+                ? false
+                : hasUsername
+                ? true
+                : false
+              : hasUsername
+              ? true
+              : false,
           })
         );
       }
