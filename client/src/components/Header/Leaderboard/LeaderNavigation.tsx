@@ -151,7 +151,7 @@ export const LeaderNavigation = ({
         , the more likely your chances are of having your name up in lights!
         <br />
         <br />
-        The criteria for leaderboard eligibiility are as follows:
+        The criteria for leaderboard eligibility are as follows:
       </p>
       <ul className="leaderboard_disclaimer">
         <li>Must have a username.</li>

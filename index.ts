@@ -68,12 +68,34 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
   }
 });
 
-app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
+const getTodaysLeaderboard = async () => {
   const currentDate = format(new Date(), "MM/dd/yyyy");
-  const leaderboard = await Leaderboard.find({ date: currentDate }).catch((e) =>
-    console.error(e)
-  );
+  const leaderboard: { [key: string]: string | number }[] =
+    await Leaderboard.find({ date: currentDate });
+  return leaderboard;
+};
+
+app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
+  const leaderboard: { [key: string]: string | number }[] =
+    await getTodaysLeaderboard();
   res.send(leaderboard);
+});
+
+app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
+  const leaderboard: { [key: string]: string | number }[] =
+    await getTodaysLeaderboard();
+
+  if (req.query && typeof req.query === "object") {
+    const { username, countryCode, countryName, ip, moves, time, path } =
+      req.query;
+
+    if (leaderboard.find((el) => el.ip === ip)) {
+      return;
+    } else {
+      const filteredArr = leaderboard.filter((el) => el.moves >= moves);
+      const allMoves = filteredArr.map((el) => el.moves);
+    }
+  }
 });
 
 // Update actors in MongoDB every night at midnight
