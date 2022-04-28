@@ -85,7 +85,6 @@ export const getSuggestions = async (
             item.poster_path &&
             Array.isArray(item.genre_ids) &&
             item.genre_ids.length > 0 &&
-            !item.video &&
             item.release_date &&
             item.vote_count > 0
         )

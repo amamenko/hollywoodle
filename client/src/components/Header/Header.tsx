@@ -12,6 +12,8 @@ import { ArchivedModal } from "./ArchiveModal/ArchivedModal";
 // import { Leaderboard } from "./Leaderboard/Leaderboard";
 // import { Burger } from "./Burger/Burger";
 import "./Header.scss";
+import { MovesPopover } from "./Popovers/MovesPopover";
+import { DegreesPopover } from "./Popovers/DegreePopover";
 
 export const Header = () => {
   const {
@@ -28,9 +30,19 @@ export const Header = () => {
   // const [showLeaderboardModal, changeShowLeaderboardModal] = useState(false);
   const [archivedGame, changeArchivedGame] = useState(false);
   // const [burgerMenuOpen, changeBurgerMenuOpen] = useState(false);
+  const [degreesPopoverOpen, changeDegreesPopoverOpen] = useState(false);
+  const [movesPopoverOpen, changeMovesPopoverOpen] = useState(false);
 
   const toggleLightDarkMode = () => {
     changeDarkMode(!darkMode);
+  };
+
+  const toggleDegreesPopover = () => {
+    changeDegreesPopoverOpen(!degreesPopoverOpen);
+  };
+
+  const toggleMovesPopover = () => {
+    changeMovesPopoverOpen(!movesPopoverOpen);
   };
 
   const closeModal = () => {
@@ -118,12 +130,26 @@ export const Header = () => {
           </p>
         )}
         <div className="points_inner_container">
-          <div className={`points_type_container ${darkMode ? "dark" : ""}`}>
+          <div
+            className={`points_type_container ${darkMode ? "dark" : ""}`}
+            onClick={toggleDegreesPopover}
+          >
+            <DegreesPopover
+              degreesPopoverOpen={degreesPopoverOpen}
+              changeDegreesPopoverOpen={changeDegreesPopoverOpen}
+            />
             <p>Degrees:</p>
             <p>{currentDegrees}</p>
           </div>
-          <div className={`points_type_container ${darkMode ? "dark" : ""}`}>
-            <p>Player Moves: </p>
+          <div
+            className={`points_type_container ${darkMode ? "dark" : ""}`}
+            onClick={toggleMovesPopover}
+          >
+            <MovesPopover
+              movesPopoverOpen={movesPopoverOpen}
+              changeMovesPopoverOpen={changeMovesPopoverOpen}
+            />
+            <p>Moves:</p>
             <p>{currentMoves}</p>
           </div>
         </div>
