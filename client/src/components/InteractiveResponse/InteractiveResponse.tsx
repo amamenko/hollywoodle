@@ -1,8 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { AppContext } from "../../App";
 import { AutosuggestInput } from "../AutosuggestInput/AutosuggestInput";
-import axios from "axios";
-import { getMovieCast } from "./getMovieCast";
 import "./InteractiveResponse.scss";
 
 interface InteractiveResponseProps {
@@ -12,6 +10,7 @@ interface InteractiveResponseProps {
   incorrect?: boolean | string;
   year?: string;
   points?: number;
+  currentGuessType?: string;
 }
 
 export const InteractiveResponse = ({
@@ -21,16 +20,9 @@ export const InteractiveResponse = ({
   incorrect = false,
   year = "",
   points = 0,
+  currentGuessType,
 }: InteractiveResponseProps) => {
   const { guesses, firstActor, lastActor, darkMode } = useContext(AppContext);
-  // Handle in-game selections and associated data fetching for movies
-  const [currentSelection, changeCurrentSelection] = useState({
-    id: 0,
-    name: "",
-    year: "",
-    image: "",
-  });
-  const [movieCast, changeMovieCast] = useState<number[]>([]);
 
   const mostRecentGuess = guesses.sort((a, b) => {
     return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
@@ -45,26 +37,6 @@ export const InteractiveResponse = ({
     : mostRecentGuess.type === "actor"
     ? "movie"
     : "actor";
-
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-
-    // Refetch cast list when current selection changes and the type of guess is a movie
-    if (currentSelection && currentSelection.id && typeOfGuess === "movie") {
-      const fetchData = async () => {
-        try {
-          const results = await getMovieCast(currentSelection.id);
-          changeMovieCast(results);
-        } catch (e) {
-          console.error(e);
-        }
-      };
-
-      fetchData();
-    }
-
-    return () => source.cancel();
-  }, [currentSelection, typeOfGuess]);
 
   return (
     <div
@@ -93,13 +65,7 @@ export const InteractiveResponse = ({
               </p>
             </div>
           )}
-          <AutosuggestInput
-            typeOfGuess={typeOfGuess}
-            currentSelection={currentSelection}
-            changeCurrentSelection={changeCurrentSelection}
-            movieCast={movieCast}
-            changeMovieCast={changeMovieCast}
-          />
+          <AutosuggestInput typeOfGuess={typeOfGuess} />
         </>
       ) : (
         <p className="points_statement">
@@ -152,8 +118,21 @@ export const InteractiveResponse = ({
           {incorrect === "partial" ? <b className="partial">DID NOT.</b> : ""}
           <br />
           <span className="response_bottom_points">
-            Your total moves increased by <b className="incorrect">{points}</b>{" "}
-            {points === 1 ? "move" : "moves"}.
+            <span>
+              Your total moves increased by{" "}
+              <b className="incorrect">{points}</b>{" "}
+              {points === 1 ? "move" : "moves"}.
+            </span>
+            {currentGuessType === "movie" && !incorrect && (
+              <>
+                <br />
+                <br />
+                <span>
+                  Your degrees of separation increased by{" "}
+                  <b className="incorrect">1</b> degree.
+                </span>
+              </>
+            )}
           </span>
         </p>
       )}

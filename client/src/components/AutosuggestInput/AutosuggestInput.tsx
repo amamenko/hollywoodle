@@ -27,29 +27,14 @@ export interface GuessType {
       };
 }
 
-interface SelectionObj {
-  id: number;
-  name: string;
-  year: string;
-  image: string;
-}
-
 export const sortAsc = (a: GuessType, b: GuessType) => {
   return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
 };
 
 export const AutosuggestInput = ({
   typeOfGuess = "movie",
-  currentSelection,
-  changeCurrentSelection,
-  movieCast,
-  changeMovieCast,
 }: {
   typeOfGuess: "movie" | "actor";
-  currentSelection: SelectionObj;
-  changeCurrentSelection: React.Dispatch<React.SetStateAction<SelectionObj>>;
-  movieCast: number[];
-  changeMovieCast: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   const currentIsMobile = isMobile();
 
@@ -73,6 +58,12 @@ export const AutosuggestInput = ({
     changeEmojiGrid,
     currentlyPlayingDate,
     objectiveCurrentDate,
+    movieCast,
+    changeMovieCast,
+    currentSelection,
+    changeCurrentSelection,
+    currentDegrees,
+    changeCurrentDegrees,
   } = useContext(AppContext);
 
   const debounceFn = (type: "movie" | "actor") => {
@@ -180,6 +171,7 @@ export const AutosuggestInput = ({
       if (movieCast.find((id) => id === lastActor.id)) {
         incorrectStatus = "partial";
         if (movieCast.find((id) => id === currentActorId)) {
+          changeCurrentDegrees(currentDegrees + 1);
           incorrectStatus = false;
           // User has won and completed the game
           changeWin(true);
@@ -257,6 +249,9 @@ export const AutosuggestInput = ({
         }
       } else {
         if (movieCast.find((id) => id === currentActorId)) {
+          if (typeOfGuess === "movie") {
+            changeCurrentDegrees(currentDegrees + 1);
+          }
           incorrectStatus = false;
         } else {
           incorrectStatus = true;

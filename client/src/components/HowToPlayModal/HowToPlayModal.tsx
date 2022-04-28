@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineQuestionCircle, AiOutlineClose } from "react-icons/ai";
 import { CountdownTimer } from "../Countdown/CountdownTimer";
 import { RemoveScroll } from "react-remove-scroll";
-import "./HowToPlayModal.scss";
 import { toast } from "react-toastify";
+import "./HowToPlayModal.scss";
 
 export const HowToPlayModal = () => {
   const [displayModal, changeDisplayModal] = useState(false);

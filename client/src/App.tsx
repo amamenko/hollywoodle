@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useCallback,
   useRef,
+  useMemo,
 } from "react";
 import { ActorMovieContainer } from "./components/ActorMovieContainer/ActorMovieContainer";
 import { InteractiveResponse } from "./components/InteractiveResponse/InteractiveResponse";
@@ -23,6 +24,14 @@ import { IntroModal } from "./components/IntroModal/IntroModal";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
+import { getMovieCast } from "./getMovieCast";
+
+interface SelectionObj {
+  id: number;
+  name: string;
+  year: string;
+  image: string;
+}
 
 export interface ActorObj {
   name: string;
@@ -72,6 +81,12 @@ interface ContextProps {
   changeFullTimezoneDate: React.Dispatch<React.SetStateAction<string>>;
   objectiveCurrentDate: string;
   changeObjectiveCurrentDate: React.Dispatch<React.SetStateAction<string>>;
+  currentSelection: SelectionObj;
+  changeCurrentSelection: React.Dispatch<React.SetStateAction<SelectionObj>>;
+  movieCast: number[];
+  changeMovieCast: React.Dispatch<React.SetStateAction<number[]>>;
+  currentDegrees: number;
+  changeCurrentDegrees: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -113,6 +128,17 @@ export const AppContext = createContext<ContextProps>({
   changeFullTimezoneDate: () => {},
   objectiveCurrentDate: "",
   changeObjectiveCurrentDate: () => {},
+  currentSelection: {
+    id: 0,
+    name: "",
+    year: "",
+    image: "",
+  },
+  changeCurrentSelection: () => {},
+  movieCast: [],
+  changeMovieCast: () => {},
+  currentDegrees: 0,
+  changeCurrentDegrees: () => {},
 });
 
 const App = () => {
@@ -145,7 +171,17 @@ const App = () => {
     type: "",
     year: "",
   });
+  // Handle in-game selections and associated data fetching for movies
+  const [currentSelection, changeCurrentSelection] = useState({
+    id: 0,
+    name: "",
+    year: "",
+    image: "",
+  });
+  // Current active movie's cast
+  const [movieCast, changeMovieCast] = useState<number[]>([]);
   const [currentMoves, changeCurrentMoves] = useState<number>(0);
+  const [currentDegrees, changeCurrentDegrees] = useState<number>(0);
   const [win, changeWin] = useState(false);
   const [darkMode, changeDarkMode] = useState(true);
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
@@ -420,6 +456,42 @@ const App = () => {
     }
   }, [guesses, mostRecentActor]);
 
+  const mostRecentGuess = guesses.sort((a, b) => {
+    return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);
+  })[guesses.length - 1];
+
+  const typeOfGuess = !mostRecentGuess
+    ? "movie"
+    : mostRecentGuess.incorrect || mostRecentGuess.incorrect === "partial"
+    ? mostRecentGuess.type === "actor"
+      ? "actor"
+      : "movie"
+    : mostRecentGuess.type === "actor"
+    ? "movie"
+    : "actor";
+
+  // useMemo prevents constant unmounting of component
+  useMemo(() => {
+    const source = axios.CancelToken.source();
+
+    // Refetch cast list when current selection changes and the type of guess is a movie
+    if (currentSelection && currentSelection.id && typeOfGuess === "movie") {
+      const fetchData = async () => {
+        try {
+          const results = await getMovieCast(currentSelection.id);
+          changeMovieCast(results);
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      fetchData();
+    }
+
+    // Cancel token on unmount
+    return () => source.cancel();
+  }, [currentSelection, typeOfGuess]);
+
   const handleActorProp = () => {
     if (mostRecentActor && mostRecentActor.guess) {
       if (
@@ -497,6 +569,12 @@ const App = () => {
         changeFullTimezoneDate,
         objectiveCurrentDate,
         changeObjectiveCurrentDate,
+        currentSelection,
+        changeCurrentSelection,
+        movieCast,
+        changeMovieCast,
+        currentDegrees,
+        changeCurrentDegrees,
       }}
     >
       <ToastContainer limit={1} />

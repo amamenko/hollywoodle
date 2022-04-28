@@ -1,10 +1,10 @@
+import { useEffect } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Modal from "react-modal";
 import { RemoveScroll } from "react-remove-scroll";
 import KofiButton from "kofi-button";
 import { toast } from "react-toastify";
 import "./Header.scss";
-import { useEffect } from "react";
 
 export const customModalStyles = {
   content: {

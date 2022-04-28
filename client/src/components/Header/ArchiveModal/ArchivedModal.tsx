@@ -62,6 +62,7 @@ export const ArchivedModal = ({
     changeMostRecentMovie,
     changeMostRecentActor,
     objectiveCurrentDate,
+    changeCurrentDegrees,
   } = useContext(AppContext);
 
   const formatDate = (someDate: Date) => {
@@ -99,6 +100,7 @@ export const ArchivedModal = ({
       changeShowArchivedModal(false);
       changeGuesses([]);
       changeCurrentMoves(0);
+      changeCurrentDegrees(0);
       changeWin(false);
       changeEmojiGrid([]);
       changeMostRecentMovie({

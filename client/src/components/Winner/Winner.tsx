@@ -29,6 +29,8 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     changeMostRecentMovie,
     currentEmojiGrid,
     changeEmojiGrid,
+    currentDegrees,
+    changeCurrentDegrees,
   } = useContext(AppContext);
   const [lastClicked, changeLastClicked] = useState("");
   // Regular share link
@@ -102,6 +104,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     changeEmojiGrid([]);
     changeWin(false);
     changeCurrentMoves(0);
+    changeCurrentDegrees(0);
 
     if (shareLinkClicked) {
       changeShareLinkClicked(false);
@@ -191,7 +194,9 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     }
   }, [shareLinkClicked, pathShareLinkClicked, lastClicked]);
 
-  const shareText = `I connected ${firstActor.name} to ${
+  const shareText = `I found ${currentDegrees} ${
+    currentDegrees === 1 ? "degree" : "degrees"
+  } of separation between ${firstActor.name} and ${
     lastActor.name
   } in ${currentMoves} ${
     currentMoves === 1 ? "move" : "moves"
@@ -237,8 +242,12 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
         )}
       </h2>
       <p>
-        You were able to connect <b>{firstActor.name}</b> to{" "}
-        <b>{lastActor.name}</b>
+        You found <b>{currentDegrees}</b>{" "}
+        {currentDegrees === 1 ? "degree" : "degrees"} of separation between{" "}
+        <b>{firstActor.name}</b> and <b>{lastActor.name}</b>.
+        <br />
+        <br />
+        You were able to connect them
         {currentMoves > 10 ? ", but it took you " : " in "}
         {currentMoves > 10 ? "a whopping" : currentMoves < 5 ? "only" : ""}{" "}
         <b>{currentMoves}</b>{" "}

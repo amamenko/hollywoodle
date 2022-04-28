@@ -75,6 +75,7 @@ export const AllGuesses = ({ mostRecentMovie }: { [key: string]: any }) => {
               incorrect={el.incorrect}
             />
             <InteractiveResponse
+              currentGuessType={currentGuessType.toString()}
               actor1={determinedActor}
               movie={determinedMovie}
               incorrect={el.incorrect}

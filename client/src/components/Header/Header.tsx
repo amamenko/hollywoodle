@@ -2,15 +2,15 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { ReactComponent as LogoWhite } from "../../assets/LogoWhite.svg";
 import { HowToPlayModal } from "../HowToPlayModal/HowToPlayModal";
-import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
-import { BiBarChartAlt2 } from "react-icons/bi";
+import { BiBarChartAlt2, BiHeart } from "react-icons/bi";
 import { GiBackwardTime } from "react-icons/gi";
-import { BiHeart } from "react-icons/bi";
+import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 // import { GrTrophy } from "react-icons/gr";
 import { Statistics } from "./Statistics";
 import { Support } from "./Support";
 import { ArchivedModal } from "./ArchiveModal/ArchivedModal";
 // import { Leaderboard } from "./Leaderboard/Leaderboard";
+// import { Burger } from "./Burger/Burger";
 import "./Header.scss";
 
 export const Header = () => {
@@ -20,12 +20,14 @@ export const Header = () => {
     changeDarkMode,
     currentlyPlayingDate,
     objectiveCurrentDate,
+    currentDegrees,
   } = useContext(AppContext);
   const [modalOpen, changeModalOpen] = useState(false);
   const [showSupportModal, changeShowSupportModal] = useState(false);
   const [showArchivedModal, changeShowArchivedModal] = useState(false);
   // const [showLeaderboardModal, changeShowLeaderboardModal] = useState(false);
   const [archivedGame, changeArchivedGame] = useState(false);
+  // const [burgerMenuOpen, changeBurgerMenuOpen] = useState(false);
 
   const toggleLightDarkMode = () => {
     changeDarkMode(!darkMode);
@@ -51,6 +53,10 @@ export const Header = () => {
   return (
     <div className={`header ${darkMode ? "dark" : ""}`}>
       <div className="inner_header_container">
+        {/* <Burger
+          burgerMenuOpen={burgerMenuOpen}
+          changeBurgerMenuOpen={changeBurgerMenuOpen}
+        /> */}
         <HowToPlayModal />
         <BiHeart
           className="support_icon"
@@ -111,7 +117,16 @@ export const Header = () => {
             Archived Game
           </p>
         )}
-        Total Moves: {currentMoves}
+        <div className="points_inner_container">
+          <div className={`points_type_container ${darkMode ? "dark" : ""}`}>
+            <p>Degrees:</p>
+            <p>{currentDegrees}</p>
+          </div>
+          <div className={`points_type_container ${darkMode ? "dark" : ""}`}>
+            <p>Player Moves: </p>
+            <p>{currentMoves}</p>
+          </div>
+        </div>
         {archivedGame && (
           <p className={`archived_denotation date ${darkMode ? "dark" : ""}`}>
             {currentlyPlayingDate}
