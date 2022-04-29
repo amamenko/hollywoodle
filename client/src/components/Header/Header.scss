@@ -193,9 +193,17 @@
           left: 0.25rem;
         }
         color: rgb(150, 150, 150);
-        top: 0.5rem;
+        bottom: 25%;
         margin: 0 auto;
         cursor: pointer;
+
+        &.right {
+          right: 0rem;
+          left: auto;
+          @media only screen and (min-width: 768px) {
+            right: 0.25rem;
+          }
+        }
       }
 
       p {
@@ -205,6 +213,10 @@
         &:first-child {
           margin-bottom: 0.2rem;
           font-size: 0.7rem;
+        }
+
+        &.number_points_title {
+          font-size: 1.25rem;
         }
       }
     }

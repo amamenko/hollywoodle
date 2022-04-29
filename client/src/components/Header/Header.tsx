@@ -139,7 +139,7 @@ export const Header = () => {
               changeDegreesPopoverOpen={changeDegreesPopoverOpen}
             />
             <p>Degrees:</p>
-            <p>{currentDegrees}</p>
+            <p className="number_points_title">{currentDegrees}</p>
           </div>
           <div
             className={`points_type_container ${darkMode ? "dark" : ""}`}
@@ -150,7 +150,7 @@ export const Header = () => {
               changeMovesPopoverOpen={changeMovesPopoverOpen}
             />
             <p>Moves:</p>
-            <p>{currentMoves}</p>
+            <p className="number_points_title">{currentMoves}</p>
           </div>
         </div>
         {archivedGame && (
