@@ -1,4 +1,10 @@
-import React, { KeyboardEvent, useContext, useRef, useState } from "react";
+import React, {
+  KeyboardEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Autosuggest, {
   GetSuggestionValue,
   SuggestionsFetchRequested,
@@ -12,7 +18,10 @@ import debounce from "lodash.debounce";
 import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
 import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
+import * as Ladda from "ladda";
+import "../Header/Leaderboard/Leaderboard.scss";
 import "./Autosuggest.scss";
+import "ladda/dist/ladda.min.css";
 
 const scroll = Scroll.animateScroll;
 
@@ -50,6 +59,7 @@ export const AutosuggestInput = ({
     lastActor,
     guesses,
     changeGuesses,
+    guessLoading,
     currentMoves,
     changeCurrentMoves,
     changeWin,
@@ -78,6 +88,7 @@ export const AutosuggestInput = ({
   // Stores reference to the debounced callback
   const movieDebouncedSearch = useRef(debounceFn("movie")).current;
   const actorDebouncedSearch = useRef(debounceFn("actor")).current;
+  const laddaRef = useRef<HTMLButtonElement | null>(null);
 
   const onSuggestionsFetchRequested = async (
     value: string,
@@ -93,6 +104,19 @@ export const AutosuggestInput = ({
   const getSuggestionValue = (
     suggestion: GetSuggestionValue<{ [key: string]: string | number }>
   ) => suggestion.name;
+
+  useEffect(() => {
+    if (laddaRef && laddaRef.current) {
+      let l = Ladda.create(laddaRef.current);
+      if (guessLoading) {
+        l.start();
+      } else {
+        if (l.isLoading()) {
+          l.stop();
+        }
+      }
+    }
+  }, [guessLoading]);
 
   const handleInputGuess = async ({
     id,
@@ -416,10 +440,14 @@ export const AutosuggestInput = ({
           {typeOfGuess === "movie" ? "🎬" : "🎭"}
         </div>
         <Button
-          className={`guess_button ${darkMode ? "dark" : ""}`}
+          className={`guess_button ladda-button ${
+            darkMode ? "dark" : "light"
+          } ${guessLoading ? "loading" : ""} leaderboard_set_username`}
+          data-style="zoom-out"
+          innerRef={laddaRef}
           onClick={() => handleInputGuess(currentSelection)}
         >
-          GUESS {typeOfGuess.toUpperCase()}
+          <span className="ladda-label">GUESS {typeOfGuess.toUpperCase()}</span>
         </Button>
         <div className="question_emoji reversed">
           {typeOfGuess === "movie" ? "🎬" : "🎭"}

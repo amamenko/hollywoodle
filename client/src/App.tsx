@@ -21,10 +21,10 @@ import { AllGuesses } from "./components/AllGuesses/AllGuesses";
 import { format } from "date-fns-tz";
 import { differenceInDays, parse } from "date-fns";
 import { IntroModal } from "./components/IntroModal/IntroModal";
+import { getMovieCast } from "./getMovieCast";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
-import { getMovieCast } from "./getMovieCast";
 
 interface SelectionObj {
   id: number;
@@ -87,6 +87,8 @@ interface ContextProps {
   changeMovieCast: React.Dispatch<React.SetStateAction<number[]>>;
   currentDegrees: number;
   changeCurrentDegrees: React.Dispatch<React.SetStateAction<number>>;
+  guessLoading: boolean;
+  changeGuessLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -139,6 +141,8 @@ export const AppContext = createContext<ContextProps>({
   changeMovieCast: () => {},
   currentDegrees: 0,
   changeCurrentDegrees: () => {},
+  guessLoading: false,
+  changeGuessLoading: () => {},
 });
 
 const App = () => {
@@ -180,6 +184,7 @@ const App = () => {
   });
   // Current active movie's cast
   const [movieCast, changeMovieCast] = useState<number[]>([]);
+  const [guessLoading, changeGuessLoading] = useState(false);
   const [currentMoves, changeCurrentMoves] = useState<number>(0);
   const [currentDegrees, changeCurrentDegrees] = useState<number>(0);
   const [win, changeWin] = useState(false);
@@ -476,10 +481,14 @@ const App = () => {
 
     // Refetch cast list when current selection changes and the type of guess is a movie
     if (currentSelection && currentSelection.id && typeOfGuess === "movie") {
+      changeGuessLoading(true);
       const fetchData = async () => {
         try {
           const results = await getMovieCast(currentSelection.id);
-          changeMovieCast(results);
+          if (results) {
+            changeMovieCast(results);
+            changeGuessLoading(false);
+          }
         } catch (e) {
           console.error(e);
         }
@@ -575,6 +584,8 @@ const App = () => {
         changeMovieCast,
         currentDegrees,
         changeCurrentDegrees,
+        guessLoading,
+        changeGuessLoading,
       }}
     >
       <ToastContainer limit={1} />

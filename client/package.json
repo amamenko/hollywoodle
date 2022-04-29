@@ -36,6 +36,7 @@
     "react-toastify": "^8.2.0",
     "react-world-flags": "^1.4.0",
     "reactstrap": "^9.0.1",
+    "retry-axios": "^2.6.0",
     "sass": "^1.49.9",
     "socket.io-client": "^4.5.0",
     "string-similarity": "^4.0.4",

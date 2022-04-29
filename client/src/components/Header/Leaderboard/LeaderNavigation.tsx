@@ -111,7 +111,7 @@ export const LeaderNavigation = ({
 
   const handleLaddaClick = () => {
     if (laddaRef && laddaRef.current) {
-      var l = Ladda.create(laddaRef.current);
+      let l = Ladda.create(laddaRef.current);
       l.start();
       setTimeout(() => {
         validateUsername();

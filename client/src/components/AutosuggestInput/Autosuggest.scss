@@ -78,13 +78,31 @@
 .guess_button {
   background: rgb(62, 192, 103);
   color: #fff;
+  font-size: 14px !important;
   font-weight: 700 !important;
   border-radius: 10px;
   width: 10rem;
-  padding: 0.5rem;
   margin-top: 1rem;
   border: none;
   transition: background 0.4s ease;
+  border-radius: 4px !important;
+
+  &.loading {
+    pointer-events: none !important;
+  }
+
+  /* Light styles duplicated and explicit for ladda button */
+  &.light {
+    background: rgb(62, 192, 103);
+
+    &:hover {
+      background: rgb(42, 172, 83);
+    }
+
+    &:active {
+      background: rgb(22, 152, 63);
+    }
+  }
 
   &:hover {
     background: rgb(42, 172, 83);
