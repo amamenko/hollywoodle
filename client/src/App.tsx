@@ -380,7 +380,7 @@ const App = () => {
       .get(
         nodeEnv && nodeEnv === "production"
           ? `${process.env.REACT_APP_PROD_SERVER}/api/actor`
-          : "http://192.168.68.120:4000/api/actor"
+          : "http://localhost:4000/api/actor"
       )
       .then((res) => res.data)
       .then((data) => data)
