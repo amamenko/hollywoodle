@@ -380,7 +380,7 @@ const App = () => {
       .get(
         nodeEnv && nodeEnv === "production"
           ? `${process.env.REACT_APP_PROD_SERVER}/api/actor`
-          : "http://localhost:4000/api/actor"
+          : "http://192.168.68.120:4000/api/actor"
       )
       .then((res) => res.data)
       .then((data) => data)
@@ -484,10 +484,17 @@ const App = () => {
       changeGuessLoading(true);
       const fetchData = async () => {
         try {
-          const results = await getMovieCast(currentSelection.id);
-          if (results) {
+          let results = await getMovieCast(currentSelection.id);
+          if (results && results.length > 0) {
             changeMovieCast(results);
             changeGuessLoading(false);
+          } else {
+            // Try a second time just in case
+            const secondTryResults = await getMovieCast(currentSelection.id);
+            if (secondTryResults && secondTryResults.length > 0) {
+              changeMovieCast(secondTryResults);
+              changeGuessLoading(false);
+            }
           }
         } catch (e) {
           console.error(e);
