@@ -127,6 +127,7 @@
     align-items: center;
     align-self: flex-start;
     margin-left: 4rem;
+    cursor: pointer;
     &:not(:first-child) {
       margin-top: 0rem;
     }

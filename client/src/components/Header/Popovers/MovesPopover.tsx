@@ -16,6 +16,7 @@ export const MovesPopover = ({
       isOpen={movesPopoverOpen}
       positions={["bottom", "left"]}
       padding={10}
+      align={"end"}
       reposition={false}
       onClickOutside={() => changeMovesPopoverOpen(false)}
       content={({ position, childRect, popoverRect }) => (
@@ -24,7 +25,7 @@ export const MovesPopover = ({
           childRect={childRect}
           popoverRect={popoverRect}
           arrowColor={darkMode ? "rgb(50, 50, 50)" : "#000"}
-          arrowSize={10}
+          arrowSize={14}
           className="popover-arrow-container"
           arrowClassName="popover-arrow"
         >
@@ -45,7 +46,7 @@ export const MovesPopover = ({
       )}
     >
       <div className="popover_anchor_container right">
-        <AiOutlineQuestionCircle size={15} />
+        <AiOutlineQuestionCircle size={25} />
       </div>
     </Popover>
   );

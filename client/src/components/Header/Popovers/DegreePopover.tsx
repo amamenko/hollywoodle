@@ -14,7 +14,8 @@ export const DegreesPopover = ({
   return (
     <Popover
       isOpen={degreesPopoverOpen}
-      positions={["bottom", "left"]}
+      positions={["bottom", "right"]}
+      align={"start"}
       padding={10}
       reposition={false}
       onClickOutside={() => changeDegreesPopoverOpen(false)}
@@ -24,7 +25,7 @@ export const DegreesPopover = ({
           childRect={childRect}
           popoverRect={popoverRect}
           arrowColor={darkMode ? "rgb(50, 50, 50)" : "#000"}
-          arrowSize={10}
+          arrowSize={14}
           className="popover-arrow-container"
           arrowClassName="popover-arrow"
         >
@@ -48,7 +49,7 @@ export const DegreesPopover = ({
       )}
     >
       <div className="popover_anchor_container">
-        <AiOutlineQuestionCircle size={15} />
+        <AiOutlineQuestionCircle size={25} />
       </div>
     </Popover>
   );

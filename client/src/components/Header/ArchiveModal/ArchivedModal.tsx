@@ -20,6 +20,7 @@ import { ActorObj, AppContext } from "../../../App";
 import { RemoveScroll } from "react-remove-scroll";
 import { toast } from "react-toastify";
 import "./ArchivedModal.scss";
+import "../../HowToPlayModal/HowToPlayModal.scss";
 import "../Header.scss";
 import "react-calendar/dist/Calendar.css";
 
@@ -125,7 +126,6 @@ export const ArchivedModal = ({
     const matchingDateActorsArr = currentArchivedActorsResults.filter(
       (actor) => actor.date === currentArchiveDate
     );
-
     if (
       currentArchiveDate &&
       currentArchiveDate !== objectiveCurrentDate &&

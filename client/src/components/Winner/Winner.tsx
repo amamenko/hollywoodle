@@ -202,7 +202,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     currentMoves === 1 ? "move" : "moves"
   } on Hollywoodle.`;
 
-  const finalShareText = `${shareText}\n${finalEmojiGrid}\n`;
+  const finalShareText = `${shareText}\n${finalEmojiGrid}\nhollywoodle.ml`;
 
   return (
     <div className={`winner_container ${darkMode ? "dark" : ""}`}>

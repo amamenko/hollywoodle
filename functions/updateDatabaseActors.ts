@@ -54,6 +54,8 @@ export const updateDatabaseActors = async () => {
   // Create last actor document for today
   await Actor.create(resultActors.actor2Obj).catch((e) => console.error(e));
   console.log(
-    `Successfully created first and last actors for ${new Date().toLocaleDateString()}!`
+    `Successfully created first and last actors for ${new Date().toLocaleDateString()}!\nFirst actor: ${
+      resultActors.actor1Obj.name
+    }\nSecond actor: ${resultActors.actor2Obj.name}`
   );
 };

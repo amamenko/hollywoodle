@@ -11,9 +11,9 @@ import { Support } from "./Support";
 import { ArchivedModal } from "./ArchiveModal/ArchivedModal";
 // import { Leaderboard } from "./Leaderboard/Leaderboard";
 // import { Burger } from "./Burger/Burger";
-import "./Header.scss";
 import { MovesPopover } from "./Popovers/MovesPopover";
 import { DegreesPopover } from "./Popovers/DegreePopover";
+import "./Header.scss";
 
 export const Header = () => {
   const {

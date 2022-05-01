@@ -61,12 +61,12 @@ export const Support = ({
           Hollywoodle is free to play and always will be! Every donation helps
           keep the website up and running.
         </p>
-        <p>Thank you for visiting our site and supporting us.</p>
+        <p>Thank you for visiting the site and for your support.</p>
         <div className="kofi_button_container">
           <KofiButton
             color="#0a9396"
-            title="Support us on Ko-fi"
-            kofiID="H2H0BYJ1R"
+            title="Support the creator on Ko-fi"
+            kofiID="E1E3CFTNF"
           />
         </div>
       </Modal>

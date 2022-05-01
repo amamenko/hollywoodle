@@ -7,6 +7,7 @@ import { RemoveScroll } from "react-remove-scroll";
 import { Button } from "reactstrap";
 import { toast } from "react-toastify";
 import { AppContext } from "../../App";
+import "../HowToPlayModal/HowToPlayModal.scss";
 
 const customModalStyles = {
   content: {
@@ -125,7 +126,6 @@ export const Statistics = ({
           <AiOutlineClose size={20} color="#fff" />
         </button>
         <div className="statistics_outer_container">
-          {" "}
           <div className="statistics_inner_container">
             <h3>{currentStreak}</h3>
             <div className="statistics_label">Current Streak</div>

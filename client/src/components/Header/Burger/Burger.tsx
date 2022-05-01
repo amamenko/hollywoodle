@@ -6,9 +6,9 @@ import { GrContact } from "react-icons/gr";
 import { ReactComponent as LogoWhite } from "../../../assets/LogoWhite.svg";
 import KofiButton from "kofi-button";
 import { toast } from "react-toastify";
+import { AppContext } from "../../../App";
 import "./Burger.scss";
 import "../Header.scss";
-import { AppContext } from "../../../App";
 
 export const Burger = ({
   burgerMenuOpen,
@@ -45,7 +45,7 @@ export const Burger = ({
     >
       <LogoWhite className="hollywoodle_logo burger_menu" />
       <div className="burger_menu_item_container">
-        <div className="menu-item">
+        <div className="menu-item" onClick={() => changeBurgerMenuOpen(false)}>
           <AiOutlineHome size={25} />
           <p>Home</p>
         </div>
