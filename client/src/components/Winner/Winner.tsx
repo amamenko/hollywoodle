@@ -8,6 +8,7 @@ import { CountdownTimer } from "../Countdown/CountdownTimer";
 import TwitterButton from "./ShareButtons/TwitterButton";
 import CopyLinkButton from "./ShareButtons/CopyLinkButton";
 import { sortAsc } from "../AutosuggestInput/AutosuggestInput";
+import KofiButton from "kofi-button";
 import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
 
@@ -258,6 +259,14 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
         <b>
           <CountdownTimer />
         </b>
+      </div>
+      <div className="winner_kofi_button">
+        <p>Loving Hollywoodle?</p>
+        <KofiButton
+          color="#0a9396"
+          title="Support the creator on Ko-fi"
+          kofiID="E1E3CFTNF"
+        />
       </div>
       <div className={`winner_bottom ${darkMode ? "dark" : ""}`}>
         <p

@@ -219,7 +219,6 @@ export const ArchivedModal = ({
             calendarType={"US"}
             defaultView={"month"}
             minDetail={"year"}
-            activeStartDate={calendarLimit}
             defaultValue={calendarLimit}
             maxDate={calendarLimit}
             minDate={new Date(2022, 3, 1)}
