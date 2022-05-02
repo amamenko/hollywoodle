@@ -7,26 +7,28 @@ import { ReactComponent as LogoWhite } from "../../../assets/LogoWhite.svg";
 import KofiButton from "kofi-button";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
+import { BiHeart } from "react-icons/bi";
+import Switch from "react-switch";
 import "./Burger.scss";
 import "../Header.scss";
 
 export const Burger = ({
   burgerMenuOpen,
   changeBurgerMenuOpen,
+  changeShowContactModal,
+  changeShowSupportModal,
 }: {
   burgerMenuOpen: boolean;
   changeBurgerMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  changeShowContactModal: React.Dispatch<React.SetStateAction<boolean>>;
+  changeShowSupportModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { darkMode, changeDarkMode } = useContext(AppContext);
-
   const [checked, changeChecked] = useState(true);
-  const offstyle = "btn-danger";
-  const onstyle = "btn-success";
-  let displayStyle = checked ? onstyle : offstyle;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (checked: boolean) => {
     changeDarkMode(!darkMode);
-    changeChecked(e.target.checked);
+    changeChecked(checked);
   };
 
   // Remove all displayed toasts on modal open
@@ -49,22 +51,35 @@ export const Burger = ({
           <AiOutlineHome size={25} />
           <p>Home</p>
         </div>
-        <div className="menu-item">
+        <div
+          className="menu-item"
+          onClick={() => {
+            changeBurgerMenuOpen(false);
+            changeShowContactModal(true);
+          }}
+        >
           <GrContact className="contact_icon" size={20} />
           <p>Contact</p>
         </div>
+        <div
+          className="menu-item"
+          onClick={() => {
+            changeBurgerMenuOpen(false);
+            changeShowSupportModal(true);
+          }}
+        >
+          <BiHeart className="contact_icon" size={25} />
+          <p>Support</p>
+        </div>
         <div className="menu-item set_dark_mode">
           <label>
-            <span className={"switch-wrapper"}>
-              <input
-                type="checkbox"
-                checked={checked}
-                onChange={(e) => handleChange(e)}
-              />
-              <span className={`${displayStyle} switch`}>
-                <span className="switch-handle" />
-              </span>
-            </span>
+            <Switch
+              className="react-switch"
+              onChange={handleChange}
+              checked={checked}
+              checkedIcon={false}
+              uncheckedIcon={false}
+            />
           </label>
           <p>Night Mode</p>
         </div>
@@ -72,8 +87,8 @@ export const Burger = ({
       <div className="kofi_button_container">
         <KofiButton
           color="#0a9396"
-          title="Support us on Ko-fi"
-          kofiID="H2H0BYJ1R"
+          title="Support on Ko-fi"
+          kofiID="E1E3CFTNF"
         />
       </div>
     </Menu>

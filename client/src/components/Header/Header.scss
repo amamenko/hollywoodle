@@ -63,20 +63,13 @@
   }
 }
 
-.light_dark_mode_icon {
-  position: absolute;
-  right: 1rem;
-  cursor: pointer;
-  @include header-hover;
-}
-
 .react-tiny-popover-container {
   z-index: 999999999;
 }
 
 .popover_content_container {
   width: 200px;
-  height: 175px;
+  height: 190px;
   background: rgb(0, 0, 0);
   &.dark {
     background: rgb(50, 50, 50);
@@ -257,20 +250,13 @@
 
 .header_graph_icon {
   @include header_icon;
-  // right: 1rem;
-  right: 3rem;
+  right: 1rem;
 }
 
 .archive_icon {
   @include header_icon;
-  // right: 3rem;
-  right: 5rem;
+  right: 3rem;
   top: 1.175rem;
-}
-
-.support_icon {
-  left: 3rem;
-  @include header_icon;
 }
 
 .bm-burger-button {

@@ -2,15 +2,15 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { ReactComponent as LogoWhite } from "../../assets/LogoWhite.svg";
 import { HowToPlayModal } from "../HowToPlayModal/HowToPlayModal";
-import { BiBarChartAlt2, BiHeart } from "react-icons/bi";
+import { BiBarChartAlt2 } from "react-icons/bi";
 import { GiBackwardTime } from "react-icons/gi";
-import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 // import { GrTrophy } from "react-icons/gr";
 import { Statistics } from "./Statistics";
 import { Support } from "./Support";
 import { ArchivedModal } from "./ArchiveModal/ArchivedModal";
+import { ContactModal } from "./ContactModal/ContactModal";
 // import { Leaderboard } from "./Leaderboard/Leaderboard";
-// import { Burger } from "./Burger/Burger";
+import { Burger } from "./Burger/Burger";
 import { MovesPopover } from "./Popovers/MovesPopover";
 import { DegreesPopover } from "./Popovers/DegreePopover";
 import "./Header.scss";
@@ -19,7 +19,6 @@ export const Header = () => {
   const {
     currentMoves,
     darkMode,
-    changeDarkMode,
     currentlyPlayingDate,
     objectiveCurrentDate,
     currentDegrees,
@@ -27,15 +26,12 @@ export const Header = () => {
   const [modalOpen, changeModalOpen] = useState(false);
   const [showSupportModal, changeShowSupportModal] = useState(false);
   const [showArchivedModal, changeShowArchivedModal] = useState(false);
+  const [showContactModal, changeShowContactModal] = useState(false);
   // const [showLeaderboardModal, changeShowLeaderboardModal] = useState(false);
   const [archivedGame, changeArchivedGame] = useState(false);
-  // const [burgerMenuOpen, changeBurgerMenuOpen] = useState(false);
+  const [burgerMenuOpen, changeBurgerMenuOpen] = useState(false);
   const [degreesPopoverOpen, changeDegreesPopoverOpen] = useState(false);
   const [movesPopoverOpen, changeMovesPopoverOpen] = useState(false);
-
-  const toggleLightDarkMode = () => {
-    changeDarkMode(!darkMode);
-  };
 
   const toggleDegreesPopover = () => {
     changeDegreesPopoverOpen(!degreesPopoverOpen);
@@ -65,16 +61,16 @@ export const Header = () => {
   return (
     <div className={`header ${darkMode ? "dark" : ""}`}>
       <div className="inner_header_container">
-        {/* <Burger
+        <Burger
           burgerMenuOpen={burgerMenuOpen}
           changeBurgerMenuOpen={changeBurgerMenuOpen}
-        /> */}
+          changeShowContactModal={changeShowContactModal}
+          changeShowSupportModal={changeShowSupportModal}
+        />
         <HowToPlayModal />
-        <BiHeart
-          className="support_icon"
-          color={"#fff"}
-          size={27}
-          onClick={() => changeShowSupportModal(true)}
+        <ContactModal
+          showContactModal={showContactModal}
+          changeShowContactModal={changeShowContactModal}
         />
         {/* <GrTrophy
           className="leaderboard_icon"
@@ -106,21 +102,6 @@ export const Header = () => {
           size={25}
           onClick={() => changeModalOpen(true)}
         />
-        {darkMode ? (
-          <MdDarkMode
-            className="light_dark_mode_icon"
-            color={"#fff"}
-            size={25}
-            onClick={toggleLightDarkMode}
-          />
-        ) : (
-          <MdOutlineDarkMode
-            className="light_dark_mode_icon"
-            color={"#fff"}
-            size={25}
-            onClick={toggleLightDarkMode}
-          />
-        )}
         <Statistics modalOpen={modalOpen} closeModal={closeModal} />
       </div>
       <div className={`points_container ${darkMode ? "dark" : ""}`}>
