@@ -13,6 +13,7 @@ import { LeaderNavigation } from "./LeaderNavigation";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
 import { io } from "socket.io-client";
+import Scroll, { Element } from "react-scroll";
 import "./Leaderboard.scss";
 
 export const Leaderboard = ({
@@ -37,6 +38,7 @@ export const Leaderboard = ({
       rank: 1,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -45,6 +47,7 @@ export const Leaderboard = ({
       rank: 2,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -53,6 +56,7 @@ export const Leaderboard = ({
       rank: 3,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -61,6 +65,7 @@ export const Leaderboard = ({
       rank: 4,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -69,6 +74,7 @@ export const Leaderboard = ({
       rank: 5,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -77,6 +83,7 @@ export const Leaderboard = ({
       rank: 6,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -85,6 +92,7 @@ export const Leaderboard = ({
       rank: 7,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -93,6 +101,7 @@ export const Leaderboard = ({
       rank: 8,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -101,6 +110,7 @@ export const Leaderboard = ({
       rank: 9,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -109,6 +119,7 @@ export const Leaderboard = ({
       rank: 10,
       username: "",
       countryCode: "",
+      degrees: 0,
       moves: 0,
       time: "",
       path: "",
@@ -117,8 +128,20 @@ export const Leaderboard = ({
 
   // Remove all displayed toasts on modal open
   useEffect(() => {
-    if (showLeaderboardModal) toast.dismiss();
+    if (showLeaderboardModal) {
+      toast.dismiss();
+    }
   }, [showLeaderboardModal]);
+
+  useEffect(() => {
+    const scroll = Scroll.scroller;
+    if (leaderboardPage === "today") {
+      scroll.scrollTo("leaderboard_title_container", {
+        containerId: "leaderboard_modal",
+        offset: -500,
+      });
+    }
+  }, [leaderboardPage]);
 
   //   useEffect(() => {
   //     if (!userCountryCode) {
@@ -253,11 +276,15 @@ export const Leaderboard = ({
         onRequestClose={handleCloseModal}
         contentLabel="Support Modal"
         className="modal_container leaderboard_modal"
+        id="leaderboard_modal"
         shouldFocusAfterRender={false}
         style={customModalStyles}
       >
         <>
-          <div className="leadboard_title_container">
+          <Element
+            className="leadboard_title_container"
+            name="leaderboard_title_container"
+          >
             <Spotlight className="spotlight_image left" />
             <h2 className="leaderboard_title">
               {leaderboardPage === "today" ? "TODAY'S" : "THE"} HOLLYWOODLE
@@ -265,7 +292,7 @@ export const Leaderboard = ({
               LEADERBOARD
             </h2>
             <Spotlight className="spotlight_image" />
-          </div>
+          </Element>
           <button
             className="close_modal_button archived_game"
             onClick={handleCloseModal}
@@ -307,6 +334,7 @@ export const Leaderboard = ({
                       <th>Rank</th>
                       <th>Username</th>
                       <th>Country</th>
+                      <th>Degrees</th>
                       <th>Moves</th>
                       <th>Time (ET)</th>
                       <th>Path</th>
@@ -337,6 +365,7 @@ export const Leaderboard = ({
                                 "-"
                               )}
                             </td>
+                            <td>{row.degrees ? row.degrees : "-"}</td>
                             <td>{row.moves ? row.moves : "-"}</td>
                             <td>{row.time ? row.time : "-"}</td>
                             <td>
@@ -346,7 +375,7 @@ export const Leaderboard = ({
                             </td>
                           </tr>
                           <tr>
-                            <td colSpan={6} className="expanded_td_container">
+                            <td colSpan={7} className="expanded_td_container">
                               <div
                                 className={`table_path ${
                                   row.rank === currentlyExpanded
@@ -354,7 +383,7 @@ export const Leaderboard = ({
                                     : ""
                                 }`}
                               >
-                                <h2>{`${row.username}'s Path`}</h2>
+                                <h3>{`${row.username}'s Path`}</h3>
                                 <p>{row.path}</p>
                               </div>
                             </td>

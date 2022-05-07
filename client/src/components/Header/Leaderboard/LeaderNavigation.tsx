@@ -23,6 +23,8 @@ export const LeaderNavigation = ({
   const [usernameInvalid, changeUsernameInvalid] = useState(false);
   const [usernameAllowChange, changeUsernameAllowChange] = useState(true);
   const [currentActiveUsername, changeCurrentActiveUsername] = useState("");
+  const [foundCussWord, changeFoundCussWord] = useState("");
+  const [criteriaOpened, changeCriteriaOpened] = useState(false);
 
   const inputElement = useRef<HTMLInputElement | null>(null);
   const laddaRef = useRef<HTMLButtonElement | null>(null);
@@ -65,6 +67,10 @@ export const LeaderNavigation = ({
         usernameInput.toLowerCase().includes(el)
       )
     ) {
+      const foundWord = allFilteredCussWordsArr.find((el) =>
+        usernameInput.toLowerCase().includes(el)
+      );
+      if (foundWord) changeFoundCussWord(foundWord);
       changeUsernameInvalid(true);
     } else {
       const storageStr = localStorage.getItem("hollywoodle-statistics");
@@ -133,6 +139,7 @@ export const LeaderNavigation = ({
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (usernameInvalid) changeUsernameInvalid(false);
+    if (foundCussWord) changeFoundCussWord("");
     changeUsernameInput(
       e.target.value.toUpperCase().replace(/[^a-z0-9]/gim, "")
     );
@@ -151,19 +158,29 @@ export const LeaderNavigation = ({
         , the more likely your chances are of having your name up in lights!
         <br />
         <br />
-        The criteria for leaderboard eligibility are as follows:
+        <span
+          className="leaderboard_eligibility_toggle_view"
+          onClick={() => changeCriteriaOpened(!criteriaOpened)}
+        >
+          View eligibility criteria
+        </span>
       </p>
-      <ul className="leaderboard_disclaimer">
-        <li>Must have a username.</li>
-        <li>Must be playing today's game for the first time today.</li>
-        <li>
-          Must not have already looked at any other player's leadboard path.
-        </li>
-      </ul>
-      <p className="leaderboard_disclaimer">
-        Your username can only be changed <b>once</b> every <b>two</b> weeks, so
-        make it a good one!
-      </p>
+      <Collapse
+        isOpened={criteriaOpened}
+        initialStyle={{ height: 0, overflow: "hidden" }}
+      >
+        <p className="leaderboard_disclaimer criteria">
+          The criteria for leaderboard eligibility are as follows:
+        </p>
+        <ul className="leaderboard_disclaimer">
+          <li>Must have a username.</li>
+          <li>Must be playing today's game for the first time today.</li>
+          <li>
+            Must not have already looked at any other player's leadboard path.
+          </li>
+        </ul>
+      </Collapse>
+
       <div className="leadboard_navigation_buttons">
         {currentActiveUsername && (
           <>
@@ -185,6 +202,10 @@ export const LeaderNavigation = ({
         >
           <Form className="autosuggest_input_container leaderboard_username_input_container">
             <FormGroup className="leaderboard_username_inner_container">
+              <p className="leaderboard_username_disclaimer">
+                Your username can only be changed <b>once</b> every <b>two</b>{" "}
+                weeks, so make it a good one!
+              </p>
               <Input
                 innerRef={inputElement}
                 type="text"
@@ -195,8 +216,13 @@ export const LeaderNavigation = ({
                 invalid={usernameInvalid}
               />
               <FormFeedback>
-                Whoa! What do you think this is, a Tarantino movie? Keep it G,
-                keep it light.
+                Whoa! What do you think this is, a Tarantino movie?
+                <br />
+                <br />
+                {foundCussWord
+                  ? `You can't have a username with the term "${foundCussWord.toUpperCase()}."`
+                  : ""}{" "}
+                Keep it G, keep it light.
               </FormFeedback>
               <FormText>
                 Usernames must contain at least 5 characters and no more than 12
@@ -216,7 +242,7 @@ export const LeaderNavigation = ({
             ref={laddaRef}
             onClick={handleLaddaClick}
           >
-            <span className="ladda-label">SET AS USERNAME</span>
+            <span className="ladda-label">CONFIRM USERNAME</span>
           </button>
         </Collapse>
         <Button

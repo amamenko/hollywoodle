@@ -92,8 +92,30 @@ app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
     if (leaderboard.find((el) => el.ip === ip)) {
       return;
     } else {
-      const filteredArr = leaderboard.filter((el) => el.moves >= moves);
-      const allMoves = filteredArr.map((el) => el.moves);
+      const highestNumber = Math.max(
+        ...leaderboard.map((el) => Number(el.moves))
+      );
+      if (Number(moves) > highestNumber) {
+        return;
+      } else {
+        const foundElIndex = leaderboard.findIndex(
+          (el) => el.moves >= Number(moves)
+        );
+        const firstPartArr = leaderboard.slice(0, foundElIndex);
+        const secondPartArr = leaderboard.slice(foundElIndex);
+        firstPartArr.push({
+          username,
+          countryCode,
+          countryName,
+          moves,
+          time,
+          path,
+        } as {
+          [key: string]: string | number;
+        });
+        let fullArr = [...firstPartArr, ...secondPartArr];
+        fullArr.pop();
+      }
     }
   }
 });

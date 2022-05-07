@@ -45,7 +45,10 @@ export const Burger = ({
       customBurgerIcon={<FiMenu className="burger_icon" color="#fff" />}
       customCrossIcon={<AiOutlineClose color="#fff" />}
     >
-      <LogoWhite className="hollywoodle_logo burger_menu" />
+      <span className="hollywoodle_logo_container_burger">
+        ""
+        <LogoWhite className="hollywoodle_logo burger_menu" />
+      </span>
       <div className="burger_menu_item_container">
         <div className="menu-item" onClick={() => changeBurgerMenuOpen(false)}>
           <AiOutlineHome size={25} />
@@ -90,6 +93,38 @@ export const Burger = ({
           title="Support on Ko-fi"
           kofiID="E1E3CFTNF"
         />
+      </div>
+      <div className="burger_other_projects_container">
+        <p className="main_statement">
+          Other movie projects from the creator of Hollywoodle:
+        </p>
+        <div className="other_project_container">
+          <h2>
+            <a
+              href="https://owen-wilson-wow-api.herokuapp.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              The Owen Wilson Wow API
+            </a>
+          </h2>
+          <p>A database of Owen Wilson's "wow" exclamations in movies.</p>
+        </div>
+        <div className="other_project_container">
+          <h2>
+            <a
+              href="https://twitter.com/BreakingCasting"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              @BreakingCastingNews
+            </a>
+          </h2>
+          <p>
+            A Twitter bot that tweets fake movie remake casting announcements
+            every 4 hours.
+          </p>
+        </div>
       </div>
     </Menu>
   );

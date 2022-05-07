@@ -109,12 +109,19 @@
   }
 }
 
+.hollywoodle_logo_container_burger {
+  position: relative;
+  width: 100%;
+  color: transparent;
+}
+
 .hollywoodle_logo.burger_menu {
+  width: 100%;
   max-width: 15rem;
 }
 
 .burger_menu_item_container {
-  padding: 6rem 0 4rem 0;
+  padding: 4rem 0 4rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -172,4 +179,58 @@
 .react-switch {
   vertical-align: middle;
   margin-left: 4px;
+}
+
+.burger_other_projects_container {
+  display: flex !important;
+  flex-direction: column;
+  align-self: flex-end;
+  text-align: left;
+  margin: 0 2rem;
+  margin-top: 10vh;
+  padding-bottom: 5rem;
+
+  @media only screen and (min-height: 1000px) {
+    margin-top: 25vh;
+  }
+
+  @media only screen and (min-height: 1100px) {
+    margin-top: 35vh;
+  }
+
+  @media only screen and (min-height: 1200px) {
+    margin-top: 40vh;
+  }
+
+  a {
+    text-decoration: none;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 1px;
+    color: #fff;
+    transition: color 0.4s ease, border-bottom-color 0.4s ease;
+
+    @media only screen and (min-width: 992px) {
+      &:hover {
+        color: rgb(225, 225, 225);
+        border-bottom: 1px solid rgb(225, 225, 225);
+        cursor: pointer;
+      }
+
+      &:focus,
+      &:active {
+        color: rgb(200, 200, 200);
+        border-bottom: 1px solid rgb(200, 200, 200);
+        cursor: pointer;
+      }
+    }
+  }
+
+  h2 {
+    font-size: 0.7rem;
+    color: #fff;
+  }
+
+  p {
+    font-size: 0.6rem;
+  }
 }

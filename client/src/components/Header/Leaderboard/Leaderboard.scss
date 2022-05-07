@@ -1,7 +1,9 @@
 .leaderboard_modal {
   padding-top: 2rem !important;
-  padding: 0;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
   overflow: auto;
+  width: auto !important;
 
   /* Extra padding to allow scroll to see entire board */
   @media only screen and (max-width: 768px) {
@@ -48,8 +50,10 @@
     }
 
     &:first-child {
-      border-top: 1px solid rgb(50, 50, 50);
       padding-bottom: 0;
+      &:not(.criteria) {
+        border-top: 1px solid rgb(50, 50, 50);
+      }
     }
 
     &:nth-child(3) {
@@ -60,6 +64,12 @@
     @media only screen and (min-width: 550px) {
       font-size: 0.85rem;
     }
+
+    .leaderboard_eligibility_toggle_view {
+      cursor: pointer;
+      border-bottom: 1px solid #fff;
+      padding-bottom: 0.25rem;
+    }
   }
 
   .close_modal_button {
@@ -69,14 +79,14 @@
   .back_modal_button {
     cursor: pointer;
     position: absolute;
-    top: 0.5rem;
+    top: 1rem;
     left: 1rem;
     background: transparent;
     font-size: 18px;
     z-index: 99999;
 
     @media only screen and (max-width: 768px) {
-      // Increase button surface area for mobile
+      // Increase button surface area for mobile touch
       padding-right: 3rem;
       padding-bottom: 3rem;
     }
@@ -205,6 +215,14 @@
           align-items: center;
           justify-content: center;
           position: relative;
+
+          .leaderboard_username_disclaimer {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            max-width: 300px;
+            font-size: 0.9rem;
+          }
         }
 
         input {
@@ -238,7 +256,7 @@
     justify-content: center;
     width: 100%;
 
-    h2 {
+    h3 {
       margin: 1rem 0rem 0.5rem 0rem;
       padding: 0 0 0.5rem 0;
       border-bottom: 1px solid rgb(100, 100, 100);
@@ -337,9 +355,8 @@
     td {
       background: rgb(10, 10, 10);
       color: #fff;
-
-      width: 100px !important;
-      max-width: 100px !important;
+      width: 95px !important;
+      max-width: 95px !important;
       text-align: center;
     }
   }
