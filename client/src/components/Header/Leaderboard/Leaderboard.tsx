@@ -26,8 +26,6 @@ export const Leaderboard = ({
   const { firstActor, lastActor, objectiveCurrentDate } =
     useContext(AppContext);
 
-  // const [userCountryCode, changeUserCountryCode] = useState("");
-  // const [userCountryName, changeUserCountryName] = useState("");
   const [collapseOpen, changeCollapseOpen] = useState(false);
   const [currentlyExpanded, changeCurrentlyExpanded] = useState(0);
   const [leaderboardPage, changeLeaderboardPage] = useState("");
@@ -142,29 +140,6 @@ export const Leaderboard = ({
       });
     }
   }, [leaderboardPage]);
-
-  //   useEffect(() => {
-  //     if (!userCountryCode) {
-  //       const source = axios.CancelToken.source();
-
-  //       const getData = async () => {
-  //         const res = await axios.get(
-  //           `https://geolocation-db.com/json/${process.env.REACT_APP_GEOLOCATION_KEY}`
-  //         );
-  //         if (res.data && res.data.country_code && res.data.country_name) {
-  //           changeUserCountryCode(res.data.country_code);
-  //           changeUserCountryName(res.data.country_name);
-  //         } else {
-  //           changeUserCountryCode("US");
-  //           changeUserCountryName("United States");
-  //         }
-  //       };
-
-  //       getData();
-
-  //       return () => source.cancel();
-  //     }
-  //   }, [userCountryName, userCountryCode]);
 
   const handleCloseModal = () => {
     changeShowLeaderboardModal(false);

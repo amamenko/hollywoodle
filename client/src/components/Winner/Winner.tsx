@@ -49,7 +49,8 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
   useEffect(() => {
     let pathArr = [];
     pathArr.push(firstActor.name);
-    const correctGuesses = guesses
+    const clonedGuesses = guesses.slice();
+    const correctGuesses = clonedGuesses
       .sort(sortAsc)
       .filter((guess) => !guess.incorrect && guess.incorrect !== "partial");
     pathArr = [

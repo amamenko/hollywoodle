@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { Button } from "reactstrap";
 import { Collapse } from "react-collapse";
 import { Form, FormGroup, Input, FormFeedback, FormText } from "reactstrap";
@@ -145,6 +145,10 @@ export const LeaderNavigation = ({
     );
   };
 
+  const submitHandler = (e: FormEvent) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="leadboard_navigation_container">
       <p className="leaderboard_disclaimer">
@@ -200,7 +204,10 @@ export const LeaderNavigation = ({
           isOpened={usernameCollapsed}
           initialStyle={{ height: 0, overflow: "hidden" }}
         >
-          <Form className="autosuggest_input_container leaderboard_username_input_container">
+          <Form
+            className="autosuggest_input_container leaderboard_username_input_container"
+            onSubmit={submitHandler}
+          >
             <FormGroup className="leaderboard_username_inner_container">
               <p className="leaderboard_username_disclaimer">
                 Your username can only be changed <b>once</b> every <b>two</b>{" "}

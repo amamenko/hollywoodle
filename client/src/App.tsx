@@ -272,7 +272,9 @@ const App = () => {
                 ? objectiveCurrentDate
                 : ""
               : "",
-            leaderboard_eligible: storageObj.leaderboard_viewed
+            leaderboard_eligible: storageObj.played_today
+              ? false
+              : storageObj.leaderboard_viewed
               ? storageObj.leaderboard_viewed.toString() ===
                 objectiveCurrentDate
                 ? false

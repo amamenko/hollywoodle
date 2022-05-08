@@ -10,6 +10,10 @@ import enforce from "express-sslify";
 import { format } from "date-fns";
 import http from "http";
 import { Server } from "socket.io";
+import {
+  LeaderboardItem,
+  updateLeaderboard,
+} from "./functions/updateLeaderboard";
 
 const app = express();
 const server = http.createServer(app);
@@ -68,7 +72,7 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
   }
 });
 
-const getTodaysLeaderboard = async () => {
+export const getTodaysLeaderboard = async () => {
   const currentDate = format(new Date(), "MM/dd/yyyy");
   const leaderboard: { [key: string]: string | number }[] =
     await Leaderboard.find({ date: currentDate });
@@ -81,44 +85,11 @@ app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
   res.send(leaderboard);
 });
 
-app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
-  const leaderboard: { [key: string]: string | number }[] =
-    await getTodaysLeaderboard();
-
-  if (req.query && typeof req.query === "object") {
-    const { username, countryCode, countryName, ip, moves, time, path } =
-      req.query;
-
-    if (leaderboard.find((el) => el.ip === ip)) {
-      return;
-    } else {
-      const highestNumber = Math.max(
-        ...leaderboard.map((el) => Number(el.moves))
-      );
-      if (Number(moves) > highestNumber) {
-        return;
-      } else {
-        const foundElIndex = leaderboard.findIndex(
-          (el) => el.moves >= Number(moves)
-        );
-        const firstPartArr = leaderboard.slice(0, foundElIndex);
-        const secondPartArr = leaderboard.slice(foundElIndex);
-        firstPartArr.push({
-          username,
-          countryCode,
-          countryName,
-          moves,
-          time,
-          path,
-        } as {
-          [key: string]: string | number;
-        });
-        let fullArr = [...firstPartArr, ...secondPartArr];
-        fullArr.pop();
-      }
-    }
-  }
-});
+// app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
+//   if (req.body && typeof req.body === "object") {
+//     await updateLeaderboard(req.query as LeaderboardItem);
+//   }
+// });
 
 // Update actors in MongoDB every night at midnight
 cron.schedule("0 0 * * *", () => {
