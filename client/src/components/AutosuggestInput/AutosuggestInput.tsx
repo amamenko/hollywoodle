@@ -20,7 +20,7 @@ import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
 import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
 import * as Ladda from "ladda";
-// import { getGeolocationData } from "./getGeolocationData";
+// import { handleUpdateLeaderboard } from "./handleUpdateLeaderboard";
 import "../Header/Leaderboard/Leaderboard.scss";
 import "./Autosuggest.scss";
 import "ladda/dist/ladda.min.css";
@@ -235,64 +235,16 @@ export const AutosuggestInput = ({
                 //   !storageObj.leaderboard_viewed
                 // ) {
                 //   // User is eligible for today's leaderboard - check if qualifies
-                //   const currentDate = new Date();
-                //   const currentETTime = currentDate.toLocaleString("en-US", {
-                //     timeZone: "America/New_York",
-                //     timeStyle: "short",
-                //   });
-
-                //   const geolocationData = await getGeolocationData();
-
-                //   if (
-                //     geolocationData &&
-                //     geolocationData.ip &&
-                //     geolocationData.countryCode &&
-                //     geolocationData.countryName
-                //   ) {
-                //     let pathArr = [];
-                //     pathArr.push(firstActor.name);
-                //     const clonedGuesses = guesses.slice();
-                //     const correctGuesses = clonedGuesses
-                //       .sort(sortAsc)
-                //       .filter(
-                //         (guess) =>
-                //           !guess.incorrect && guess.incorrect !== "partial"
-                //       );
-                //     pathArr = [
-                //       ...pathArr,
-                //       ...correctGuesses.map((guess) =>
-                //         guess.type === "movie"
-                //           ? `${guess.guess} (${guess.year})`
-                //           : guess.guess
-                //       ),
-                //     ];
-                //     pathArr.push(lastActor.name);
-
-                //     const leaderboardObj = {
-                //       username: storageObj.username,
-                //       countryCode: geolocationData.countryCode,
-                //       countryName: geolocationData.countryName,
-                //       ip: geolocationData.ip,
-                //       degrees: currentDegrees + 1,
-                //       moves: currentMoves + 1,
-                //       time: currentETTime,
-                //       path: pathArr.join(" ➡️ "),
-                //     };
-
-                //     const nodeEnv = process.env.REACT_APP_NODE_ENV
-                //       ? process.env.REACT_APP_NODE_ENV
-                //       : "";
-
-                //     await axios
-                //       .post(
-                //         nodeEnv && nodeEnv === "production"
-                //           ? `${process.env.REACT_APP_PROD_SERVER}/api/update_leaderboard`
-                //           : "http://localhost:4000/api/update_leaderboard",
-                //         leaderboardObj
-                //       )
-                //       .then((res) => console.log(res))
-                //       .catch((e) => console.error(e));
-                //   }
+                //   await handleUpdateLeaderboard(
+                //     name,
+                //     year,
+                //     firstActor,
+                //     lastActor,
+                //     currentDegrees,
+                //     currentMoves,
+                //     guesses,
+                //     storageObj
+                //   );
                 // }
 
                 localStorage.setItem(

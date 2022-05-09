@@ -22,6 +22,9 @@ const io = new Server(server, { cors: { origin: "*" } });
 // Cross-Origin Requests
 app.use(cors());
 
+// To show request body during POST requests
+app.use(express.json());
+
 const port = process.env.PORT || 4000;
 
 if (process.env.NODE_ENV === "production") {
@@ -74,9 +77,9 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
 
 export const getTodaysLeaderboard = async () => {
   const currentDate = format(new Date(), "MM/dd/yyyy");
-  const leaderboard: { [key: string]: string | number }[] =
-    await Leaderboard.find({ date: currentDate });
-  return leaderboard;
+  const leaderboardEl = await Leaderboard.find({ date: currentDate });
+
+  if (leaderboardEl && leaderboardEl[0]) return leaderboardEl[0].leaderboard;
 };
 
 app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
@@ -85,11 +88,12 @@ app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
   res.send(leaderboard);
 });
 
-// app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
-//   if (req.body && typeof req.body === "object") {
-//     await updateLeaderboard(req.query as LeaderboardItem);
-//   }
-// });
+app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
+  if (req.body && typeof req.body === "object") {
+    const update = await updateLeaderboard(req.body as LeaderboardItem);
+    res.send(update);
+  }
+});
 
 // Update actors in MongoDB every night at midnight
 cron.schedule("0 0 * * *", () => {

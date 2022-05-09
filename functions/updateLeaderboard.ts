@@ -73,24 +73,24 @@ export const updateLeaderboard = async (query: {
         degrees: el.degrees,
         moves: el.moves,
         time: el.time,
-        pat: el.path,
+        path: el.path,
       };
     });
-    const initialIPs = leaderboard.map(
-      (el) => el.username.toString() + el.moves + +el.time
+    const initialIDs = leaderboard.map((el) =>
+      el.username ? el.username.toString() + el.moves + el.time : ""
     );
-    const cloneIPs = leaderboardClone.map(
-      (el) => el.username.toString() + el.moves + el.time
+    const cloneIDs = leaderboardClone.map((el) =>
+      el.username ? el.username.toString() + el.moves + el.time : ""
     );
 
     const arrEqualityCheck = (a: string[], b: string[]) =>
       a.length === b.length && a.every((v, i) => v === b[i]);
 
-    if (!arrEqualityCheck(initialIPs, cloneIPs)) {
+    if (!arrEqualityCheck(initialIDs, cloneIDs)) {
       // Leaderboard changed - update needed!
       const currentDate = format(new Date(), "MM/dd/yyyy");
       const leaderboardFilter = { date: currentDate };
-      const leaderboardUpdate = leaderboardClone;
+      const leaderboardUpdate = { leaderboard: leaderboardClone };
       await Leaderboard.findOneAndUpdate(leaderboardFilter, leaderboardUpdate);
       return "Leaderboard successfully updated!";
     } else {

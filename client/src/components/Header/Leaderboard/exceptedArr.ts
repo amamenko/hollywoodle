@@ -30,6 +30,7 @@ export const exceptedArr = [
   "wn",
   "nig",
   "xtc",
+  "puss",
   "welfare",
   "vomit",
   "whit",

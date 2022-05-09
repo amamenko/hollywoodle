@@ -179,9 +179,7 @@ export const Leaderboard = ({
           )
           .then((res) => res.data)
           .then((data) => {
-            if (data && data[0] && data[0].leaderboard) {
-              changeTableData(data[0].leaderboard);
-            }
+            if (data) changeTableData(data);
           })
           .catch((e) => {
             console.error(e);
