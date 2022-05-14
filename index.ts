@@ -10,10 +10,13 @@ import enforce from "express-sslify";
 import { format } from "date-fns";
 import http from "http";
 import { Server } from "socket.io";
-import {
-  LeaderboardItem,
-  updateLeaderboard,
-} from "./functions/updateLeaderboard";
+import { updateLeaderboard } from "./functions/updateLeaderboard";
+import { Path } from "./models/Path";
+import { updateTopPaths } from "./functions/updateTopPaths";
+
+export interface RequestQuery {
+  [key: string]: string | number;
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -43,15 +46,25 @@ io.on("connection", (socket) => {
   });
 });
 
-const changeStream = Leaderboard.watch();
-
-changeStream.on("change", (change) => {
+const handleLiveChange = (change: { [key: string]: any }, key: string) => {
   if (change.operationType === "update") {
     const allUpdatedFields = change.updateDescription.updatedFields;
     if (allUpdatedFields) {
-      io.emit("changeData", allUpdatedFields.leaderboard);
+      io.emit("changeData", allUpdatedFields[key]);
     }
   }
+};
+
+const leaderboardChangeStream = Leaderboard.watch();
+
+leaderboardChangeStream.on("change", (change) => {
+  handleLiveChange(change, "leaderboard");
+});
+
+const pathsChangeStream = Path.watch();
+
+pathsChangeStream.on("change", (change) => {
+  handleLiveChange(change, "paths");
 });
 
 app.get("/api/actor", [], async (req: Request, res: Response) => {
@@ -90,7 +103,21 @@ app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
 
 app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
   if (req.body && typeof req.body === "object") {
-    const update = await updateLeaderboard(req.body as LeaderboardItem);
+    const update = await updateLeaderboard(req.body as RequestQuery);
+    res.send(update);
+  }
+});
+
+app.get("/api/top_paths", [], async (req: Request, res: Response) => {
+  const topPaths: { [key: string]: string | number }[] = await Path.find();
+  if (topPaths[0] && topPaths[0].paths) {
+    res.send(topPaths[0].paths);
+  }
+});
+
+app.post("/api/update_top_paths", [], async (req: Request, res: Response) => {
+  if (req.body && typeof req.body === "object") {
+    const update = await updateTopPaths(req.body as RequestQuery);
     res.send(update);
   }
 });

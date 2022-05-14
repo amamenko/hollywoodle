@@ -13,6 +13,7 @@ import { ContactModal } from "./ContactModal/ContactModal";
 import { Burger } from "./Burger/Burger";
 import { MovesPopover } from "./Popovers/MovesPopover";
 import { DegreesPopover } from "./Popovers/DegreePopover";
+// import { TopPaths } from "./TopPaths/TopPaths";
 import "./Header.scss";
 
 export const Header = () => {
@@ -27,6 +28,7 @@ export const Header = () => {
   const [showSupportModal, changeShowSupportModal] = useState(false);
   const [showArchivedModal, changeShowArchivedModal] = useState(false);
   const [showContactModal, changeShowContactModal] = useState(false);
+  // const [showTopPathsModal, changeShowTopPathsModal] = useState(false);
   // const [showLeaderboardModal, changeShowLeaderboardModal] = useState(false);
   const [archivedGame, changeArchivedGame] = useState(false);
   const [burgerMenuOpen, changeBurgerMenuOpen] = useState(false);
@@ -66,6 +68,7 @@ export const Header = () => {
           changeBurgerMenuOpen={changeBurgerMenuOpen}
           changeShowContactModal={changeShowContactModal}
           changeShowSupportModal={changeShowSupportModal}
+          // changeShowTopPathsModal={changeShowTopPathsModal}
         />
         <HowToPlayModal />
         <ContactModal
@@ -103,6 +106,10 @@ export const Header = () => {
           onClick={() => changeModalOpen(true)}
         />
         <Statistics modalOpen={modalOpen} closeModal={closeModal} />
+        {/* <TopPaths
+          showTopPathsModal={showTopPathsModal}
+          changeShowTopPathsModal={changeShowTopPathsModal}
+        /> */}
       </div>
       <div className={`points_container ${darkMode ? "dark" : ""}`}>
         {archivedGame && (

@@ -1,18 +1,14 @@
 import { format } from "date-fns";
-import { getTodaysLeaderboard } from "..";
+import { getTodaysLeaderboard, RequestQuery } from "..";
 import { Leaderboard } from "../models/Leaderboard";
-
-export interface LeaderboardItem {
-  [key: string]: string | number;
-}
 
 export const updateLeaderboard = async (query: {
   [key: string]: string | number;
 }) => {
   const { username, countryCode, countryName, ip, degrees, moves, time, path } =
-    query as LeaderboardItem;
+    query as RequestQuery;
 
-  const leaderboard: LeaderboardItem[] = await getTodaysLeaderboard();
+  const leaderboard: RequestQuery[] = await getTodaysLeaderboard();
 
   if (leaderboard.find((el) => el.ip === ip)) {
     return "IP already logged to leaderboard!";
@@ -41,7 +37,7 @@ export const updateLeaderboard = async (query: {
       time,
       path,
     });
-    leaderboardClone.sort((a: LeaderboardItem, b: LeaderboardItem) => {
+    leaderboardClone.sort((a: RequestQuery, b: RequestQuery) => {
       // First try to sort by moves - ascending
       if (a.moves > b.moves) {
         return 1;
