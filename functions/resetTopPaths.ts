@@ -1,9 +1,10 @@
 import { Path } from "../models/Path";
-import { format, subDays } from "date-fns";
+import { format, subDays, addDays } from "date-fns";
 
 const dayBefore = format(subDays(new Date(), 2), "MM/dd/yyyy");
 const yesterday = format(subDays(new Date(), 1), "MM/dd/yyyy");
 const today = format(new Date(), "MM/dd/yyyy");
+const tomorrow = format(addDays(new Date(), 1), "MM/dd/yyyy");
 
 export const resetTopPaths = async () => {
   // Clean up any recent paths
@@ -13,9 +14,9 @@ export const resetTopPaths = async () => {
     },
   }).catch((e) => console.error(e));
 
-  // Create path document for today
+  // Create path document for tomorrow
   await Path.create({
-    date: today,
+    date: tomorrow,
     paths: [],
   }).catch((e) => console.error(e));
 };

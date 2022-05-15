@@ -38,7 +38,12 @@ const handleLiveChange = (change: { [key: string]: any }, key: string) => {
   if (change.operationType === "update") {
     const allUpdatedFields = change.updateDescription.updatedFields;
     if (allUpdatedFields) {
-      io.emit("changeData", allUpdatedFields[key]);
+      let changeData = allUpdatedFields[key];
+      if (key === "paths") {
+        // Only return first 10 paths for top paths changes
+        changeData = changeData.slice(0, 10);
+      }
+      io.emit("changeData", changeData);
     }
   }
 };

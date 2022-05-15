@@ -130,10 +130,14 @@ export const TopPaths = () => {
           <AiOutlineClose size={20} color="#fff" />
         </button>
         <p className="top_paths_prompt">
-          The most popular paths of the day will be shown here.
+          The top 10 most popular paths of the day will be shown here.
+          <br />
           <br />
           Only players' first play-through of the day is counted towards a
-          path's popularity. Spoilers ahead!
+          path's popularity.
+          <br />
+          <br />
+          <span className="spoilers">Spoilers ahead!</span>
         </p>
         <div className="all_paths_container">
           {pathsLoading ? (

@@ -26,9 +26,23 @@ export const updateTopPaths = async (query: {
         count: 1,
       });
     }
-    const sortedPaths = currentTopPathsClone.sort((a, b) =>
-      a.count > b.count ? -1 : 1
-    );
+    const sortedPaths = currentTopPathsClone.sort((a, b) => {
+      // First sort by popularity count (DESC)
+      if (a.count > b.count) {
+        return -1;
+      } else if (a.count < b.count) {
+        return 1;
+      }
+
+      // Then sort by degrees (ASC)
+      if (a.degrees > b.degrees) {
+        return 1;
+      } else if (a.degrees < b.degrees) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
     const currentPathIndex = sortedPaths.findIndex((el) => el.path === path);
 
     const currentDate = format(new Date(), "MM/dd/yyyy");
