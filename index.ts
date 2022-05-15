@@ -34,18 +34,6 @@ if (process.env.NODE_ENV === "production") {
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
 
-io.on("connection", () => {
-  console.log("connected");
-});
-
-io.on("connection", (socket) => {
-  console.log(`A user connected: ${socket.id}`);
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
-
 const handleLiveChange = (change: { [key: string]: any }, key: string) => {
   if (change.operationType === "update") {
     const allUpdatedFields = change.updateDescription.updatedFields;
@@ -109,9 +97,10 @@ app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
 });
 
 app.get("/api/top_paths", [], async (req: Request, res: Response) => {
-  const topPaths: { [key: string]: string | number }[] = await Path.find();
+  const topPaths: { [key: string]: { [key: string]: string | number }[] }[] =
+    await Path.find();
   if (topPaths[0] && topPaths[0].paths) {
-    res.send(topPaths[0].paths);
+    res.send(topPaths[0].paths.slice(0, 10));
   }
 });
 

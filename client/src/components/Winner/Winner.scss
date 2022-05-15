@@ -55,6 +55,15 @@
   }
 }
 
+.winner_path_information_container {
+  margin: 0.5rem 0 2rem 0;
+
+  .top_paths_button {
+    min-width: 240px;
+    margin-top: 1.5rem;
+  }
+}
+
 .winner_kofi_button {
   display: flex;
   flex-direction: column;

@@ -64,6 +64,7 @@ export const ArchivedModal = ({
     changeMostRecentActor,
     objectiveCurrentDate,
     changeCurrentDegrees,
+    changePathRankCount,
   } = useContext(AppContext);
 
   const formatDate = (someDate: Date) => {
@@ -113,6 +114,10 @@ export const ArchivedModal = ({
         guess: "",
         type: "",
         year: "",
+      });
+      changePathRankCount({
+        rank: "",
+        count: "",
       });
     }
   };

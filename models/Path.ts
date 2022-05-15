@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const pathSchema = new mongoose.Schema({
+  date: String,
   paths: [
     {
       degrees: Number,

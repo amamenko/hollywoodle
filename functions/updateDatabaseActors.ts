@@ -1,6 +1,7 @@
 import { updateActors } from "./updateActors";
 import { Actor } from "../models/Actor";
 import { eachDayOfInterval, format, subDays } from "date-fns";
+import { resetTopPaths } from "./resetTopPaths";
 
 export const updateDatabaseActors = async () => {
   const twoMonthsAgo = subDays(new Date(), 62);
@@ -49,6 +50,7 @@ export const updateDatabaseActors = async () => {
     allBlacklistedMovieTerms
   );
 
+  await resetTopPaths();
   // Create first actor document for today
   await Actor.create(resultActors.actor1Obj).catch((e) => console.error(e));
   // Create last actor document for today

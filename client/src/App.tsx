@@ -22,6 +22,8 @@ import { format } from "date-fns-tz";
 import { differenceInDays, parse } from "date-fns";
 import { IntroModal } from "./components/IntroModal/IntroModal";
 import { getMovieCast } from "./getMovieCast";
+import { buildPath } from "./components/AutosuggestInput/buildPath";
+import { handleUpdateTopPaths } from "./components/AutosuggestInput/handleUpdateTopPaths";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
@@ -89,6 +91,14 @@ interface ContextProps {
   changeCurrentDegrees: React.Dispatch<React.SetStateAction<number>>;
   guessLoading: boolean;
   changeGuessLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  updateWinData: boolean;
+  changeUpdateWinData: React.Dispatch<React.SetStateAction<boolean>>;
+  pathRankCount: { [key: string]: string };
+  changePathRankCount: Dispatch<
+    SetStateAction<{ rank: string; count: string }>
+  >;
+  showTopPathsModal: boolean;
+  changeShowTopPathsModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AppContext = createContext<ContextProps>({
@@ -143,6 +153,12 @@ export const AppContext = createContext<ContextProps>({
   changeCurrentDegrees: () => {},
   guessLoading: false,
   changeGuessLoading: () => {},
+  updateWinData: false,
+  changeUpdateWinData: () => {},
+  pathRankCount: {},
+  changePathRankCount: () => {},
+  showTopPathsModal: false,
+  changeShowTopPathsModal: () => {},
 });
 
 const App = () => {
@@ -190,9 +206,12 @@ const App = () => {
   const [win, changeWin] = useState(false);
   const [darkMode, changeDarkMode] = useState(true);
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
-  const [showIntroModal, changeShowIntroModal] = useState(false);
   const [currentEmojiGrid, changeEmojiGrid] = useState<string[]>([]);
   const [initialAppMounted, changeInitialAppMounted] = useState(false);
+
+  // Handle modal logic
+  const [showTopPathsModal, changeShowTopPathsModal] = useState(false);
+  const [showIntroModal, changeShowIntroModal] = useState(false);
 
   // For use in statistics/game logic
   const [fullTimezoneDate, changeFullTimezoneDate] = useState("");
@@ -202,6 +221,15 @@ const App = () => {
   const [currentArchivedActorsResults, changeCurrentArchivedActorsResults] =
     useState<ActorObj[]>([]);
   const [currentlyPlayingDate, changeCurrentlyPlayingDate] = useState("");
+
+  // For winning - triggers fetch and async tasks to server
+  const [updateWinData, changeUpdateWinData] = useState(false);
+  const [pathRankCount, changePathRankCount] = useState({
+    rank: "",
+    count: "",
+  });
+
+  // For winning - confetti purposes
   const rewardEl = useRef<RewardElement>(null);
 
   useEffect(() => {
@@ -510,6 +538,44 @@ const App = () => {
     return () => source.cancel();
   }, [currentSelection, typeOfGuess]);
 
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+    if (updateWinData && !pathRankCount.rank && !pathRankCount.count) {
+      changeUpdateWinData(false);
+      const fetchData = async () => {
+        try {
+          const finalPath = buildPath(firstActor, lastActor, guesses);
+
+          let results = await handleUpdateTopPaths(finalPath, currentDegrees);
+          if (results && results.data) {
+            const resultData = results.data;
+            if (resultData.rank.toString() && resultData.count.toString()) {
+              changePathRankCount({
+                rank: resultData.rank.toString(),
+                count: resultData.count.toString(),
+              });
+            }
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      fetchData();
+    }
+
+    // Cancel token on unmount
+    return () => source.cancel();
+  }, [
+    currentDegrees,
+    firstActor,
+    guesses,
+    lastActor,
+    updateWinData,
+    pathRankCount.rank,
+    pathRankCount.count,
+  ]);
+
   const handleActorProp = () => {
     if (mostRecentActor && mostRecentActor.guess) {
       if (
@@ -595,6 +661,12 @@ const App = () => {
         changeCurrentDegrees,
         guessLoading,
         changeGuessLoading,
+        updateWinData,
+        changeUpdateWinData,
+        pathRankCount,
+        changePathRankCount,
+        showTopPathsModal,
+        changeShowTopPathsModal,
       }}
     >
       <ToastContainer limit={1} />

@@ -1,16 +1,10 @@
-import { GuessType, sortAsc } from "./AutosuggestInput";
 import { getGeolocationData } from "./getGeolocationData";
-import { ActorObj } from "../../App";
 import axios from "axios";
 
 export const handleUpdateLeaderboard = async (
-  name: string,
-  year: string,
-  firstActor: ActorObj,
-  lastActor: ActorObj,
+  path: string,
   currentDegrees: number,
   currentMoves: number,
-  guesses: GuessType[],
   storageObj: {
     [key: string]: string | number | boolean | number[];
   }
@@ -29,22 +23,6 @@ export const handleUpdateLeaderboard = async (
     geolocationData.countryCode &&
     geolocationData.countryName
   ) {
-    let pathArr = [];
-    pathArr.push(firstActor.name);
-    const clonedGuesses = [...guesses];
-    const correctGuesses = clonedGuesses
-      .sort(sortAsc)
-      .filter((guess) => !guess.incorrect && guess.incorrect !== "partial");
-    pathArr = [
-      ...pathArr,
-      ...correctGuesses.map((guess) =>
-        guess.type === "movie" ? `${guess.guess} (${guess.year})` : guess.guess
-      ),
-    ];
-    // Needed since last movie guess is not reflected in state guesses yet
-    pathArr.push(`${name} (${year})`);
-    pathArr.push(lastActor.name);
-
     const leaderboardObj = {
       username: storageObj.username,
       countryCode: geolocationData.countryCode,
@@ -53,7 +31,7 @@ export const handleUpdateLeaderboard = async (
       degrees: currentDegrees + 1,
       moves: currentMoves + 1,
       time: currentETTime,
-      path: pathArr.join(" ➡️ "),
+      path,
     };
 
     const nodeEnv = process.env.REACT_APP_NODE_ENV

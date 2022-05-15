@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Collapse } from "react-collapse";
 import { Button } from "reactstrap";
 
@@ -16,6 +17,10 @@ export const PathContainer = ({
   pathCollapsed: string;
   changePathCollapsed: React.Dispatch<React.SetStateAction<string>>;
 }) => {
+  useEffect(() => {
+    return () => changePathCollapsed("");
+  }, [changePathCollapsed]);
+
   const toggleCollapse = () => {
     if (!pathCollapsed) {
       changePathCollapsed(rank.toString());
@@ -45,7 +50,7 @@ export const PathContainer = ({
             </p>
             <p>
               <b>{count}</b> {count === 1 ? "player" : "players"} played this
-              path so far
+              path today
             </p>
           </div>
         ) : (
@@ -55,7 +60,7 @@ export const PathContainer = ({
       {path && degrees && count ? (
         <>
           <Button className={"who_button"} onClick={toggleCollapse}>
-            REVEAL PATH
+            {pathCollapsed === rank.toString() ? "HIDE" : "REVEAL"} PATH
           </Button>
           <Collapse
             isOpened={pathCollapsed === rank.toString()}

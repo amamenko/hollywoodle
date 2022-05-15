@@ -8,9 +8,11 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { AppContext } from "../../../App";
+import { IoFootsteps } from "react-icons/io5";
 import "../Header.scss";
 import "./TopPaths.scss";
 import "../Leaderboard/Leaderboard.scss";
+import { ClipLoader } from "react-spinners";
 
 export const customModalStyles = {
   content: {
@@ -30,69 +32,24 @@ export const customModalStyles = {
   },
 };
 
-export const TopPaths = ({
-  showTopPathsModal,
-  changeShowTopPathsModal,
-}: {
-  showTopPathsModal: boolean;
-  changeShowTopPathsModal: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  const { firstActor, lastActor, objectiveCurrentDate } =
-    useContext(AppContext);
+export const TopPaths = () => {
+  const {
+    firstActor,
+    lastActor,
+    objectiveCurrentDate,
+    showTopPathsModal,
+    changeShowTopPathsModal,
+  } = useContext(AppContext);
 
+  const [pathsLoading, changePathsLoading] = useState(false);
   const [pathCollapsed, changePathCollapsed] = useState<string>("");
-  const [topPaths, changeTopPaths] = useState([
+  const [topPaths, changeTopPaths] = useState<
     {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-    {
-      degrees: 0,
-      count: 0,
-      path: "",
-    },
-  ]);
+      degrees: number;
+      count: number;
+      path: string;
+    }[]
+  >([]);
   const handleCloseModal = () => {
     changeShowTopPathsModal(false);
   };
@@ -104,6 +61,7 @@ export const TopPaths = ({
 
   useEffect(() => {
     if (showTopPathsModal) {
+      changePathsLoading(true);
       const source = axios.CancelToken.source();
 
       const nodeEnv = process.env.REACT_APP_NODE_ENV
@@ -119,9 +77,11 @@ export const TopPaths = ({
           )
           .then((res) => res.data)
           .then((data) => {
+            changePathsLoading(false);
             if (data) changeTopPaths(data);
           })
           .catch((e) => {
+            changePathsLoading(false);
             console.error(e);
           });
       };
@@ -133,10 +93,6 @@ export const TopPaths = ({
           ? `${process.env.REACT_APP_PROD_SERVER}`
           : "http://localhost:4000"
       );
-
-      socket.on("connect", () => {
-        console.log(socket.id);
-      });
 
       socket.on("changeData", (arg) => {
         if (arg && Array.isArray(arg)) {
@@ -173,9 +129,18 @@ export const TopPaths = ({
         <button className="close_modal_button" onClick={handleCloseModal}>
           <AiOutlineClose size={20} color="#fff" />
         </button>
+        <p className="top_paths_prompt">
+          The most popular paths of the day will be shown here.
+          <br />
+          Only players' first play-through of the day is counted towards a
+          path's popularity. Spoilers ahead!
+        </p>
         <div className="all_paths_container">
-          {topPaths.every((el) => !el.path && !el.degrees && !el.count) ? (
+          {pathsLoading ? (
+            <ClipLoader color="#fff" size={150} />
+          ) : topPaths.every((el) => !el.path && !el.degrees && !el.count) ? (
             <div className="no_paths_played_container">
+              <IoFootsteps size={200} color={"rgb(80, 80, 80)"} />
               <p>No paths have been played yet today!</p>
               <p>Find today's connection and create the first one!</p>
             </div>

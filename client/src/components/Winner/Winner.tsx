@@ -11,6 +11,8 @@ import { sortAsc } from "../AutosuggestInput/AutosuggestInput";
 import KofiButton from "kofi-button";
 import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
+import { getOrdinalSuffix } from "./getOrdinalSuffix";
+import { Button } from "reactstrap";
 
 export interface FullRewardElement extends RewardElement {
   container?: HTMLElement;
@@ -32,6 +34,11 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     changeEmojiGrid,
     currentDegrees,
     changeCurrentDegrees,
+    pathRankCount,
+    changePathRankCount,
+    currentlyPlayingDate,
+    objectiveCurrentDate,
+    changeShowTopPathsModal,
   } = useContext(AppContext);
   const [lastClicked, changeLastClicked] = useState("");
   // Regular share link
@@ -107,6 +114,10 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     changeWin(false);
     changeCurrentMoves(0);
     changeCurrentDegrees(0);
+    changePathRankCount({
+      rank: "",
+      count: "",
+    });
 
     if (shareLinkClicked) {
       changeShareLinkClicked(false);
@@ -206,6 +217,8 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
 
   const finalShareText = `${shareText}\n${finalEmojiGrid}\nhollywoodle.ml`;
 
+  console.log(pathRankCount);
+
   return (
     <div className={`winner_container ${darkMode ? "dark" : ""}`}>
       <div className="winner_icon_container">
@@ -256,6 +269,56 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
         {currentMoves >= 5 ? "moves." : currentMoves === 1 ? "move!" : "moves!"}
       </p>{" "}
       <div className={`winner_countdown_container ${darkMode ? "dark" : ""}`}>
+        {/* {pathRankCount.rank && pathRankCount.count ? (
+          <div
+            className={`winner_path_information_container ${
+              darkMode ? "dark" : ""
+            }`}
+          >
+            <p>
+              Your path was the{" "}
+              {getOrdinalSuffix(pathRankCount.rank) === "1st" ? (
+                <b>most</b>
+              ) : (
+                <span>
+                  <b>{getOrdinalSuffix(pathRankCount.rank)}</b> most
+                </span>
+              )}{" "}
+              popular path chosen today.{" "}
+              {pathRankCount.count === "0" ? (
+                <>
+                  <br />
+                  <br />
+                  <span>
+                    You were the <b>first</b> player to play that path today.
+                  </span>
+                </>
+              ) : (
+                <>
+                  <br />
+                  <br />
+                  <span>
+                    <b>{pathRankCount.count}</b> other{" "}
+                    {Number(pathRankCount.count) === 1 ? "player" : "players"}{" "}
+                    played the same path as you today.
+                  </span>
+                </>
+              )}
+            </p>
+            {currentlyPlayingDate === objectiveCurrentDate ? (
+              <Button
+                className="who_button top_paths_button"
+                onClick={() => changeShowTopPathsModal(true)}
+              >
+                VIEW TODAY'S TOP PATHS
+              </Button>
+            ) : (
+              <></>
+            )}
+          </div>
+        ) : (
+          <></>
+        )} */}
         <p>Next Hollywoodle actor pairing:</p>
         <b>
           <CountdownTimer />

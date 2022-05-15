@@ -76,6 +76,8 @@ export const AutosuggestInput = ({
     changeCurrentSelection,
     currentDegrees,
     changeCurrentDegrees,
+    updateWinData,
+    changeUpdateWinData,
   } = useContext(AppContext);
 
   const debounceFn = (type: "movie" | "actor") => {
@@ -229,6 +231,7 @@ export const AutosuggestInput = ({
                 objectiveCurrentDate === storageObj.current_date &&
                 !storageObj.played_today
               ) {
+                if (!updateWinData) changeUpdateWinData(true);
                 // if (
                 //   storageObj.username &&
                 //   storageObj.leaderboard_eligible &&
@@ -236,13 +239,9 @@ export const AutosuggestInput = ({
                 // ) {
                 //   // User is eligible for today's leaderboard - check if qualifies
                 //   await handleUpdateLeaderboard(
-                //     name,
-                //     year,
-                //     firstActor,
-                //     lastActor,
+                //     path
                 //     currentDegrees,
                 //     currentMoves,
-                //     guesses,
                 //     storageObj
                 //   );
                 // }

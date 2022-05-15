@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { FiMenu } from "react-icons/fi";
 import { AiOutlineClose, AiOutlineHome } from "react-icons/ai";
-// import { IoFootstepsOutline } from "react-icons/io5";
+import { IoFootstepsOutline } from "react-icons/io5";
 import { GrContact } from "react-icons/gr";
 import { ReactComponent as LogoWhite } from "../../../assets/LogoWhite.svg";
 import KofiButton from "kofi-button";
@@ -18,15 +18,14 @@ export const Burger = ({
   changeBurgerMenuOpen,
   changeShowContactModal,
   changeShowSupportModal,
-}: // changeShowTopPathsModal,
-{
+}: {
   burgerMenuOpen: boolean;
   changeBurgerMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   changeShowContactModal: React.Dispatch<React.SetStateAction<boolean>>;
   changeShowSupportModal: React.Dispatch<React.SetStateAction<boolean>>;
-  // changeShowTopPathsModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { darkMode, changeDarkMode } = useContext(AppContext);
+  const { darkMode, changeDarkMode, changeShowTopPathsModal } =
+    useContext(AppContext);
   const [checked, changeChecked] = useState(true);
 
   const handleChange = (checked: boolean) => {
@@ -57,7 +56,7 @@ export const Burger = ({
           <AiOutlineHome size={25} />
           <p>Home</p>
         </div>
-        {/* <div
+        <div
           className="menu-item"
           onClick={() => {
             changeBurgerMenuOpen(false);
@@ -66,7 +65,7 @@ export const Burger = ({
         >
           <IoFootstepsOutline className="contact_icon" size={25} />
           <p>Top Paths</p>
-        </div> */}
+        </div>
         <div
           className="menu-item"
           onClick={() => {
