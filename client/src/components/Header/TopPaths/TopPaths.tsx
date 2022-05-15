@@ -88,6 +88,20 @@ export const TopPaths = () => {
 
       fetchData();
 
+      return () => {
+        source.cancel();
+      };
+    }
+
+    return () => {};
+  }, [showTopPathsModal]);
+
+  useEffect(() => {
+    if (showTopPathsModal) {
+      const nodeEnv = process.env.REACT_APP_NODE_ENV
+        ? process.env.REACT_APP_NODE_ENV
+        : "";
+
       const socket = io(
         nodeEnv && nodeEnv === "production"
           ? `${process.env.REACT_APP_PROD_SERVER}`
@@ -96,18 +110,29 @@ export const TopPaths = () => {
 
       socket.on("changeData", (arg) => {
         if (arg && Array.isArray(arg)) {
-          changeTopPaths(arg);
+          const allCurrentPaths = topPaths.map((el) => `${el.path}${el.count}`);
+          const argPaths = arg.map((el) => `${el.path}${el.count}`);
+
+          const arrEqualityCheck = (arr1: string[], arr2: string[]) => {
+            return (
+              arr1.length === arr2.length &&
+              arr1.every((el, index) => el === arr2[index])
+            );
+          };
+
+          if (!arrEqualityCheck(allCurrentPaths, argPaths)) {
+            changeTopPaths(arg);
+          }
         }
       });
 
       return () => {
         socket.close();
-        source.cancel();
       };
     }
 
     return () => {};
-  }, [showTopPathsModal]);
+  }, [showTopPathsModal, topPaths]);
 
   return (
     <RemoveScroll enabled={showTopPathsModal}>
