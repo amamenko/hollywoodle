@@ -269,7 +269,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
         {currentMoves >= 5 ? "moves." : currentMoves === 1 ? "move!" : "moves!"}
       </p>{" "}
       <div className={`winner_countdown_container ${darkMode ? "dark" : ""}`}>
-        {/* {pathRankCount.rank && pathRankCount.count ? (
+        {pathRankCount.rank && pathRankCount.count ? (
           <div
             className={`winner_path_information_container ${
               darkMode ? "dark" : ""
@@ -318,7 +318,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
           </div>
         ) : (
           <></>
-        )} */}
+        )}
         <p>Next Hollywoodle actor pairing:</p>
         <b>
           <CountdownTimer />
