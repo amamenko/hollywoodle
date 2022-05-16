@@ -116,7 +116,11 @@ export const TopPaths = () => {
       const socket = io(
         nodeEnv && nodeEnv === "production"
           ? `${process.env.REACT_APP_PROD_SERVER}`
-          : "http://localhost:4000"
+          : "http://localhost:4000",
+        {
+          transports: ["websocket"],
+          upgrade: false,
+        }
       );
 
       socket.on("changeData", (arg) => {
@@ -142,7 +146,12 @@ export const TopPaths = () => {
         }
       });
 
+      socket.on("disconnect", () => {
+        socket.removeAllListeners();
+      });
+
       return () => {
+        socket.removeAllListeners();
         socket.close();
       };
     }
