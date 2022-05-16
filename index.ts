@@ -14,6 +14,7 @@ import { updateLeaderboard } from "./functions/updateLeaderboard";
 import { Path } from "./models/Path";
 import { updateTopPaths } from "./functions/updateTopPaths";
 import { updateActorMostPopularPath } from "./functions/updateActorMostPopularPath";
+import { getTopPathsAggregatedData } from "./functions/getTopPathsAggregatedData";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -41,8 +42,16 @@ const handleLiveChange = (change: { [key: string]: any }, key: string) => {
     if (allUpdatedFields) {
       let changeData = allUpdatedFields[key];
       if (key === "paths") {
-        // Only return first 10 paths for top paths changes
-        changeData = changeData.slice(0, 10);
+        const { totalPathsFound, totalPlayers, lowestDegree, highestDegree } =
+          getTopPathsAggregatedData(changeData);
+        changeData = {
+          // Only return first 10 paths for top paths changes
+          paths: changeData.slice(0, 10),
+          totalPathsFound,
+          totalPlayers,
+          lowestDegree,
+          highestDegree,
+        };
       }
       io.emit("changeData", changeData);
     }
@@ -106,7 +115,15 @@ app.get("/api/top_paths", [], async (req: Request, res: Response) => {
   const topPaths: { [key: string]: { [key: string]: string | number }[] }[] =
     await Path.find();
   if (topPaths[0] && topPaths[0].paths) {
-    res.send(topPaths[0].paths.slice(0, 10));
+    const { totalPathsFound, totalPlayers, lowestDegree, highestDegree } =
+      getTopPathsAggregatedData(topPaths[0].paths);
+    res.send({
+      paths: topPaths[0].paths.slice(0, 10),
+      totalPathsFound,
+      totalPlayers,
+      lowestDegree,
+      highestDegree,
+    });
   }
 });
 
@@ -117,8 +134,8 @@ app.post("/api/update_top_paths", [], async (req: Request, res: Response) => {
   }
 });
 
-// Add most popular path to today's actors' documents at 11:59 PM
-cron.schedule("59 23 * * *", () => {
+// Add most popular path to today's actors' documents at 11:55 PM
+cron.schedule("55 23 * * *", () => {
   updateActorMostPopularPath();
 });
 

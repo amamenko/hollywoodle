@@ -8,25 +8,40 @@ export const updateActorMostPopularPath = async () => {
   let currentTopPaths = await Path.find(dateFilter);
   if (currentTopPaths[0].paths) {
     currentTopPaths = currentTopPaths[0].paths;
-    const mostPopularPath = currentTopPaths[0];
-    const degrees = mostPopularPath.degrees;
-    const path = mostPopularPath.path;
+    const allDegrees = currentTopPaths.map((el) => Number(el.degrees));
+    const lowestDegree = Math.min(...allDegrees);
+    // Find the first (most popular) path with the lowest degrees
+    const mostPopularBestPath = currentTopPaths.find(
+      (el) => el.degrees === lowestDegree
+    );
+    if (mostPopularBestPath) {
+      const degrees = mostPopularBestPath.degrees;
+      const path = mostPopularBestPath.path;
 
-    if (path && degrees) {
-      const mostPopularPathUpdate = {
-        most_popular_path: {
-          degrees,
-          path,
-        },
-      };
-      try {
-        await Actor.updateMany(dateFilter, mostPopularPathUpdate);
+      if (path && degrees) {
+        const mostPopularPathUpdate = {
+          most_popular_path: {
+            degrees,
+            path,
+          },
+        };
+        try {
+          await Actor.updateMany(dateFilter, mostPopularPathUpdate);
+          console.log(
+            `Successfully updated most popular path for ${currentDate} actors!`
+          );
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
         console.log(
-          `Successfully updated most popular path for ${currentDate} actors!`
+          `Missing path or degrees when trying to update most popular path for ${currentDate} actors!`
         );
-      } catch (e) {
-        console.error(e);
       }
+    } else {
+      console.log(
+        `Couldn't find most popular/best path while trying to update most popular path for ${currentDate} actors!`
+      );
     }
   }
 };
