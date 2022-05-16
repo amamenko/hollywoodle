@@ -14,6 +14,10 @@ const actorSchema = new mongoose.Schema({
     costarName: String,
     costarCharacter: String,
   },
+  most_popular_path: {
+    degrees: Number,
+    path: String,
+  },
 });
 
 const Actor = mongoose.model("Actor", actorSchema);

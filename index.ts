@@ -13,6 +13,7 @@ import { Server } from "socket.io";
 import { updateLeaderboard } from "./functions/updateLeaderboard";
 import { Path } from "./models/Path";
 import { updateTopPaths } from "./functions/updateTopPaths";
+import { updateActorMostPopularPath } from "./functions/updateActorMostPopularPath";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -116,7 +117,12 @@ app.post("/api/update_top_paths", [], async (req: Request, res: Response) => {
   }
 });
 
-// Update actors in MongoDB every night at midnight
+// Add most popular path to today's actors' documents at 11:59 PM
+cron.schedule("59 23 * * *", () => {
+  updateActorMostPopularPath();
+});
+
+// Update actors and reset top paths in MongoDB every night at midnight
 cron.schedule("0 0 * * *", () => {
   updateDatabaseActors();
 });

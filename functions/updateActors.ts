@@ -106,10 +106,18 @@ export const updateActors = async (
       actor1Obj: {
         ...actor1Obj,
         most_popular_recent_movie: actor1MostKnownFor,
+        most_popular_path: {
+          degrees: 0,
+          path: "",
+        },
       },
       actor2Obj: {
         ...actor2Obj,
         most_popular_recent_movie: actor2MostKnownFor,
+        most_popular_path: {
+          degrees: 0,
+          path: "",
+        },
       },
     };
   }
