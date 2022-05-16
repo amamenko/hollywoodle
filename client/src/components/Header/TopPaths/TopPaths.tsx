@@ -9,10 +9,10 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import { AppContext } from "../../../App";
 import { IoFootsteps } from "react-icons/io5";
+import { ClipLoader } from "react-spinners";
 import "../Header.scss";
 import "./TopPaths.scss";
 import "../Leaderboard/Leaderboard.scss";
-import { ClipLoader } from "react-spinners";
 
 export const customModalStyles = {
   content: {
@@ -83,7 +83,6 @@ export const TopPaths = () => {
           )
           .then((res) => res.data)
           .then((data) => {
-            console.log(data);
             changePathsLoading(false);
             if (data.paths) changeTopPaths(data.paths);
             if (data.totalPathsFound)
@@ -136,14 +135,10 @@ export const TopPaths = () => {
 
           if (!arrEqualityCheck(allCurrentPaths, argPaths))
             changeTopPaths(arg.paths);
-          if (arg.totalPathsFound !== totalPathsFound)
-            changeTotalPathsFound(arg.totalPathsFound);
-          if (arg.totalPlayers !== totalPlayers)
-            changeTotalPlayers(arg.totalPlayers);
-          if (arg.lowestDegree !== lowestDegree)
-            changeLowestDegree(arg.lowestDegree);
-          if (arg.highestDegree !== highestDegree)
-            changeHighestDegree(arg.highestDegree);
+          if (arg.totalPathsFound) changeTotalPathsFound(arg.totalPathsFound);
+          if (arg.totalPlayers) changeTotalPlayers(arg.totalPlayers);
+          if (arg.lowestDegree) changeLowestDegree(arg.lowestDegree);
+          if (arg.highestDegree) changeHighestDegree(arg.highestDegree);
         }
       });
 
@@ -153,14 +148,7 @@ export const TopPaths = () => {
     }
 
     return () => {};
-  }, [
-    showTopPathsModal,
-    topPaths,
-    totalPathsFound,
-    totalPlayers,
-    lowestDegree,
-    highestDegree,
-  ]);
+  }, [showTopPathsModal, topPaths]);
 
   return (
     <RemoveScroll enabled={showTopPathsModal}>
