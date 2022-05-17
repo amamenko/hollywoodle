@@ -169,7 +169,7 @@ export const TopPaths = () => {
         shouldFocusAfterRender={false}
         style={customModalStyles}
       >
-        <h2>TODAY'S TOP PATHS</h2>
+        <h2 className="top_paths_title">TODAY'S TOP PATHS</h2>
         <span className="leaderboard_connection_header">
           <p>{objectiveCurrentDate}</p>
           <p>
@@ -179,6 +179,10 @@ export const TopPaths = () => {
         <button className="close_modal_button" onClick={handleCloseModal}>
           <AiOutlineClose size={20} color="#fff" />
         </button>
+        <div className="live_designation_container">
+          <span className="live_designation" />
+          <p>LIVE</p>
+        </div>
         <p className="top_paths_prompt">
           The top 10 most popular paths of the day will be shown here.
           <br />

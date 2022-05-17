@@ -441,7 +441,11 @@ const App = () => {
       (el: ActorObj) => el.date === currentlyPlayingDate
     );
 
-    if (!initialAppMounted && relevantDateActors.length < 2) {
+    if (
+      !initialAppMounted &&
+      relevantDateActors.length < 2 &&
+      currentlyPlayingDate
+    ) {
       fetchData();
     } else {
       const foundFirst = relevantDateActors.find(
