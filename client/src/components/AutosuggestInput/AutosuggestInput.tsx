@@ -20,6 +20,7 @@ import isMobile from "ismobilejs";
 import { AiOutlineSearch } from "react-icons/ai";
 import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
 import * as Ladda from "ladda";
+import { formatInTimeZone } from "date-fns-tz";
 // import { handleUpdateLeaderboard } from "./handleUpdateLeaderboard";
 import "../Header/Leaderboard/Leaderboard.scss";
 import "./Autosuggest.scss";
@@ -227,7 +228,15 @@ export const AutosuggestInput = ({
 
               currentAvgs.push(currentMoves + 1);
 
+              const currentDateStr = formatInTimeZone(
+                new Date(),
+                "America/New_York",
+                "MM/dd/yyyy"
+              );
+
               if (
+                // Make sure the date of answer submission is the same as objective date
+                objectiveCurrentDate === currentDateStr &&
                 objectiveCurrentDate === storageObj.current_date &&
                 !storageObj.played_today
               ) {
