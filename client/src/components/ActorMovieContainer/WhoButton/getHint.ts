@@ -1,6 +1,7 @@
 import { ActorObj } from "../../../App";
 import { sortAsc } from "../../AutosuggestInput/AutosuggestInput";
 import { format, parseISO } from "date-fns";
+import * as rax from "retry-axios";
 import axios from "axios";
 
 export const getHint = async (
@@ -18,6 +19,29 @@ export const getHint = async (
   firstActor: ActorObj,
   lastActor: ActorObj
 ) => {
+  const axiosInstance = axios.create({ baseURL: "https://api.themoviedb.org" });
+  axiosInstance.defaults.raxConfig = {
+    instance: axiosInstance,
+  };
+  rax.attach(axiosInstance);
+
+  let raxConfig: { [key: string]: any } = {
+    url: "",
+    raxConfig: {
+      retry: 10,
+      noResponseRetries: 2,
+      retryDelay: 750,
+      httpMethodsToRetry: ["GET"],
+      statusCodesToRetry: [
+        [100, 199],
+        [400, 499],
+        [500, 599],
+      ],
+      instance: axiosInstance,
+      backoffType: "static",
+    },
+  };
+
   const sortedGuesses = guesses.sort(sortAsc);
   sortedGuesses.reverse();
 
@@ -31,7 +55,8 @@ export const getHint = async (
       : firstActor.id;
 
     if (actorID) {
-      const searchURL = `https://api.themoviedb.org/3/person/${actorID}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&append_to_response=movie_credits`;
+      const searchURL = `/3/person/${actorID}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&append_to_response=movie_credits`;
+      raxConfig = { ...raxConfig, url: searchURL };
 
       const guessMovieIDs = sortedGuesses
         .filter((guess) => guess.type === "movie")
@@ -49,8 +74,7 @@ export const getHint = async (
         )
         .flat();
 
-      const results = await axios
-        .get(searchURL)
+      const results = await axiosInstance(raxConfig)
         .then((res) => res.data)
         .then((data) => {
           const actorName = data.name;
@@ -126,10 +150,10 @@ export const getHint = async (
       const hintID = Math.min(...top5Actors);
 
       if (hintID) {
-        const searchURL = `https://api.themoviedb.org/3/person/${hintID}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&append_to_response=movie_credits`;
+        const searchURL = `/3/person/${hintID}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US&append_to_response=movie_credits`;
+        raxConfig = { ...raxConfig, url: searchURL };
 
-        const results = await axios
-          .get(searchURL)
+        const results = await axiosInstance(raxConfig)
           .then((res) => res.data)
           .then((data) => {
             const popularRecentMovie = data.movie_credits.cast.find(

@@ -31,12 +31,12 @@ export const getMostKnownFor = async (
       const filteredCast = castResults.filter(
         (person: { [key: string]: number }) => person.id !== id
       );
-      const top10Actors = filteredCast.slice(0, 10);
-      const allPopularities = top10Actors.map(
+      const top3Actors = filteredCast.slice(0, 3);
+      const allPopularities = top3Actors.map(
         (actor: { [key: string]: number }) => actor.popularity
       );
       const highestPopularity = Math.max(...allPopularities);
-      const hintActor = top10Actors.find(
+      const hintActor = top3Actors.find(
         (actor: { [key: string]: number }) =>
           actor.popularity === highestPopularity
       );

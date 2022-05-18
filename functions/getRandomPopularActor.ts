@@ -55,6 +55,14 @@ export const getRandomPopularActor = async (
       .catch((e) => console.error(e));
 
     if (results) {
+      // These TV shows almost always gets bumped to the top for actors' most known for roles
+      const whitelistedTVShowsArr = [
+        "the simpsons",
+        "grey's anatomy",
+        "friends",
+        "game of thrones",
+      ];
+
       const filteredResults = results.filter(
         (currentActor: { [key: string]: any }) =>
           currentActor.known_for &&
@@ -64,9 +72,7 @@ export const getRandomPopularActor = async (
               movie.video ||
               movie.adult ||
               movie.original_language !== "en" ||
-              (movie.media_type === "movie"
-                ? movie.vote_count < 5000
-                : movie.vote_count < 3000) ||
+              movie.vote_count < 2500 ||
               blacklistedMovieTerms.some((str) =>
                 movie.title
                   ? movie.title.toLowerCase().includes(str)
@@ -76,10 +82,9 @@ export const getRandomPopularActor = async (
               )
           ) &&
           (currentActor.known_for[0].media_type === "movie" ||
-            // The Simpsons almost always gets bumped to the top for actors' most known for roles
-            currentActor.known_for[0].name
-              .toLowerCase()
-              .includes("simpsons")) &&
+            whitelistedTVShowsArr.find(
+              (el) => el === currentActor.known_for[0].name.toLowerCase()
+            )) &&
           currentActor.known_for
             .map((movie: { [key: string]: any }) => movie.media_type)
             .filter((el: string) => el === "movie").length >= 2 &&
