@@ -72,7 +72,9 @@ export const getRandomPopularActor = async (
               movie.video ||
               movie.adult ||
               movie.original_language !== "en" ||
-              movie.vote_count < 2500 ||
+              (movie.media_type === "movie"
+                ? movie.vote_count < 5000
+                : movie.vote_count < 3000) ||
               blacklistedMovieTerms.some((str) =>
                 movie.title
                   ? movie.title.toLowerCase().includes(str)

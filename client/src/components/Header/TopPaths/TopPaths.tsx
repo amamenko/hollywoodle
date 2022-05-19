@@ -202,7 +202,8 @@ export const TopPaths = () => {
                 {totalPathsFound === 1 ? "unique path" : "unique paths"} today -
                 the lowest degrees of separation found{" "}
                 {lowestDegree === 1 ? "is" : "are"} <b>{lowestDegree}</b> and
-                the highest is <b>{highestDegree}</b>.
+                the highest {highestDegree === 1 ? "is" : "are"}{" "}
+                <b>{highestDegree}</b>.
               </span>
             </>
           ) : (
