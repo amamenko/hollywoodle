@@ -13,7 +13,7 @@ export const getSuggestions = async (
   const inputValue = value.trim().toLowerCase();
   const inputLength = inputValue.length;
 
-  if (inputLength <= 2) {
+  if (inputLength < 2) {
     return [];
   } else {
     const searchURL = `https://api.themoviedb.org/3/search/${
