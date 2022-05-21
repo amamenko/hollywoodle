@@ -22,22 +22,12 @@ import { WhoButton } from "../ActorMovieContainer/WhoButton/WhoButton";
 import * as Ladda from "ladda";
 import { formatInTimeZone } from "date-fns-tz";
 // import { handleUpdateLeaderboard } from "./handleUpdateLeaderboard";
+import { GuessType } from "../../interfaces/GuessType.interface";
 import "../Header/Leaderboard/Leaderboard.scss";
 import "./Autosuggest.scss";
 import "ladda/dist/ladda.min.css";
 
 const scroll = Scroll.animateScroll;
-
-export interface GuessType {
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | number[]
-    | {
-        [key: string]: string | number;
-      };
-}
 
 export const sortAsc = (a: GuessType, b: GuessType) => {
   return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);

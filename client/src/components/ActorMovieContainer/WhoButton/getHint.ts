@@ -1,4 +1,4 @@
-import { ActorObj } from "../../../App";
+import { ActorObj } from "../../../interfaces/ActorObj.interface";
 import { sortAsc } from "../../AutosuggestInput/AutosuggestInput";
 import { format, parseISO } from "date-fns";
 import * as rax from "retry-axios";

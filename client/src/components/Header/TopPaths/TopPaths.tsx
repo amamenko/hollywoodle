@@ -194,8 +194,9 @@ export const TopPaths = () => {
               <br />
               <br />
               <span className="top_paths_aggregated_data">
-                A total of <b>{totalPlayers}</b> players have completed today's
-                connection at least once.
+                A total of <b>{totalPlayers}</b>{" "}
+                {totalPlayers === 1 ? "player" : "players"} have completed
+                today's connection at least once.
                 <br />
                 <br />
                 Players have been able to find <b>{totalPathsFound}</b>{" "}

@@ -1,8 +1,6 @@
 import React, {
   createContext,
   useState,
-  Dispatch,
-  SetStateAction,
   useEffect,
   useCallback,
   useRef,
@@ -24,143 +22,17 @@ import { IntroModal } from "./components/IntroModal/IntroModal";
 import { getMovieCast } from "./getMovieCast";
 import { buildPath } from "./components/AutosuggestInput/buildPath";
 import { handleUpdateTopPaths } from "./components/AutosuggestInput/handleUpdateTopPaths";
+import { ContextProps } from "./interfaces/ContextProps.interface";
+import { ActorObj } from "./interfaces/ActorObj.interface";
+import { GuessObj } from "./interfaces/GuessObj.interface";
+import { contextDefaults } from "./contextDefaults";
+import { handleActorProp } from "./components/InteractiveResponse/handleActorProp";
+import { handleMovieProp } from "./components/InteractiveResponse/handleMovieProp";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
 
-interface SelectionObj {
-  id: number;
-  name: string;
-  year: string;
-  image: string;
-}
-
-export interface ActorObj {
-  name: string;
-  image: string;
-  id: number;
-  date: string;
-  type: string;
-  most_popular_recent_movie?: { [key: string]: string | number };
-  most_popular_path?: { [key: string]: string | number };
-  gender?: string;
-}
-
-interface GuessObj {
-  [key: string]:
-    | string
-    | number
-    | number[]
-    | boolean
-    | { [key: string]: string | number };
-}
-
-interface ContextProps {
-  firstActor: ActorObj;
-  lastActor: ActorObj;
-  guesses: GuessObj[];
-  changeGuesses: Dispatch<SetStateAction<GuessObj[]>>;
-  currentMoves: number;
-  changeCurrentMoves: React.Dispatch<React.SetStateAction<number>>;
-  win: boolean;
-  changeWin: React.Dispatch<React.SetStateAction<boolean>>;
-  darkMode: boolean;
-  changeDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-  changeMostRecentActor: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >;
-  changeMostRecentMovie: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >;
-  currentEmojiGrid: string[];
-  changeEmojiGrid: React.Dispatch<React.SetStateAction<string[]>>;
-  currentlyPlayingDate: string;
-  changeCurrentlyPlayingDate: React.Dispatch<React.SetStateAction<string>>;
-  currentArchivedActorsResults: ActorObj[];
-  changeCurrentArchivedActorsResults: React.Dispatch<
-    React.SetStateAction<ActorObj[]>
-  >;
-  fullTimezoneDate: string;
-  changeFullTimezoneDate: React.Dispatch<React.SetStateAction<string>>;
-  objectiveCurrentDate: string;
-  changeObjectiveCurrentDate: React.Dispatch<React.SetStateAction<string>>;
-  currentSelection: SelectionObj;
-  changeCurrentSelection: React.Dispatch<React.SetStateAction<SelectionObj>>;
-  movieCast: number[];
-  changeMovieCast: React.Dispatch<React.SetStateAction<number[]>>;
-  currentDegrees: number;
-  changeCurrentDegrees: React.Dispatch<React.SetStateAction<number>>;
-  guessLoading: boolean;
-  changeGuessLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  updateWinData: boolean;
-  changeUpdateWinData: React.Dispatch<React.SetStateAction<boolean>>;
-  pathRankCount: { [key: string]: string };
-  changePathRankCount: Dispatch<
-    SetStateAction<{ rank: string; count: string }>
-  >;
-  showTopPathsModal: boolean;
-  changeShowTopPathsModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const AppContext = createContext<ContextProps>({
-  firstActor: {
-    name: "",
-    image: "",
-    id: 0,
-    most_popular_recent_movie: {},
-    gender: "",
-    type: "",
-    date: "",
-  },
-  lastActor: {
-    name: "",
-    image: "",
-    id: 0,
-    most_popular_recent_movie: {},
-    gender: "",
-    type: "",
-    date: "",
-  },
-  guesses: [{}],
-  changeGuesses: () => [],
-  currentMoves: 0,
-  changeCurrentMoves: () => {},
-  win: false,
-  changeWin: () => {},
-  darkMode: true,
-  changeDarkMode: () => [],
-  changeMostRecentActor: () => [],
-  changeMostRecentMovie: () => [],
-  currentEmojiGrid: [],
-  changeEmojiGrid: () => [],
-  currentlyPlayingDate: "",
-  changeCurrentlyPlayingDate: () => {},
-  currentArchivedActorsResults: [],
-  changeCurrentArchivedActorsResults: () => {},
-  fullTimezoneDate: "",
-  changeFullTimezoneDate: () => {},
-  objectiveCurrentDate: "",
-  changeObjectiveCurrentDate: () => {},
-  currentSelection: {
-    id: 0,
-    name: "",
-    year: "",
-    image: "",
-  },
-  changeCurrentSelection: () => {},
-  movieCast: [],
-  changeMovieCast: () => {},
-  currentDegrees: 0,
-  changeCurrentDegrees: () => {},
-  guessLoading: false,
-  changeGuessLoading: () => {},
-  updateWinData: false,
-  changeUpdateWinData: () => {},
-  pathRankCount: {},
-  changePathRankCount: () => {},
-  showTopPathsModal: false,
-  changeShowTopPathsModal: () => {},
-});
+export const AppContext = createContext<ContextProps>(contextDefaults);
 
 const App = () => {
   const [firstActor, changeFirstActor] = useState<ActorObj>({
@@ -581,58 +453,6 @@ const App = () => {
     pathRankCount.count,
   ]);
 
-  const handleActorProp = () => {
-    if (mostRecentActor && mostRecentActor.guess) {
-      if (
-        !mostRecentMovie ||
-        !mostRecentMovie.guess_number ||
-        !mostRecentActor.incorrect
-      ) {
-        return mostRecentActor.guess.toString();
-      } else {
-        if (
-          mostRecentActor.last_correct_actor &&
-          typeof mostRecentActor.last_correct_actor === "object" &&
-          !Array.isArray(mostRecentActor.last_correct_actor)
-        ) {
-          if (mostRecentActor.last_correct_actor.guess) {
-            return mostRecentActor.last_correct_actor.guess.toString();
-          } else {
-            return firstActor.name;
-          }
-        } else {
-          return firstActor.name;
-        }
-      }
-    } else {
-      return firstActor.name;
-    }
-  };
-
-  const handleMovieProp = (result: string) => {
-    if (mostRecentMovie && mostRecentMovie.guess) {
-      if (
-        !mostRecentActor ||
-        !mostRecentActor.guess_number ||
-        !mostRecentMovie.incorrect
-      ) {
-        return result;
-      } else {
-        if (
-          mostRecentMovie.last_correct_movie &&
-          typeof mostRecentMovie.last_correct_movie === "object" &&
-          !Array.isArray(mostRecentMovie.last_correct_movie)
-        ) {
-          return mostRecentMovie.last_correct_movie.guess.toString();
-        } else {
-          return "";
-        }
-      }
-    } else {
-      return "";
-    }
-  };
-
   return (
     <AppContext.Provider
       value={{
@@ -714,10 +534,22 @@ const App = () => {
                     }`}
                   >
                     <InteractiveResponse
-                      actor1={handleActorProp()}
+                      actor1={handleActorProp(
+                        mostRecentMovie,
+                        mostRecentActor,
+                        firstActor
+                      )}
                       actor2={lastActor.name}
-                      movie={handleMovieProp(mostRecentMovie.guess.toString())}
-                      year={handleMovieProp(mostRecentMovie.year.toString())}
+                      movie={handleMovieProp(
+                        mostRecentMovie,
+                        mostRecentActor,
+                        mostRecentMovie.guess.toString()
+                      )}
+                      year={handleMovieProp(
+                        mostRecentMovie,
+                        mostRecentActor,
+                        mostRecentMovie.year.toString()
+                      )}
                     />
                   </div>
                 )}

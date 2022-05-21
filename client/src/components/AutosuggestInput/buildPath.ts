@@ -1,5 +1,6 @@
-import { ActorObj } from "../../App";
-import { GuessType, sortAsc } from "./AutosuggestInput";
+import { ActorObj } from "../../interfaces/ActorObj.interface";
+import { GuessType } from "../../interfaces/GuessType.interface";
+import { sortAsc } from "./AutosuggestInput";
 
 export const buildPath = (
   //   name: string,

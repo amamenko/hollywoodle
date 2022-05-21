@@ -16,14 +16,15 @@ import { ActorMovieContainer } from "../../ActorMovieContainer/ActorMovieContain
 import { Button } from "reactstrap";
 import ClipLoader from "react-spinners/ClipLoader";
 import axios from "axios";
-import { ActorObj, AppContext } from "../../../App";
+import { AppContext } from "../../../App";
 import { RemoveScroll } from "react-remove-scroll";
 import { toast } from "react-toastify";
+import { Collapse } from "react-collapse";
+import { ActorObj } from "../../../interfaces/ActorObj.interface";
 import "./ArchivedModal.scss";
 import "../../HowToPlayModal/HowToPlayModal.scss";
 import "../Header.scss";
 import "react-calendar/dist/Calendar.css";
-import { Collapse } from "react-collapse";
 
 export const customModalStyles = {
   content: {
