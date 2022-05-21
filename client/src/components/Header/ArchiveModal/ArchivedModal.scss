@@ -1,4 +1,5 @@
 .archive_prompt {
+  font-size: 13px;
   margin: 2rem 0;
 
   @media only screen and (min-width: 400px) {
@@ -244,8 +245,51 @@
   }
 }
 
+.archived_buttons_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 3rem;
+}
+
+.top_path_button_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .spoiler_warning {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0;
+    color: #fff;
+    transition: color 0.3s ease;
+
+    &.open {
+      color: transparent;
+    }
+  }
+}
+
 .archived_play_button {
-  @media only screen and (max-width: 996px) {
-    margin-bottom: 3rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.archived_collapse {
+  text-align: center;
+  margin: 1.5rem 0 0 0;
+  padding: 0;
+
+  p {
+    padding: 0 1rem;
+
+    @media only screen and (min-width: 768px) {
+      padding: 0 2rem;
+    }
+  }
+
+  span {
+    font-weight: 600;
   }
 }

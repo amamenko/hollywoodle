@@ -23,6 +23,7 @@ import "./ArchivedModal.scss";
 import "../../HowToPlayModal/HowToPlayModal.scss";
 import "../Header.scss";
 import "react-calendar/dist/Calendar.css";
+import { Collapse } from "react-collapse";
 
 export const customModalStyles = {
   content: {
@@ -82,6 +83,7 @@ export const ArchivedModal = ({
   const [firstActorShown, changeFirstActorShown] =
     useState<ActorObj>(firstActor);
   const [lastActorShown, changeLastActorShown] = useState<ActorObj>(lastActor);
+  const [pathOpened, changePathOpened] = useState(false);
 
   useEffect(() => {
     if (objectiveCurrentDate && !value) {
@@ -89,11 +91,13 @@ export const ArchivedModal = ({
       changeCalendarLimit(parsedDate);
       onChange(parsedDate);
       changeCurrentArchiveDate(formatDate(parsedDate));
+      changePathOpened(false);
     }
   }, [objectiveCurrentDate, value]);
 
   const handleCloseModal = () => {
     changeShowArchivedModal(false);
+    changePathOpened(false);
   };
 
   const handlePlayButton = () => {
@@ -105,6 +109,7 @@ export const ArchivedModal = ({
       changeCurrentDegrees(0);
       changeWin(false);
       changeEmojiGrid([]);
+      changePathOpened(false);
       changeMostRecentMovie({
         guess: "",
         type: "",
@@ -175,6 +180,7 @@ export const ArchivedModal = ({
       };
 
       changeResultsLoading(true);
+      changePathOpened(false);
       fetchData();
 
       return () => source.cancel();
@@ -196,6 +202,18 @@ export const ArchivedModal = ({
     changeCurrentArchivedActorsResults,
   ]);
 
+  const handleDateChange = (date: Date | undefined) => {
+    onChange(date);
+    if (pathOpened) changePathOpened(false);
+  };
+
+  console.log({
+    firstActorDegrees: firstActorShown.most_popular_path?.degrees,
+    firstActorPath: firstActorShown.most_popular_path?.path,
+    lastActorDegrees: lastActorShown.most_popular_path?.degrees,
+    lastActorPath: lastActorShown.most_popular_path?.path,
+  });
+
   return (
     <RemoveScroll enabled={showArchivedModal}>
       <Modal
@@ -216,10 +234,14 @@ export const ArchivedModal = ({
         <p className="archive_prompt">
           Select a past Hollywoodle game by picking an available date from the
           calendar.
+          <br />
+          <br />
+          Available top paths are the lowest degree, most popular paths chosen
+          by players on the day of that particular actor pairing.
         </p>
         {objectiveCurrentDate && calendarLimit && value && (
           <Calendar
-            onChange={onChange}
+            onChange={handleDateChange}
             value={value}
             calendarType={"US"}
             defaultView={"month"}
@@ -279,14 +301,74 @@ export const ArchivedModal = ({
             )}
           </div>
           {!resultsLoading && (
-            <Button
-              onClick={handlePlayButton}
-              className={`guess_button archived_play_button dark ${
-                currentArchiveDate === currentlyPlayingDate ? "disabled" : ""
-              }`}
-            >
-              PLAY
-            </Button>
+            <div className="archived_buttons_container">
+              <Button
+                onClick={handlePlayButton}
+                className={`guess_button archived_play_button dark ${
+                  currentArchiveDate === currentlyPlayingDate ? "disabled" : ""
+                }`}
+              >
+                PLAY
+              </Button>
+              {firstActorShown.most_popular_path?.degrees ||
+              lastActorShown.most_popular_path?.degrees ? (
+                currentArchiveDate !== currentlyPlayingDate ? (
+                  <>
+                    <div className="top_path_button_container">
+                      {
+                        <p
+                          className={`spoiler_warning ${
+                            pathOpened ? "open" : ""
+                          }`}
+                        >
+                          Spoilers ahead!
+                        </p>
+                      }
+                      <Button
+                        onClick={() => changePathOpened(!pathOpened)}
+                        className={`who_button btn btn-secondary dark ${
+                          currentArchiveDate === currentlyPlayingDate
+                            ? "disabled"
+                            : ""
+                        }`}
+                      >
+                        {pathOpened ? "HIDE" : "REVEAL"} TOP PATH
+                      </Button>
+                    </div>
+                    <Collapse
+                      isOpened={pathOpened}
+                      initialStyle={{ height: 0, overflow: "hidden" }}
+                    >
+                      <div className="archived_collapse collapse_container dark">
+                        {pathOpened ? (
+                          <p className="collapsed_path_full_info">
+                            <span>
+                              {firstActorShown.most_popular_path?.degrees ||
+                                lastActorShown.most_popular_path?.degrees}{" "}
+                              {firstActorShown.most_popular_path?.degrees ===
+                                1 ||
+                              lastActorShown.most_popular_path?.degrees === 1
+                                ? "degree"
+                                : "degrees"}{" "}
+                              of separation:
+                            </span>
+                            <br /> <br />
+                            {firstActorShown.most_popular_path?.path ||
+                              lastActorShown.most_popular_path?.path}
+                          </p>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </Collapse>
+                  </>
+                ) : (
+                  <></>
+                )
+              ) : (
+                <></>
+              )}
+            </div>
           )}
         </div>
       </Modal>
