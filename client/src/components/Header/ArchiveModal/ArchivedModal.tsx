@@ -208,13 +208,6 @@ export const ArchivedModal = ({
     if (pathOpened) changePathOpened(false);
   };
 
-  console.log({
-    firstActorDegrees: firstActorShown.most_popular_path?.degrees,
-    firstActorPath: firstActorShown.most_popular_path?.path,
-    lastActorDegrees: lastActorShown.most_popular_path?.degrees,
-    lastActorPath: lastActorShown.most_popular_path?.path,
-  });
-
   return (
     <RemoveScroll enabled={showArchivedModal}>
       <Modal
