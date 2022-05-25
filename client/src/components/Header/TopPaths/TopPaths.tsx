@@ -184,7 +184,7 @@ export const TopPaths = () => {
           <p>LIVE</p>
         </div>
         <p className="top_paths_prompt">
-          The top 10 most popular paths of the day will be shown here.
+          The top 10 best and most popular paths of the day will be shown here.
           <br />
           <br />
           Only players' first play-through of the day is counted towards a
@@ -195,7 +195,7 @@ export const TopPaths = () => {
               <br />
               <span className="top_paths_aggregated_data">
                 A total of <b>{totalPlayers}</b>{" "}
-                {totalPlayers === 1 ? "player" : "players"} have completed
+                {totalPlayers === 1 ? "player has" : "players have"} completed
                 today's connection at least once.
                 <br />
                 <br />
