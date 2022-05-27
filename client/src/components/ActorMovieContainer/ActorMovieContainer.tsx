@@ -1,9 +1,9 @@
+import { useState } from "react";
 import { ReactComponent as CrossRedCircle } from "../../assets/CrossRedCircle.svg";
 import { ReactComponent as CircleCheckMark } from "../../assets/CircleCheckMark.svg";
 import { ReactComponent as PartialCredit } from "../../assets/PartialCredit.svg";
 import { WhoButton } from "./WhoButton/WhoButton";
 import "./ActorMovieContainer.scss";
-import { useState } from "react";
 
 export const ActorMovieContainer = ({
   image,

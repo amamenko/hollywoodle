@@ -151,16 +151,22 @@ export const WhoButton = ({
                   move.
                 </span>
               ) : (
+                // One of the most famous recent movies she's acted in is
                 <span className="hint_content_container">
-                  One of{" "}
+                  One of the most famous movies{" "}
                   {gender === "male"
-                    ? "his"
+                    ? "he's"
                     : gender === "female"
-                    ? "her"
-                    : "their"}{" "}
-                  most popular recent roles was the character of{" "}
-                  <b>"{knownFor.character}"</b> in the <b>{knownFor.year}</b>{" "}
-                  film <b>{knownFor.title}</b>.
+                    ? "she's"
+                    : "they've"}{" "}
+                  acted in is the <b>{knownFor.year}</b> film{" "}
+                  <b>{knownFor.title}</b>.{" "}
+                  {gender === "male"
+                    ? "He"
+                    : gender === "female"
+                    ? "She"
+                    : "They"}{" "}
+                  played the character of <b>"{knownFor.character}."</b>
                   <br />
                   <br />
                   Your total moves increased by <b className="incorrect">
