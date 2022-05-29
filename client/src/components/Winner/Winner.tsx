@@ -9,10 +9,10 @@ import TwitterButton from "./ShareButtons/TwitterButton";
 import CopyLinkButton from "./ShareButtons/CopyLinkButton";
 import { sortAsc } from "../AutosuggestInput/AutosuggestInput";
 import KofiButton from "kofi-button";
-import "./ShareButtons/ShareButtons.scss";
-import "./Winner.scss";
 import { getOrdinalSuffix } from "./getOrdinalSuffix";
 import { Button } from "reactstrap";
+import "./ShareButtons/ShareButtons.scss";
+import "./Winner.scss";
 
 export interface FullRewardElement extends RewardElement {
   container?: HTMLElement;
@@ -215,9 +215,21 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     currentMoves === 1 ? "move" : "moves"
   } on Hollywoodle.`;
 
-  const finalShareText = `${shareText}\n${finalEmojiGrid}\nhollywoodle.ml`;
+  const pathShare = `My path was the ${
+    getOrdinalSuffix(pathRankCount.rank) === "1st"
+      ? "most"
+      : `${getOrdinalSuffix(pathRankCount.rank)} most`
+  } popular path chosen today — ${
+    pathRankCount.count === "0"
+      ? "I was the first player to play that path."
+      : `${pathRankCount.count} other ${
+          Number(pathRankCount.count) === 1 ? "player" : "players"
+        } played the same path.`
+  }`;
 
-  console.log(pathRankCount);
+  const finalShareText = `${shareText}\n${finalEmojiGrid}\n${
+    pathRankCount.rank && pathRankCount.count ? `${pathShare}\n` : ""
+  }hollywoodle.ml`;
 
   return (
     <div className={`winner_container ${darkMode ? "dark" : ""}`}>
