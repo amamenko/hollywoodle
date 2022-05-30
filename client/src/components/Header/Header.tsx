@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { ReactComponent as LogoWhite } from "../../assets/LogoWhite.svg";
+import { ReactComponent as LogoStars } from "../../assets/LogoVariants/Stars/LogoStarsHeader.svg";
 import { HowToPlayModal } from "../HowToPlayModal/HowToPlayModal";
 import { BiBarChartAlt2 } from "react-icons/bi";
 import { GiBackwardTime } from "react-icons/gi";
@@ -23,6 +24,7 @@ export const Header = () => {
     currentlyPlayingDate,
     objectiveCurrentDate,
     currentDegrees,
+    currentHoliday,
   } = useContext(AppContext);
   const [modalOpen, changeModalOpen] = useState(false);
   const [showSupportModal, changeShowSupportModal] = useState(false);
@@ -82,7 +84,12 @@ export const Header = () => {
           showLeaderboardModal={showLeaderboardModal}
           changeShowLeaderboardModal={changeShowLeaderboardModal}
         /> */}
-        <LogoWhite className="hollywoodle_logo" />
+        {currentHoliday === "Memorial Day" ||
+        currentHoliday === "Independence Day" ? (
+          <LogoStars className="hollywoodle_logo" />
+        ) : (
+          <LogoWhite className="hollywoodle_logo" />
+        )}
         <GiBackwardTime
           className="archive_icon"
           color={"#fff"}

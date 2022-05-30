@@ -76,11 +76,14 @@ const App = () => {
   const [guessLoading, changeGuessLoading] = useState(false);
   const [currentMoves, changeCurrentMoves] = useState<number>(0);
   const [currentDegrees, changeCurrentDegrees] = useState<number>(0);
+  const [currentEmojiGrid, changeEmojiGrid] = useState<string[]>([]);
   const [win, changeWin] = useState(false);
+
+  // General app settings
   const [darkMode, changeDarkMode] = useState(true);
   const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
-  const [currentEmojiGrid, changeEmojiGrid] = useState<string[]>([]);
   const [initialAppMounted, changeInitialAppMounted] = useState(false);
+  const [currentHoliday, changeCurrentHoliday] = useState("");
 
   // Handle modal logic
   const [showTopPathsModal, changeShowTopPathsModal] = useState(false);
@@ -266,7 +269,7 @@ const App = () => {
       changeDarkMode(false);
     }
   }, []);
-
+  console.log(currentHoliday);
   // Watch for light preference changes
   useEffect(() => {
     window
@@ -492,6 +495,8 @@ const App = () => {
         changePathRankCount,
         showTopPathsModal,
         changeShowTopPathsModal,
+        currentHoliday,
+        changeCurrentHoliday,
       }}
     >
       <ToastContainer limit={1} />
@@ -500,7 +505,11 @@ const App = () => {
         ref={rewardEl}
         type="emoji"
         config={{
-          emoji: ["🍿"],
+          emoji:
+            currentHoliday === "Memorial Day" ||
+            currentHoliday === "Independence Day"
+              ? ["🇺🇸", "🍿"]
+              : ["🍿"],
           lifetime: 200,
           zIndex: 9999,
           elementSize: 75,

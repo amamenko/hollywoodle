@@ -1,8 +1,9 @@
 import { parse, addDays, format } from "date-fns";
 import { formatInTimeZone, toDate } from "date-fns-tz";
 import { useContext, useEffect, useState } from "react";
-import Countdown from "react-countdown";
 import { AppContext } from "../../App";
+import Countdown from "react-countdown";
+import Holidays from "date-holidays";
 
 export const CountdownTimer = ({
   handleComplete,
@@ -18,6 +19,7 @@ export const CountdownTimer = ({
     objectiveCurrentDate,
     changeObjectiveCurrentDate,
     changeCurrentlyPlayingDate,
+    changeCurrentHoliday,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -58,6 +60,16 @@ export const CountdownTimer = ({
     if (currentDateStr !== objectiveCurrentDate) {
       changeObjectiveCurrentDate(currentDateStr);
       changeCurrentlyPlayingDate(currentDateStr);
+      const hd = new Holidays();
+      hd.init("US");
+      const allHolidays = hd.getHolidays();
+      const foundHolidayObj = allHolidays.find(
+        (el) =>
+          formatInTimeZone(el.date, "America/New_York", "MM/dd/yyyy") ===
+          currentDateStr
+      );
+      const foundHolidayName = foundHolidayObj ? foundHolidayObj.name : "";
+      if (foundHolidayName) changeCurrentHoliday(foundHolidayName);
     }
 
     const lastIndex = finalEndDate.lastIndexOf("-");
@@ -118,6 +130,7 @@ export const CountdownTimer = ({
     changeObjectiveCurrentDate,
     objectiveCurrentDate,
     changeCurrentlyPlayingDate,
+    changeCurrentHoliday,
   ]);
 
   if (endDate) {

@@ -56,4 +56,6 @@ export const contextDefaults = {
   changePathRankCount: () => {},
   showTopPathsModal: false,
   changeShowTopPathsModal: () => {},
+  currentHoliday: "",
+  changeCurrentHoliday: () => {},
 };

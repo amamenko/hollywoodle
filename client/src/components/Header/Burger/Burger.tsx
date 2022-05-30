@@ -5,6 +5,7 @@ import { AiOutlineClose, AiOutlineHome } from "react-icons/ai";
 import { IoFootstepsOutline } from "react-icons/io5";
 import { GrContact } from "react-icons/gr";
 import { ReactComponent as LogoWhite } from "../../../assets/LogoWhite.svg";
+import { ReactComponent as LogoStars } from "../../../assets/LogoVariants/Stars/LogoStarsBurger.svg";
 import KofiButton from "kofi-button";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
@@ -24,7 +25,7 @@ export const Burger = ({
   changeShowContactModal: React.Dispatch<React.SetStateAction<boolean>>;
   changeShowSupportModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { darkMode, changeDarkMode, changeShowTopPathsModal } =
+  const { darkMode, changeDarkMode, changeShowTopPathsModal, currentHoliday } =
     useContext(AppContext);
   const [checked, changeChecked] = useState(true);
 
@@ -49,7 +50,12 @@ export const Burger = ({
     >
       <span className="hollywoodle_logo_container_burger">
         ""
-        <LogoWhite className="hollywoodle_logo burger_menu" />
+        {currentHoliday === "Memorial Day" ||
+        currentHoliday === "Independence Day" ? (
+          <LogoStars className="hollywoodle_logo burger_menu" />
+        ) : (
+          <LogoWhite className="hollywoodle_logo burger_menu" />
+        )}
       </span>
       <div className="burger_menu_item_container">
         <div className="menu-item" onClick={() => changeBurgerMenuOpen(false)}>

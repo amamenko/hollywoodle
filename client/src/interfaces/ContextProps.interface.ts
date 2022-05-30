@@ -48,4 +48,6 @@ export interface ContextProps {
   >;
   showTopPathsModal: boolean;
   changeShowTopPathsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  currentHoliday: string;
+  changeCurrentHoliday: React.Dispatch<React.SetStateAction<string>>;
 }
