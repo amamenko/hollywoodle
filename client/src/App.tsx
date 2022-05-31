@@ -269,7 +269,7 @@ const App = () => {
       changeDarkMode(false);
     }
   }, []);
-  console.log(currentHoliday);
+
   // Watch for light preference changes
   useEffect(() => {
     window

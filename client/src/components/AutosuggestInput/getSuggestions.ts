@@ -20,9 +20,7 @@ export const getSuggestions = async (
       typeOfGuess === "movie" ? "movie" : "person"
     }?api_key=${
       process.env.REACT_APP_TMDB_API_KEY
-    }&language=en-US&region=US&query=${encodeURI(
-      inputValue
-    )}&page=1&include_adult=false`;
+    }&language=en-US&query=${encodeURI(inputValue)}&page=1&include_adult=false`;
 
     const resultSortingFunction = (
       a: TMDBSearchResult,
@@ -77,6 +75,8 @@ export const getSuggestions = async (
         .then((res) => res.data)
         .then((data) => data.results)
         .catch((e) => console.error(e));
+
+      console.log(results);
 
       return results
         .filter(
