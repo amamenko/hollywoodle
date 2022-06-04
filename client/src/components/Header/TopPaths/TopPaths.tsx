@@ -7,12 +7,15 @@ import { RemoveScroll } from "react-remove-scroll";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { AppContext } from "../../../App";
 import { IoFootsteps } from "react-icons/io5";
 import { ClipLoader } from "react-spinners";
+import ReactPaginate from "react-paginate";
 import "../Header.scss";
 import "./TopPaths.scss";
 import "../Leaderboard/Leaderboard.scss";
+import "./pagination.scss";
 
 export const customModalStyles = {
   content: {
@@ -50,52 +53,73 @@ export const TopPaths = () => {
       path: string;
     }[]
   >([]);
+  const [pageCount, changePageCount] = useState(0);
+  const [currentPage, changeCurrentPage] = useState(0);
   // Aggregated top paths data metrics
   const [totalPathsFound, changeTotalPathsFound] = useState(0);
   const [totalPlayers, changeTotalPlayers] = useState(0);
   const [lowestDegree, changeLowestDegree] = useState(0);
   const [highestDegree, changeHighestDegree] = useState(0);
+  const itemsPerPage = 10;
 
   const handleCloseModal = () => {
     changeShowTopPathsModal(false);
   };
 
-  // Remove all displayed toasts on modal open
   useEffect(() => {
-    if (showTopPathsModal) toast.dismiss();
+    if (showTopPathsModal) {
+      // Remove all displayed toasts on modal open
+      toast.dismiss();
+    } else {
+      // Clear states on modal close
+      changePathCollapsed("");
+      changeTopPaths([]);
+      changePageCount(0);
+      changeCurrentPage(0);
+      changeTotalPathsFound(0);
+      changeLowestDegree(0);
+      changeHighestDegree(0);
+    }
   }, [showTopPathsModal]);
+
+  const fetchData = async (page?: number) => {
+    const nodeEnv = process.env.REACT_APP_NODE_ENV
+      ? process.env.REACT_APP_NODE_ENV
+      : "";
+
+    await axios
+      .get(
+        nodeEnv && nodeEnv === "production"
+          ? `${process.env.REACT_APP_PROD_SERVER}/api/top_paths`
+          : "http://localhost:4000/api/top_paths",
+        {
+          params: {
+            page: page || 0,
+          },
+        }
+      )
+      .then((res) => res.data)
+      .then((data) => {
+        changePathsLoading(false);
+        if (data.paths) changeTopPaths(data.paths);
+        if (data.totalPathsFound) {
+          changeTotalPathsFound(data.totalPathsFound);
+          changePageCount(Math.ceil(data.totalPathsFound / itemsPerPage));
+        }
+        if (data.totalPlayers) changeTotalPlayers(data.totalPlayers);
+        if (data.lowestDegree) changeLowestDegree(data.lowestDegree);
+        if (data.highestDegree) changeHighestDegree(data.highestDegree);
+      })
+      .catch((e) => {
+        changePathsLoading(false);
+        console.error(e);
+      });
+  };
 
   useEffect(() => {
     if (showTopPathsModal) {
       changePathsLoading(true);
       const source = axios.CancelToken.source();
-
-      const nodeEnv = process.env.REACT_APP_NODE_ENV
-        ? process.env.REACT_APP_NODE_ENV
-        : "";
-
-      const fetchData = async () => {
-        await axios
-          .get(
-            nodeEnv && nodeEnv === "production"
-              ? `${process.env.REACT_APP_PROD_SERVER}/api/top_paths`
-              : "http://localhost:4000/api/top_paths"
-          )
-          .then((res) => res.data)
-          .then((data) => {
-            changePathsLoading(false);
-            if (data.paths) changeTopPaths(data.paths);
-            if (data.totalPathsFound)
-              changeTotalPathsFound(data.totalPathsFound);
-            if (data.totalPlayers) changeTotalPlayers(data.totalPlayers);
-            if (data.lowestDegree) changeLowestDegree(data.lowestDegree);
-            if (data.highestDegree) changeHighestDegree(data.highestDegree);
-          })
-          .catch((e) => {
-            changePathsLoading(false);
-            console.error(e);
-          });
-      };
 
       fetchData();
 
@@ -122,6 +146,10 @@ export const TopPaths = () => {
           upgrade: false,
         }
       );
+
+      socket.on("pageCheck", (arg, callback) => {
+        callback(currentPage);
+      });
 
       socket.on("changeData", (arg) => {
         if (arg && arg.paths && Array.isArray(arg.paths)) {
@@ -157,7 +185,13 @@ export const TopPaths = () => {
     }
 
     return () => {};
-  }, [showTopPathsModal, topPaths]);
+  }, [showTopPathsModal, topPaths, currentPage]);
+
+  const handlePageClick = (event: { [key: string]: number }) => {
+    changePathCollapsed("");
+    changeCurrentPage(event.selected);
+    fetchData(event.selected);
+  };
 
   return (
     <RemoveScroll enabled={showTopPathsModal}>
@@ -169,7 +203,7 @@ export const TopPaths = () => {
         shouldFocusAfterRender={false}
         style={customModalStyles}
       >
-        <h2 className="top_paths_title">TODAY'S TOP PATHS</h2>
+        <h2 className="top_paths_title">TODAY'S PATHS</h2>
         <span className="leaderboard_connection_header">
           <p>{objectiveCurrentDate}</p>
           <p>
@@ -184,7 +218,9 @@ export const TopPaths = () => {
           <p>LIVE</p>
         </div>
         <p className="top_paths_prompt">
-          The top 10 best and most popular paths of the day will be shown here.
+          All of today's actor connection paths will be shown here. The paths
+          are sorted by popularity (descending) and then by degrees of
+          separation (ascending.)
           <br />
           <br />
           Only players' first play-through of the day is counted towards a
@@ -224,24 +260,47 @@ export const TopPaths = () => {
               <p>Find today's connection and create the first one!</p>
             </div>
           ) : (
-            topPaths.map((el, i) => {
-              if (el.degrees && el.count && el.path) {
-                return (
-                  <React.Fragment key={i}>
-                    <PathContainer
-                      rank={i}
-                      degrees={el.degrees}
-                      count={el.count}
-                      path={el.path}
-                      pathCollapsed={pathCollapsed}
-                      changePathCollapsed={changePathCollapsed}
-                    />
-                  </React.Fragment>
-                );
-              } else {
-                return <React.Fragment key={i} />;
-              }
-            })
+            <>
+              {topPaths.map((el, i) => {
+                if (el.degrees && el.count && el.path) {
+                  return (
+                    <React.Fragment key={i}>
+                      <PathContainer
+                        rank={i}
+                        degrees={el.degrees}
+                        count={el.count}
+                        path={el.path}
+                        pathCollapsed={pathCollapsed}
+                        changePathCollapsed={changePathCollapsed}
+                        currentPage={currentPage}
+                      />
+                    </React.Fragment>
+                  );
+                } else {
+                  return <React.Fragment key={i} />;
+                }
+              })}
+              <ReactPaginate
+                breakLabel="..."
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={2}
+                marginPagesDisplayed={1}
+                pageCount={pageCount}
+                previousLabel={<BiChevronLeft />}
+                nextLabel={<BiChevronRight />}
+                renderOnZeroPageCount={() => null}
+                breakClassName={"page-item"}
+                breakLinkClassName={"page-link"}
+                containerClassName={"pagination"}
+                pageClassName={"page-item"}
+                pageLinkClassName={"page-link"}
+                previousClassName={"page-item"}
+                previousLinkClassName={"page-link"}
+                nextClassName={"page-item"}
+                nextLinkClassName={"page-link"}
+                activeClassName={"active"}
+              />
+            </>
           )}
         </div>
       </Modal>

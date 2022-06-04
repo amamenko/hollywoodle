@@ -9,6 +9,7 @@ export const PathContainer = ({
   path,
   pathCollapsed,
   changePathCollapsed,
+  currentPage,
 }: {
   rank: number;
   degrees: number;
@@ -16,6 +17,7 @@ export const PathContainer = ({
   path: string;
   pathCollapsed: string;
   changePathCollapsed: React.Dispatch<React.SetStateAction<string>>;
+  currentPage: number;
 }) => {
   useEffect(() => {
     return () => changePathCollapsed("");
@@ -32,6 +34,7 @@ export const PathContainer = ({
       }
     }
   };
+
   return (
     <div className="individual_path_container">
       <div
@@ -40,7 +43,7 @@ export const PathContainer = ({
         }`}
       >
         <div className="rank_circle">
-          <p>{rank + 1}</p>
+          <p>{rank + currentPage * 10 + 1}</p>
         </div>
         {path && degrees && count ? (
           <div className="path_numbers_container">

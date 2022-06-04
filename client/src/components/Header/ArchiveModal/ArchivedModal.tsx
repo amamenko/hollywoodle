@@ -254,6 +254,7 @@ export const ArchivedModal = ({
               ) : null;
             }}
             onClickDay={(value) => changeCurrentArchiveDate(formatDate(value))}
+            showNeighboringMonth={false}
           />
         )}
         <div className="archive_results_container">

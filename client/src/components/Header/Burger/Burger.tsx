@@ -70,7 +70,7 @@ export const Burger = ({
           }}
         >
           <IoFootstepsOutline className="contact_icon" size={25} />
-          <p>Top Paths</p>
+          <p>All Paths</p>
         </div>
         <div
           className="menu-item"

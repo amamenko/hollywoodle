@@ -44,14 +44,30 @@ const handleLiveChange = (change: { [key: string]: any }, key: string) => {
       if (key === "paths") {
         const { totalPathsFound, totalPlayers, lowestDegree, highestDegree } =
           getTopPathsAggregatedData(changeData);
-        changeData = {
-          // Only return first 10 paths for top paths changes
-          paths: changeData.slice(0, 10),
-          totalPathsFound,
-          totalPlayers,
-          lowestDegree,
-          highestDegree,
-        };
+        io.timeout(5000).emit(
+          "pageCheck",
+          true,
+          (err: Error, response: number[]) => {
+            if (err) {
+              console.error(err);
+            } else {
+              let currentPage = 0;
+              if (response && response[0]) currentPage = response[0];
+              changeData = {
+                // Only return 10 results at a time relative to current page
+                paths: changeData.slice(
+                  currentPage * 10,
+                  currentPage * 10 + 10
+                ),
+                totalPathsFound,
+                totalPlayers,
+                lowestDegree,
+                highestDegree,
+              };
+              io.emit("changeData", changeData);
+            }
+          }
+        );
       }
       io.emit("changeData", changeData);
     }
@@ -112,13 +128,14 @@ app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
 });
 
 app.get("/api/top_paths", [], async (req: Request, res: Response) => {
+  const pageRequest: number = Number(req.query.page) || 0;
   const topPaths: { [key: string]: { [key: string]: string | number }[] }[] =
     await Path.find();
   if (topPaths[0] && topPaths[0].paths) {
     const { totalPathsFound, totalPlayers, lowestDegree, highestDegree } =
       getTopPathsAggregatedData(topPaths[0].paths);
     res.send({
-      paths: topPaths[0].paths.slice(0, 10),
+      paths: topPaths[0].paths.slice(pageRequest * 10, pageRequest * 10 + 10),
       totalPathsFound,
       totalPlayers,
       lowestDegree,

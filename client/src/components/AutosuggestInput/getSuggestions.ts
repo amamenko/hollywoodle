@@ -76,8 +76,6 @@ export const getSuggestions = async (
         .then((data) => data.results)
         .catch((e) => console.error(e));
 
-      console.log(results);
-
       return results
         .filter(
           (item: TMDBSearchResult) =>
@@ -85,8 +83,7 @@ export const getSuggestions = async (
             item.poster_path &&
             Array.isArray(item.genre_ids) &&
             item.genre_ids.length > 0 &&
-            item.release_date &&
-            item.vote_count > 0
+            item.release_date
         )
         .sort(resultSortingFunction)
         .map((item: TMDBSearchResult) => {

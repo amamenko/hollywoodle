@@ -322,7 +322,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
                 className="who_button top_paths_button"
                 onClick={() => changeShowTopPathsModal(true)}
               >
-                VIEW TODAY'S TOP PATHS
+                VIEW ALL TODAY'S PATHS
               </Button>
             ) : (
               <></>

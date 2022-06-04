@@ -30,6 +30,10 @@
   align-self: center;
   margin: 0 auto;
 
+  .react-calendar__month-view__days {
+    background: rgb(50, 50, 50);
+  }
+
   .react-calendar__tile--now:not(.react-calendar__tile--active) {
     abbr {
       color: #fff !important;

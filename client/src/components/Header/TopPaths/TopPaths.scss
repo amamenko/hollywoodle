@@ -129,6 +129,7 @@
   }
 
   .collapse_container {
+    overflow: auto;
     .collapsed_path_full_info {
       font-size: 0.9rem;
       margin: 0 1.5rem;
@@ -161,8 +162,8 @@
   }
 
   .collapse_container {
+    overflow: auto;
     height: 100%;
     padding: 2rem 0;
-    max-height: 175px;
   }
 }
