@@ -6,6 +6,8 @@ import React, {
   useRef,
   useMemo,
 } from "react";
+import CacheBuster from "react-cache-buster";
+import packageJSON from "../package.json";
 import { ActorMovieContainer } from "./components/ActorMovieContainer/ActorMovieContainer";
 import { InteractiveResponse } from "./components/InteractiveResponse/InteractiveResponse";
 import { Winner } from "./components/Winner/Winner";
@@ -457,132 +459,141 @@ const App = () => {
   ]);
 
   return (
-    <AppContext.Provider
-      value={{
-        firstActor,
-        lastActor,
-        guesses,
-        changeGuesses,
-        currentMoves,
-        changeCurrentMoves,
-        win,
-        changeWin,
-        darkMode,
-        changeDarkMode,
-        changeMostRecentActor,
-        changeMostRecentMovie,
-        currentEmojiGrid,
-        changeEmojiGrid,
-        currentlyPlayingDate,
-        changeCurrentlyPlayingDate,
-        currentArchivedActorsResults,
-        changeCurrentArchivedActorsResults,
-        fullTimezoneDate,
-        changeFullTimezoneDate,
-        objectiveCurrentDate,
-        changeObjectiveCurrentDate,
-        currentSelection,
-        changeCurrentSelection,
-        movieCast,
-        changeMovieCast,
-        currentDegrees,
-        changeCurrentDegrees,
-        guessLoading,
-        changeGuessLoading,
-        updateWinData,
-        changeUpdateWinData,
-        pathRankCount,
-        changePathRankCount,
-        showTopPathsModal,
-        changeShowTopPathsModal,
-        currentHoliday,
-        changeCurrentHoliday,
-      }}
+    <CacheBuster
+      currentVersion={packageJSON.version}
+      isEnabled={
+        !!process.env.REACT_APP_NODE_ENV &&
+        process.env.REACT_APP_NODE_ENV === "production"
+      }
+      isVerboseMode={false}
     >
-      <ToastContainer limit={1} />
-      <Header />
-      <Reward
-        ref={rewardEl}
-        type="emoji"
-        config={{
-          emoji:
-            currentHoliday === "Memorial Day" ||
-            currentHoliday === "Independence Day"
-              ? ["🇺🇸", "🍿"]
-              : ["🍿"],
-          lifetime: 200,
-          zIndex: 9999,
-          elementSize: 75,
-          spread: 1000,
-          springAnimation: false,
+      <AppContext.Provider
+        value={{
+          firstActor,
+          lastActor,
+          guesses,
+          changeGuesses,
+          currentMoves,
+          changeCurrentMoves,
+          win,
+          changeWin,
+          darkMode,
+          changeDarkMode,
+          changeMostRecentActor,
+          changeMostRecentMovie,
+          currentEmojiGrid,
+          changeEmojiGrid,
+          currentlyPlayingDate,
+          changeCurrentlyPlayingDate,
+          currentArchivedActorsResults,
+          changeCurrentArchivedActorsResults,
+          fullTimezoneDate,
+          changeFullTimezoneDate,
+          objectiveCurrentDate,
+          changeObjectiveCurrentDate,
+          currentSelection,
+          changeCurrentSelection,
+          movieCast,
+          changeMovieCast,
+          currentDegrees,
+          changeCurrentDegrees,
+          guessLoading,
+          changeGuessLoading,
+          updateWinData,
+          changeUpdateWinData,
+          pathRankCount,
+          changePathRankCount,
+          showTopPathsModal,
+          changeShowTopPathsModal,
+          currentHoliday,
+          changeCurrentHoliday,
         }}
       >
-        <IntroModal
-          showIntroModal={showIntroModal}
-          changeShowIntroModal={changeShowIntroModal}
-        />
-        <div className={`app_container ${darkMode ? "dark" : ""}`}>
-          <div className="main_container">
-            {firstActor.name && lastActor.name && !refreshingDataTime ? (
-              <>
-                <div className="first_actor_container">
-                  <ActorMovieContainer
-                    image={firstActor.image}
-                    name={firstActor.name}
-                    knownFor={firstActor.most_popular_recent_movie}
-                    gender={firstActor.gender}
-                  />
-                </div>
-                <AllGuesses mostRecentMovie={mostRecentMovie} />
-                {win ? (
-                  <Winner ref={rewardEl} />
-                ) : (
-                  <div
-                    className={`main_response_input_container ${
-                      guesses.length === 0 ? "" : "with_guesses"
-                    }`}
-                  >
-                    <InteractiveResponse
-                      actor1={handleActorProp(
-                        mostRecentMovie,
-                        mostRecentActor,
-                        firstActor
-                      )}
-                      actor2={lastActor.name}
-                      movie={handleMovieProp(
-                        mostRecentMovie,
-                        mostRecentActor,
-                        mostRecentMovie.guess.toString()
-                      )}
-                      year={handleMovieProp(
-                        mostRecentMovie,
-                        mostRecentActor,
-                        mostRecentMovie.year.toString()
-                      )}
+        <ToastContainer limit={1} />
+        <Header />
+        <Reward
+          ref={rewardEl}
+          type="emoji"
+          config={{
+            emoji:
+              currentHoliday === "Memorial Day" ||
+              currentHoliday === "Independence Day"
+                ? ["🇺🇸", "🍿"]
+                : ["🍿"],
+            lifetime: 200,
+            zIndex: 9999,
+            elementSize: 75,
+            spread: 1000,
+            springAnimation: false,
+          }}
+        >
+          <IntroModal
+            showIntroModal={showIntroModal}
+            changeShowIntroModal={changeShowIntroModal}
+          />
+          <div className={`app_container ${darkMode ? "dark" : ""}`}>
+            <div className="main_container">
+              {firstActor.name && lastActor.name && !refreshingDataTime ? (
+                <>
+                  <div className="first_actor_container">
+                    <ActorMovieContainer
+                      image={firstActor.image}
+                      name={firstActor.name}
+                      knownFor={firstActor.most_popular_recent_movie}
+                      gender={firstActor.gender}
                     />
                   </div>
-                )}
-                <div className="last_actor_container">
-                  <ActorMovieContainer
-                    image={lastActor.image}
-                    name={lastActor.name}
-                    knownFor={lastActor.most_popular_recent_movie}
-                    gender={lastActor.gender}
-                    lastActor={true}
-                  />
+                  <AllGuesses mostRecentMovie={mostRecentMovie} />
+                  {win ? (
+                    <Winner ref={rewardEl} />
+                  ) : (
+                    <div
+                      className={`main_response_input_container ${
+                        guesses.length === 0 ? "" : "with_guesses"
+                      }`}
+                    >
+                      <InteractiveResponse
+                        actor1={handleActorProp(
+                          mostRecentMovie,
+                          mostRecentActor,
+                          firstActor
+                        )}
+                        actor2={lastActor.name}
+                        movie={handleMovieProp(
+                          mostRecentMovie,
+                          mostRecentActor,
+                          mostRecentMovie.guess.toString()
+                        )}
+                        year={handleMovieProp(
+                          mostRecentMovie,
+                          mostRecentActor,
+                          mostRecentMovie.year.toString()
+                        )}
+                      />
+                    </div>
+                  )}
+                  <div className="last_actor_container">
+                    <ActorMovieContainer
+                      image={lastActor.image}
+                      name={lastActor.name}
+                      knownFor={lastActor.most_popular_recent_movie}
+                      gender={lastActor.gender}
+                      lastActor={true}
+                    />
+                  </div>
+                  <Footer />
+                </>
+              ) : (
+                <div className="main_spinner_container">
+                  <ClipLoader color={darkMode ? "#fff" : "#000"} size={100} />
+                  <p>Loading {refreshingDataTime ? "new" : ""} actors...</p>
                 </div>
-                <Footer />
-              </>
-            ) : (
-              <div className="main_spinner_container">
-                <ClipLoader color={darkMode ? "#fff" : "#000"} size={100} />
-                <p>Loading {refreshingDataTime ? "new" : ""} actors...</p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      </Reward>
-    </AppContext.Provider>
+        </Reward>
+      </AppContext.Provider>
+    </CacheBuster>
   );
 };
 

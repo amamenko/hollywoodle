@@ -1,6 +1,6 @@
 {
   "name": "hollywoodle",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
@@ -22,6 +22,7 @@
     "react": "^17.0.2",
     "react-autosuggest": "^10.1.0",
     "react-burger-menu": "^3.0.6",
+    "react-cache-buster": "^0.1.6",
     "react-calendar": "^3.7.0",
     "react-collapse": "^5.1.1",
     "react-countdown": "^2.3.2",
@@ -48,9 +49,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run generate-meta-tag && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate-meta-tag": "node ./node_modules/react-cache-buster/dist/generate-meta-tag.js"
   },
   "eslintConfig": {
     "extends": [
