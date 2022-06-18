@@ -79,7 +79,6 @@ export const getSuggestions = async (
       return results
         .filter(
           (item: TMDBSearchResult) =>
-            item.backdrop_path &&
             item.poster_path &&
             Array.isArray(item.genre_ids) &&
             item.genre_ids.length > 0 &&
