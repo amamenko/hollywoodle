@@ -89,7 +89,7 @@ export const Header = () => {
         currentHoliday === "Independence Day" ? (
           <LogoStars className="hollywoodle_logo" />
         ) : currentHoliday === "Juneteenth" ? (
-          <LogoJuneteenth className="hollywoodle_logo burger_menu" />
+          <LogoJuneteenth className="hollywoodle_logo" />
         ) : (
           <LogoWhite className="hollywoodle_logo" />
         )}
