@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { ReactComponent as LogoWhite } from "../../assets/LogoWhite.svg";
 import { ReactComponent as LogoStars } from "../../assets/LogoVariants/Stars/LogoStarsHeader.svg";
+import { ReactComponent as LogoJuneteenth } from "../../assets/LogoVariants/Juneteenth/LogoJuneteenthHeader.svg";
 import { HowToPlayModal } from "../HowToPlayModal/HowToPlayModal";
 import { BiBarChartAlt2 } from "react-icons/bi";
 import { GiBackwardTime } from "react-icons/gi";
@@ -87,6 +88,8 @@ export const Header = () => {
         {currentHoliday === "Memorial Day" ||
         currentHoliday === "Independence Day" ? (
           <LogoStars className="hollywoodle_logo" />
+        ) : currentHoliday === "Juneteenth" ? (
+          <LogoJuneteenth className="hollywoodle_logo burger_menu" />
         ) : (
           <LogoWhite className="hollywoodle_logo" />
         )}
@@ -116,7 +119,7 @@ export const Header = () => {
       <div className={`points_container ${darkMode ? "dark" : ""}`}>
         {archivedGame && (
           <p className={`archived_denotation ${darkMode ? "dark" : ""}`}>
-            Archived Game
+            Archived
           </p>
         )}
         <div className="points_inner_container">

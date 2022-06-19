@@ -6,6 +6,7 @@ import { IoFootstepsOutline } from "react-icons/io5";
 import { GrContact } from "react-icons/gr";
 import { ReactComponent as LogoWhite } from "../../../assets/LogoWhite.svg";
 import { ReactComponent as LogoStars } from "../../../assets/LogoVariants/Stars/LogoStarsBurger.svg";
+import { ReactComponent as LogoJuneteenth } from "../../../assets/LogoVariants/Juneteenth/LogoJuneteenthBurger.svg";
 import KofiButton from "kofi-button";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
@@ -53,6 +54,8 @@ export const Burger = ({
         {currentHoliday === "Memorial Day" ||
         currentHoliday === "Independence Day" ? (
           <LogoStars className="hollywoodle_logo burger_menu" />
+        ) : currentHoliday === "Juneteenth" ? (
+          <LogoJuneteenth className="hollywoodle_logo burger_menu" />
         ) : (
           <LogoWhite className="hollywoodle_logo burger_menu" />
         )}
