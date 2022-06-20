@@ -160,7 +160,12 @@ export const WhoButton = ({
                     ? "she's"
                     : "they've"}{" "}
                   acted in is the <b>{knownFor.year}</b> film{" "}
-                  <b>{knownFor.title}</b>.{" "}
+                  <b>{knownFor.title}</b>
+                  {knownFor.title.toString()[
+                    knownFor.title.toString().length - 1
+                  ] === "."
+                    ? ""
+                    : "."}{" "}
                   {gender === "male"
                     ? "He"
                     : gender === "female"
