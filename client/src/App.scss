@@ -78,3 +78,64 @@
     padding-top: 2rem;
   }
 }
+
+@mixin sidebar {
+  display: flex;
+  box-sizing: border-box;
+  max-width: 600px;
+  height: 600px;
+  position: absolute;
+  top: 15%;
+  left: 0;
+  right: 0;
+  bottom: 25%;
+  margin: 0 auto;
+
+  &:after {
+    content: "\200b";
+  }
+}
+
+@mixin sidebar_outer_container {
+  position: absolute;
+  width: 35.5vw;
+  height: 100vh;
+
+  @media only screen and (min-width: 2000px) {
+    width: 38.5vw;
+  }
+  @media only screen and (min-width: 2300px) {
+    width: 40vw;
+  }
+}
+
+@mixin inner_container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+// Ads
+@media only screen and (min-width: 1500px) {
+  .left_ad_container {
+    @include sidebar_outer_container;
+  }
+  .left_ad_inner_container {
+    @include inner_container;
+  }
+  #ezoic-pub-ad-placeholder-101 {
+    @include sidebar;
+  }
+
+  .right_ad_container {
+    @include sidebar_outer_container;
+    top: 0;
+    right: 0;
+  }
+  .right_ad_inner_container {
+    @include inner_container;
+  }
+  #ezoic-pub-ad-placeholder-103 {
+    @include sidebar;
+  }
+}

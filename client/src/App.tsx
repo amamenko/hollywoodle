@@ -511,6 +511,22 @@ const App = () => {
       >
         <ToastContainer limit={1} />
         <Header />
+        <div className="left_ad_container">
+          <div className="left_ad_inner_container">
+            {/* EZOIC AD - LEFT SIDEBAR LOCATION  */}
+            {/* Ezoic - sidebar_floating_1 - sidebar_floating_1  */}
+            <div id="ezoic-pub-ad-placeholder-101"></div>
+            {/* End Ezoic - sidebar_floating_1 - sidebar_floating_1  */}
+          </div>
+        </div>
+        <div className="right_ad_container">
+          <div className="right_ad_inner_container">
+            {/* EZOIC AD - RIGHT SIDEBAR LOCATION  */}
+            {/* <!-- Ezoic - sidebar - sidebar --> */}
+            <div id="ezoic-pub-ad-placeholder-103"></div>
+            {/* <!-- End Ezoic - sidebar - sidebar --> */}
+          </div>
+        </div>
         <Reward
           ref={rewardEl}
           type="emoji"
