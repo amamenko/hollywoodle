@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { ReactComponent as TMDBLogo } from "../../assets/TMDBLogo.svg";
 import { BsGithub } from "react-icons/bs";
@@ -6,8 +6,40 @@ import "./Footer.scss";
 
 export const Footer = () => {
   const { darkMode } = useContext(AppContext);
+  const [browserWidth, changeBrowserWidth] = useState(
+    Math.max(
+      document.body.scrollWidth,
+      document.documentElement.scrollWidth,
+      document.body.offsetWidth,
+      document.documentElement.offsetWidth,
+      document.documentElement.clientWidth
+    )
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      const currentWidth = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      );
+      changeBrowserWidth(currentWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
   return (
+    // <!-- Ezoic - bottom_of_page - bottom_of_page -->
     <div className={`footer_container ${darkMode ? "dark" : ""}`}>
+      {/* <!-- Ezoic - bottom_of_page - bottom_of_page --> */}
+      {browserWidth < 768 && <div id="ezoic-pub-ad-placeholder-106"></div>}
+      {/* <!-- End Ezoic - bottom_of_page - bottom_of_page --> */}
       <p>
         Created by{" "}
         <a
@@ -50,5 +82,6 @@ export const Footer = () => {
         </a>
       </div>
     </div>
+    // <!-- End Ezoic - bottom_of_page - bottom_of_page -->
   );
 };
