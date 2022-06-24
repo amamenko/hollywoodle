@@ -558,6 +558,10 @@ const App = () => {
                       knownFor={firstActor.most_popular_recent_movie}
                       gender={firstActor.gender}
                     />
+                    {/* EZOIC AD - TOP MIDDLE SQUARE LOCATION  */}
+                    {/* <!-- Ezoic - top_of_page - top_of_page --> */}
+                    <div id="ezoic-pub-ad-placeholder-104"> </div>
+                    {/* <!-- End Ezoic - top_of_page - top_of_page --> */}
                   </div>
                   <AllGuesses mostRecentMovie={mostRecentMovie} />
                   {win ? (
@@ -589,6 +593,10 @@ const App = () => {
                     </div>
                   )}
                   <div className="last_actor_container">
+                    {/* EZOIC AD - BOTTOM MIDDLE SQUARE LOCATION  */}
+                    {/* <!-- Ezoic - under_page_title - under_page_title --> */}
+                    <div id="ezoic-pub-ad-placeholder-105"> </div>
+                    {/* <!-- End Ezoic - under_page_title - under_page_title --> */}
                     <ActorMovieContainer
                       image={lastActor.image}
                       name={lastActor.name}
