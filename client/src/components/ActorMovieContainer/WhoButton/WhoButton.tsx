@@ -200,7 +200,15 @@ export const WhoButton = ({
                     : "played themselves."
                   : "played the character of "}
                 {currentHint.name !== currentHint.character ? (
-                  <b>"{currentHint.character}."</b>
+                  <b>
+                    "{currentHint.character}
+                    {currentHint.character.toString()[
+                      currentHint.character.toString().length - 1
+                    ] === "."
+                      ? ""
+                      : "."}
+                    "
+                  </b>
                 ) : (
                   ""
                 )}
