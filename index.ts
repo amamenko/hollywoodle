@@ -44,7 +44,7 @@ const handleLiveChange = (change: { [key: string]: any }, key: string) => {
       if (key === "paths") {
         const { totalPathsFound, totalPlayers, lowestDegree, highestDegree } =
           getTopPathsAggregatedData(changeData);
-        io.timeout(5000).emit(
+        io.timeout(10000).emit(
           "pageCheck",
           true,
           (err: Error, response: number[]) => {
