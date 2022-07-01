@@ -25,8 +25,6 @@ export const contextDefaults = {
   changeWin: () => {},
   darkMode: true,
   changeDarkMode: () => [],
-  changeMostRecentActor: () => [],
-  changeMostRecentMovie: () => [],
   currentEmojiGrid: [],
   changeEmojiGrid: () => [],
   currentlyPlayingDate: "",

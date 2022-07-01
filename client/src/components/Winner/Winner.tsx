@@ -13,6 +13,7 @@ import { getOrdinalSuffix } from "./getOrdinalSuffix";
 import { Button } from "reactstrap";
 import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
+import { GameContext } from "../Main/Main";
 
 export interface FullRewardElement extends RewardElement {
   container?: HTMLElement;
@@ -28,8 +29,6 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     guesses,
     changeGuesses,
     changeCurrentMoves,
-    changeMostRecentActor,
-    changeMostRecentMovie,
     currentEmojiGrid,
     changeEmojiGrid,
     currentDegrees,
@@ -40,6 +39,8 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     objectiveCurrentDate,
     changeShowTopPathsModal,
   } = useContext(AppContext);
+  const { changeMostRecentMovie, changeMostRecentActor } =
+    useContext(GameContext);
   const [lastClicked, changeLastClicked] = useState("");
   // Regular share link
   const [shareLinkClicked, changeShareLinkClicked] = useState(false);

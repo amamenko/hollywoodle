@@ -17,6 +17,7 @@ import { MovesPopover } from "./Popovers/MovesPopover";
 import { DegreesPopover } from "./Popovers/DegreePopover";
 import { TopPaths } from "./TopPaths/TopPaths";
 import "./Header.scss";
+import { Link } from "react-router-dom";
 
 export const Header = () => {
   const {
@@ -36,6 +37,7 @@ export const Header = () => {
   const [burgerMenuOpen, changeBurgerMenuOpen] = useState(false);
   const [degreesPopoverOpen, changeDegreesPopoverOpen] = useState(false);
   const [movesPopoverOpen, changeMovesPopoverOpen] = useState(false);
+  const pathname = window.location.pathname;
 
   const toggleDegreesPopover = () => {
     changeDegreesPopoverOpen(!degreesPopoverOpen);
@@ -99,10 +101,12 @@ export const Header = () => {
           size={28}
           onClick={() => changeShowArchivedModal(true)}
         />
-        <ArchivedModal
-          showArchivedModal={showArchivedModal}
-          changeShowArchivedModal={changeShowArchivedModal}
-        />
+        <Link to="/">
+          <ArchivedModal
+            showArchivedModal={showArchivedModal}
+            changeShowArchivedModal={changeShowArchivedModal}
+          />
+        </Link>
         <Support
           showSupportModal={showSupportModal}
           changeShowSupportModal={changeShowSupportModal}
@@ -116,7 +120,10 @@ export const Header = () => {
         <Statistics modalOpen={modalOpen} closeModal={closeModal} />
         <TopPaths />
       </div>
-      <div className={`points_container ${darkMode ? "dark" : ""}`}>
+      <div
+        className={`points_container ${darkMode ? "dark" : ""}`}
+        style={{ display: pathname === "/" ? "flex" : "none" }}
+      >
         {archivedGame && (
           <p className={`archived_denotation ${darkMode ? "dark" : ""}`}>
             Archived

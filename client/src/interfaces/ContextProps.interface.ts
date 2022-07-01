@@ -14,12 +14,6 @@ export interface ContextProps {
   changeWin: React.Dispatch<React.SetStateAction<boolean>>;
   darkMode: boolean;
   changeDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-  changeMostRecentActor: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >;
-  changeMostRecentMovie: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >;
   currentEmojiGrid: string[];
   changeEmojiGrid: React.Dispatch<React.SetStateAction<string[]>>;
   currentlyPlayingDate: string;

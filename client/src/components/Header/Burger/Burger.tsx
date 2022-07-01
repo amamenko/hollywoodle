@@ -14,6 +14,7 @@ import { BiHeart } from "react-icons/bi";
 import Switch from "react-switch";
 import "./Burger.scss";
 import "../Header.scss";
+import { Link } from "react-router-dom";
 
 export const Burger = ({
   burgerMenuOpen,
@@ -35,6 +36,8 @@ export const Burger = ({
     changeChecked(checked);
   };
 
+  const handleDismissModal = () => changeBurgerMenuOpen(false);
+
   // Remove all displayed toasts on modal open
   useEffect(() => {
     if (burgerMenuOpen) toast.dismiss();
@@ -44,7 +47,7 @@ export const Burger = ({
     <Menu
       isOpen={burgerMenuOpen}
       onOpen={() => changeBurgerMenuOpen(true)}
-      onClose={() => changeBurgerMenuOpen(false)}
+      onClose={handleDismissModal}
       disableAutoFocus
       customBurgerIcon={<FiMenu className="burger_icon" color="#fff" />}
       customCrossIcon={<AiOutlineClose color="#fff" />}
@@ -61,10 +64,10 @@ export const Burger = ({
         )}
       </span>
       <div className="burger_menu_item_container">
-        <div className="menu-item" onClick={() => changeBurgerMenuOpen(false)}>
+        <Link to="/" className="menu-item" onClick={handleDismissModal}>
           <AiOutlineHome size={25} />
           <p>Home</p>
-        </div>
+        </Link>
         <div
           className="menu-item"
           onClick={() => {
@@ -115,6 +118,12 @@ export const Burger = ({
           kofiID="E1E3CFTNF"
         />
       </div>
+      <ul className="policies_container">
+        <li onClick={handleDismissModal}>
+          <Link to={"/privacy"}>Privacy Policy</Link>
+        </li>
+        {/* <li onClick={handleDismissModal}>Terms of Use</li> */}
+      </ul>
       <div className="burger_other_projects_container">
         <p className="main_statement">
           Other movie projects from the creator of Hollywoodle:

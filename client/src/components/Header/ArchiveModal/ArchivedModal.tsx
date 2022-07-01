@@ -25,6 +25,7 @@ import "./ArchivedModal.scss";
 import "../../HowToPlayModal/HowToPlayModal.scss";
 import "../Header.scss";
 import "react-calendar/dist/Calendar.css";
+import { GameContext } from "../../Main/Main";
 
 export const customModalStyles = {
   content: {
@@ -62,12 +63,12 @@ export const ArchivedModal = ({
     changeCurrentMoves,
     changeWin,
     changeEmojiGrid,
-    changeMostRecentMovie,
-    changeMostRecentActor,
     objectiveCurrentDate,
     changeCurrentDegrees,
     changePathRankCount,
   } = useContext(AppContext);
+  const { changeMostRecentMovie, changeMostRecentActor } =
+    useContext(GameContext);
 
   const formatDate = (someDate: Date) => {
     return format(someDate, "MM/dd/yyyy", {

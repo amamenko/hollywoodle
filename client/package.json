@@ -32,6 +32,7 @@
     "react-paginate": "^8.1.3",
     "react-remove-scroll": "^2.4.4",
     "react-rewards": "^1.1.2",
+    "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.0",
     "react-scroll": "^1.8.6",
     "react-spinners": "^0.11.0",
