@@ -2,9 +2,9 @@ import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../App";
 import { Footer } from "../Footer/Footer";
-import "./Privacy.scss";
+import "./Policies.scss";
 
-const PrivacyPolicy = () => {
+export const PrivacyPolicy = () => {
   const { darkMode } = useContext(AppContext);
 
   useEffect(() => {
@@ -12,15 +12,13 @@ const PrivacyPolicy = () => {
   }, []);
 
   return (
-    <div className="privacy_policy_outer_container">
-      <div
-        className={`privacy_policy_main_container ${darkMode ? "dark" : ""}`}
-      >
+    <div className="policy_outer_container">
+      <div className={`policy_main_container ${darkMode ? "dark" : ""}`}>
         <h1>
           <strong>Privacy Policy</strong>
         </h1>
         <p>
-          <i>Last updated: July 1st, 2022</i>
+          <i>Last updated: July 2nd, 2022</i>
         </p>
         <p>
           This Privacy Policy describes Our policies and procedures on the
@@ -520,9 +518,9 @@ const PrivacyPolicy = () => {
             darkMode ? "dark" : ""
           }`}
         >
-          {/* <Link className="next_policy_container" to="/terms">
+          <Link className="next_policy_container" to="/terms">
             Terms and Conditions
-          </Link> */}
+          </Link>
           <div className="policy_back_to_home_button">
             <Link to="/">Back to Home</Link>
           </div>
@@ -532,5 +530,3 @@ const PrivacyPolicy = () => {
     </div>
   );
 };
-
-export default PrivacyPolicy;

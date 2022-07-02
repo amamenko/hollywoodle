@@ -6,7 +6,8 @@ import { GuessObj } from "../../interfaces/GuessObj.interface";
 import { Game } from "../Game/Game";
 import { Header } from "../Header/Header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PrivacyPolicy from "../Privacy/Privacy";
+import { PrivacyPolicy } from "../Policies/Privacy";
+import { TermsAndConditions } from "../Policies/Terms";
 
 export const GameContext = createContext<GameContextProps>(gameContextDefaults);
 
@@ -67,6 +68,7 @@ export const Main = () => {
         <Routes>
           <Route path="/" element={<Game />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
         </Routes>
       </Router>
     </GameContext.Provider>

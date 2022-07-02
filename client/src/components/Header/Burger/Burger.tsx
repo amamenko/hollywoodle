@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
+import { Link } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
 import { AiOutlineClose, AiOutlineHome } from "react-icons/ai";
 import { IoFootstepsOutline } from "react-icons/io5";
@@ -14,7 +15,6 @@ import { BiHeart } from "react-icons/bi";
 import Switch from "react-switch";
 import "./Burger.scss";
 import "../Header.scss";
-import { Link } from "react-router-dom";
 
 export const Burger = ({
   burgerMenuOpen,
@@ -122,7 +122,9 @@ export const Burger = ({
         <li onClick={handleDismissModal}>
           <Link to={"/privacy"}>Privacy Policy</Link>
         </li>
-        {/* <li onClick={handleDismissModal}>Terms of Use</li> */}
+        <li onClick={handleDismissModal}>
+          <Link to={"/terms"}>Terms of Use</Link>
+        </li>
       </ul>
       <div className="burger_other_projects_container">
         <p className="main_statement">
