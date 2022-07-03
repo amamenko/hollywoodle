@@ -23,6 +23,8 @@ export const Game = () => {
     lastActor,
     darkMode,
     fullTimezoneDate,
+    showTopPathsModal,
+    changeShowTopPathsModal,
     win,
   } = useContext(AppContext);
   const { mostRecentMovie, mostRecentActor } = useContext(GameContext);
@@ -149,6 +151,7 @@ export const Game = () => {
 
       if (timesArr.includes(currentHoursSeconds)) {
         changeRefreshingDataTime(true);
+        if (showTopPathsModal) changeShowTopPathsModal(false);
 
         // Reload page and fetch new data
         if (currentHoursSeconds === `${hours}${minutes}10`) {
@@ -158,7 +161,7 @@ export const Game = () => {
     }, 1000);
 
     return () => clearInterval(timeInterval);
-  }, [fullTimezoneDate]);
+  }, [fullTimezoneDate, showTopPathsModal, changeShowTopPathsModal]);
 
   // For winning - confetti purposes
   const rewardEl = useRef<RewardElement>(null);

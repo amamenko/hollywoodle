@@ -16,8 +16,8 @@ import { Burger } from "./Burger/Burger";
 import { MovesPopover } from "./Popovers/MovesPopover";
 import { DegreesPopover } from "./Popovers/DegreePopover";
 import { TopPaths } from "./TopPaths/TopPaths";
-import "./Header.scss";
 import { Link } from "react-router-dom";
+import "./Header.scss";
 
 export const Header = () => {
   const {
