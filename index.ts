@@ -15,6 +15,7 @@ import { Path } from "./models/Path";
 import { updateTopPaths } from "./functions/updateTopPaths";
 import { updateActorMostPopularPath } from "./functions/updateActorMostPopularPath";
 import { getTopPathsAggregatedData } from "./functions/getTopPathsAggregatedData";
+import { postToTwitter } from "./functions/postToTwitter";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -159,6 +160,11 @@ cron.schedule("55 23 * * *", () => {
 // Update actors and reset top paths in MongoDB every night at midnight
 cron.schedule("0 0 * * *", () => {
   updateDatabaseActors();
+});
+
+// Post a Tweet to @hollywoodlegame about today's Hollywoodle game 10 seconds past midnight
+cron.schedule("10 0 * * *", () => {
+  postToTwitter();
 });
 
 app.get("/", (req: Request, res: Response) => {
