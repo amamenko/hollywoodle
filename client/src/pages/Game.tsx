@@ -1,18 +1,18 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import Reward, { RewardElement } from "react-rewards";
 import { ClipLoader } from "react-spinners";
-import { AppContext } from "../../App";
-import { ActorMovieContainer } from "../ActorMovieContainer/ActorMovieContainer";
-import { AllGuesses } from "../AllGuesses/AllGuesses";
-import { Footer } from "../Footer/Footer";
-import { handleActorProp } from "../InteractiveResponse/handleActorProp";
-import { handleMovieProp } from "../InteractiveResponse/handleMovieProp";
-import { InteractiveResponse } from "../InteractiveResponse/InteractiveResponse";
-import { IntroModal } from "../IntroModal/IntroModal";
-import { Winner } from "../Winner/Winner";
+import { AppContext } from "../App";
+import { ActorMovieContainer } from "../components/ActorMovieContainer/ActorMovieContainer";
+import { AllGuesses } from "../components/AllGuesses/AllGuesses";
+import { Footer } from "../components/Footer/Footer";
+import { handleActorProp } from "../components/InteractiveResponse/handleActorProp";
+import { handleMovieProp } from "../components/InteractiveResponse/handleMovieProp";
+import { InteractiveResponse } from "../components/InteractiveResponse/InteractiveResponse";
+import { IntroModal } from "../components/IntroModal/IntroModal";
+import { Winner } from "../components/Winner/Winner";
 import { format } from "date-fns-tz";
 import { differenceInDays, parse } from "date-fns";
-import { GameContext } from "../Main/Main";
+import { GameContext } from "./Main";
 
 export const Game = () => {
   const {

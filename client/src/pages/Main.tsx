@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { AppContext } from "../../App";
-import { gameContextDefaults } from "../../gameContextDefaults";
-import { GameContextProps } from "../../interfaces/GameContextProps.interface";
-import { GuessObj } from "../../interfaces/GuessObj.interface";
-import { Game } from "../Game/Game";
-import { Header } from "../Header/Header";
+import { AppContext } from "../App";
+import { gameContextDefaults } from "../gameContextDefaults";
+import { GameContextProps } from "../interfaces/GameContextProps.interface";
+import { GuessObj } from "../interfaces/GuessObj.interface";
+import { Game } from "./Game";
+import { Header } from "../components/Header/Header";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { PrivacyPolicy } from "../Policies/Privacy";
-import { TermsAndConditions } from "../Policies/Terms";
+import { PrivacyPolicy } from "./Policies/PrivacyPolicy";
+import { TermsAndConditions } from "./Policies/Terms";
 
 export const GameContext = createContext<GameContextProps>(gameContextDefaults);
 

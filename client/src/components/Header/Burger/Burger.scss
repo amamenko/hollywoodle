@@ -188,19 +188,19 @@
   align-self: flex-end;
   text-align: left;
   margin: 0 2rem;
-  margin-top: 5vh;
+  margin-top: 8vh;
   padding-bottom: 5rem;
 
   @media only screen and (min-height: 1000px) {
-    margin-top: 15vh;
+    margin-top: 10vh;
   }
 
   @media only screen and (min-height: 1100px) {
-    margin-top: 25vh;
+    margin-top: 20vh;
   }
 
   @media only screen and (min-height: 1200px) {
-    margin-top: 30vh;
+    margin-top: 25vh;
   }
 
   a {

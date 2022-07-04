@@ -12,6 +12,7 @@ import KofiButton from "kofi-button";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
 import { BiHeart } from "react-icons/bi";
+import { TwitterFollowButton } from "../../Winner/TwitterFollowButton";
 import Switch from "react-switch";
 import "./Burger.scss";
 import "../Header.scss";
@@ -118,6 +119,7 @@ export const Burger = ({
           kofiID="E1E3CFTNF"
         />
       </div>
+      <TwitterFollowButton buttonText="@hollywoodlegame" />
       <ul className="policies_container">
         <li onClick={handleDismissModal}>
           <Link to={"/privacy"}>Privacy Policy</Link>

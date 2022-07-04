@@ -21,11 +21,11 @@ import { RemoveScroll } from "react-remove-scroll";
 import { toast } from "react-toastify";
 import { Collapse } from "react-collapse";
 import { ActorObj } from "../../../interfaces/ActorObj.interface";
+import { GameContext } from "../../../pages/Main";
 import "./ArchivedModal.scss";
 import "../../HowToPlayModal/HowToPlayModal.scss";
 import "../Header.scss";
 import "react-calendar/dist/Calendar.css";
-import { GameContext } from "../../Main/Main";
 
 export const customModalStyles = {
   content: {

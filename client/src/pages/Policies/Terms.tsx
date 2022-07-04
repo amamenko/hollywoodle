@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../App";
-import { Footer } from "../Footer/Footer";
+import { Footer } from "../../components/Footer/Footer";
 import "./Policies.scss";
 
 export const TermsAndConditions = () => {

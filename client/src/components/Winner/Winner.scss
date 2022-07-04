@@ -117,3 +117,18 @@
     }
   }
 }
+
+.kofi-button.twitter {
+  background-color: #188cd8;
+  &.win {
+    min-width: 220px !important;
+  }
+}
+
+svg.kofiimg {
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+  margin-right: 5px;
+  margin-bottom: 3px;
+}

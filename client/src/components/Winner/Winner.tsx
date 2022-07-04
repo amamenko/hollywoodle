@@ -10,10 +10,11 @@ import CopyLinkButton from "./ShareButtons/CopyLinkButton";
 import { sortAsc } from "../AutosuggestInput/AutosuggestInput";
 import KofiButton from "kofi-button";
 import { getOrdinalSuffix } from "./getOrdinalSuffix";
+import { GameContext } from "../../pages/Main";
+import { TwitterFollowButton } from "./TwitterFollowButton";
 import { Button } from "reactstrap";
 import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
-import { GameContext } from "../Main/Main";
 
 export interface FullRewardElement extends RewardElement {
   container?: HTMLElement;
@@ -345,6 +346,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
           kofiID="E1E3CFTNF"
         />
       </div>
+      <TwitterFollowButton buttonText="Follow @hollywoodlegame" win={true} />
       <div className={`winner_bottom ${darkMode ? "dark" : ""}`}>
         <p
           className={`play_again_link ${darkMode ? "dark" : ""}`}

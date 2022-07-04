@@ -16,7 +16,7 @@ import { ContextProps } from "./interfaces/ContextProps.interface";
 import { ActorObj } from "./interfaces/ActorObj.interface";
 import { GuessObj } from "./interfaces/GuessObj.interface";
 import { contextDefaults } from "./contextDefaults";
-import { Main } from "./components/Main/Main";
+import { Main } from "./pages/Main";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
