@@ -162,7 +162,7 @@ cron.schedule("0 0 * * *", () => {
   updateDatabaseActors();
 });
 
-// Post a Tweet to @hollywoodlegame about today's Hollywoodle game 10 seconds past midnight
+// Tweet about today's Hollywoodle game 10 seconds past midnight
 cron.schedule("10 0 * * *", () => {
   postToTwitter();
 });
