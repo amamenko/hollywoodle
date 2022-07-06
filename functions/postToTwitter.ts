@@ -14,7 +14,7 @@ export const postToTwitter = async () => {
   const actors = await Actor.find({ date: currentDate }).catch((e) =>
     console.error(e)
   );
-  const fullWordDate = format(new Date(), "LLLL do");
+  const fullWordDate = format(new Date(), "LLLL do, yyyy");
   const actor1Name = actors[0]?.name;
   const actor2Name = actors[1]?.name;
 
