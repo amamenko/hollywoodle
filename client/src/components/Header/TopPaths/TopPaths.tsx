@@ -165,9 +165,15 @@ export const TopPaths = () => {
             );
           };
 
-          if (!arrEqualityCheck(allCurrentPaths, argPaths))
+          if (!arrEqualityCheck(allCurrentPaths, argPaths)) {
             changeTopPaths(arg.paths);
-          if (arg.totalPathsFound) changeTotalPathsFound(arg.totalPathsFound);
+          }
+
+          if (arg.totalPathsFound) {
+            changeTotalPathsFound(arg.totalPathsFound);
+            const currentPages = Math.ceil(arg.totalPathsFound / itemsPerPage);
+            if (currentPages > pageCount) changePageCount(currentPages);
+          }
           if (arg.totalPlayers) changeTotalPlayers(arg.totalPlayers);
           if (arg.lowestDegree) changeLowestDegree(arg.lowestDegree);
           if (arg.highestDegree) changeHighestDegree(arg.highestDegree);
@@ -185,7 +191,7 @@ export const TopPaths = () => {
     }
 
     return () => {};
-  }, [showTopPathsModal, topPaths, currentPage]);
+  }, [showTopPathsModal, topPaths, currentPage, pageCount]);
 
   const handlePageClick = (event: { [key: string]: number }) => {
     changePathCollapsed("");

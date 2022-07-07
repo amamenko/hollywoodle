@@ -1,0 +1,31 @@
+.archive_container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  max-width: 32rem;
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0 auto;
+  background: #fff;
+  box-sizing: border-box;
+  transition: background 0.4s ease, color 0.4s ease;
+
+  &.dark {
+    background: #010408;
+    color: #fff;
+
+    @media only screen and (min-width: 32rem) {
+      outline: 1px solid #30363d;
+    }
+  }
+
+  .archive_results_container {
+    width: 100%;
+    padding: 1rem 0;
+    .archive_date_container {
+      width: 100%;
+    }
+  }
+}
