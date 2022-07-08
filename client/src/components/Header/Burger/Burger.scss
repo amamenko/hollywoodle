@@ -39,6 +39,9 @@
   position: fixed;
   height: 100%;
   top: 0;
+  @media only screen and (min-width: 400px) and (min-height: 1000px) {
+    width: 400px !important;
+  }
 }
 
 /* General sidebar styles */
@@ -135,6 +138,10 @@
     align-items: center;
     align-self: flex-start;
     margin-left: 4rem;
+    transition: 0.5s ease margin-left;
+    @media only screen and (min-width: 400px) and (min-height: 1000px) {
+      margin-left: 7.5rem;
+    }
     cursor: pointer;
     &:not(:first-child) {
       margin-top: 0rem;

@@ -6,8 +6,9 @@
   flex-direction: column;
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   margin: 0 auto;
+  padding-top: 4rem;
   background: #fff;
   box-sizing: border-box;
   transition: background 0.4s ease, color 0.4s ease;
@@ -19,6 +20,15 @@
     @media only screen and (min-width: 32rem) {
       outline: 1px solid #30363d;
     }
+  }
+
+  .archived_game_title {
+    align-self: center;
+    margin-bottom: 0;
+  }
+
+  .archive_prompt {
+    font-size: 1rem;
   }
 
   .archive_results_container {

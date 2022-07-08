@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useContext, useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Modal from "react-modal";
@@ -6,7 +6,7 @@ import { PathContainer } from "./PathContainer";
 import { RemoveScroll } from "react-remove-scroll";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { AppContext } from "../../../App";
 import { IoFootsteps } from "react-icons/io5";
@@ -16,6 +16,7 @@ import "../Header.scss";
 import "./TopPaths.scss";
 import "../Leaderboard/Leaderboard.scss";
 import "./pagination.scss";
+import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 export const customModalStyles = {
   content: {
@@ -43,7 +44,10 @@ export const TopPaths = () => {
     showTopPathsModal,
     changeShowTopPathsModal,
   } = useContext(AppContext);
-
+  const socketRef: React.MutableRefObject<Socket<
+    DefaultEventsMap,
+    DefaultEventsMap
+  > | null> = useRef(null);
   const [pathsLoading, changePathsLoading] = useState(false);
   const [pathCollapsed, changePathCollapsed] = useState<string>("");
   const [topPaths, changeTopPaths] = useState<
@@ -132,7 +136,7 @@ export const TopPaths = () => {
   }, [showTopPathsModal]);
 
   useEffect(() => {
-    if (showTopPathsModal) {
+    if (showTopPathsModal && !socketRef.current) {
       const nodeEnv = process.env.REACT_APP_NODE_ENV
         ? process.env.REACT_APP_NODE_ENV
         : "";
@@ -144,8 +148,11 @@ export const TopPaths = () => {
         {
           transports: ["websocket"],
           upgrade: false,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 5000,
         }
       );
+      socketRef.current = socket;
 
       socket.on("pageCheck", (arg, callback) => {
         callback(currentPage);
@@ -183,14 +190,15 @@ export const TopPaths = () => {
       socket.on("disconnect", () => {
         socket.removeAllListeners();
       });
-
-      return () => {
-        socket.removeAllListeners();
-        socket.close();
-      };
     }
 
-    return () => {};
+    return () => {
+      if (!showTopPathsModal) {
+        socketRef.current?.removeAllListeners();
+        socketRef.current?.close();
+        socketRef.current = null;
+      }
+    };
   }, [showTopPathsModal, topPaths, currentPage, pageCount]);
 
   const handlePageClick = (event: { [key: string]: number }) => {

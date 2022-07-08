@@ -24,6 +24,7 @@ import "react-calendar/dist/Calendar.css";
 
 export const Archive = () => {
   const {
+    darkMode,
     firstActor,
     lastActor,
     currentlyPlayingDate,
@@ -179,7 +180,7 @@ export const Archive = () => {
   };
 
   return (
-    <div className="archive_container">
+    <div className={`archive_container ${darkMode ? "dark" : ""}`}>
       <h2 className="archived_game_title">PLAY AN ARCHIVED GAME</h2>
       <button
         className="close_modal_button archived_game"
@@ -261,7 +262,9 @@ export const Archive = () => {
           <div className="archived_buttons_container">
             <Button
               onClick={handlePlayButton}
-              className={`guess_button archived_play_button dark ${
+              className={`guess_button archived_play_button ${
+                darkMode ? "dark" : ""
+              } ${
                 currentArchiveDate === currentlyPlayingDate ? "disabled" : ""
               }`}
             >
@@ -296,7 +299,11 @@ export const Archive = () => {
                     isOpened={pathOpened}
                     initialStyle={{ height: 0, overflow: "hidden" }}
                   >
-                    <div className="archived_collapse collapse_container dark">
+                    <div
+                      className={`archived_collapse collapse_container ${
+                        darkMode ? "dark" : ""
+                      }`}
+                    >
                       {pathOpened ? (
                         <p className="collapsed_path_full_info">
                           <span>
