@@ -9,6 +9,7 @@
   justify-content: flex-start;
   margin: 0 auto;
   padding-top: 4rem;
+  padding-bottom: 8rem;
   background: #fff;
   box-sizing: border-box;
   transition: background 0.4s ease, color 0.4s ease;
@@ -23,12 +24,32 @@
   }
 
   .archived_game_title {
-    align-self: center;
+    height: 3rem;
+    width: 100%;
     margin-bottom: 0;
+    margin-top: 0;
+    border-bottom: 1px solid #30363d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: #323232;
+    color: #fff;
+
+    &.dark {
+      background: #0e1117;
+    }
   }
 
   .archive_prompt {
     font-size: 1rem;
+    @media only screen and (max-width: 520px) {
+      margin: 2rem;
+    }
+  }
+
+  .archive_date_container {
+    color: #fff;
   }
 
   .archive_results_container {
@@ -36,6 +57,24 @@
     padding: 1rem 0;
     .archive_date_container {
       width: 100%;
+    }
+  }
+
+  .archive_individual_actor_container {
+    h2 {
+      color: #000 !important;
+    }
+    &.dark {
+      h2 {
+        color: #fff !important;
+      }
+    }
+  }
+
+  .spoiler_warning {
+    color: #000;
+    &.dark {
+      color: #fff;
     }
   }
 }

@@ -19,6 +19,9 @@ import { AppContext } from "../../App";
 import { Collapse } from "react-collapse";
 import { ActorObj } from "../../interfaces/ActorObj.interface";
 import { GameContext } from "../../pages/Main";
+import { useNavigate } from "react-router-dom";
+import { Footer } from "../../components/Footer/Footer";
+import { toast } from "react-toastify";
 import "./Archive.scss";
 import "react-calendar/dist/Calendar.css";
 
@@ -41,7 +44,7 @@ export const Archive = () => {
   } = useContext(AppContext);
   const { changeMostRecentMovie, changeMostRecentActor } =
     useContext(GameContext);
-
+  let navigate = useNavigate();
   const formatDate = (someDate: Date) => {
     return format(someDate, "MM/dd/yyyy", {
       timeZone: "America/New_York",
@@ -96,13 +99,14 @@ export const Archive = () => {
         rank: "",
         count: "",
       });
+      navigate("/", { replace: true });
     }
   };
 
   // Remove all displayed toasts on modal open
-  //   useEffect(() => {
-  //     if (showArchivedModal) toast.dismiss();
-  //   }, [showArchivedModal]);
+  useEffect(() => {
+    toast.dismiss();
+  }, []);
 
   useEffect(() => {
     const matchingDateActorsArr = currentArchivedActorsResults.filter(
@@ -181,7 +185,9 @@ export const Archive = () => {
 
   return (
     <div className={`archive_container ${darkMode ? "dark" : ""}`}>
-      <h2 className="archived_game_title">PLAY AN ARCHIVED GAME</h2>
+      <h2 className={`archived_game_title ${darkMode ? "dark" : ""}`}>
+        PLAY AN ARCHIVED GAME
+      </h2>
       <button
         className="close_modal_button archived_game"
         onClick={handleCloseModal}
@@ -232,21 +238,33 @@ export const Archive = () => {
             </div>
           ) : firstActorShown && lastActorShown ? (
             <>
-              <div className="archive_individual_actor_container">
+              <div
+                className={`archive_individual_actor_container ${
+                  darkMode ? "dark" : ""
+                }`}
+              >
                 <h2>Starting Actor</h2>
                 <ActorMovieContainer
                   name={firstActorShown.name}
                   image={firstActorShown.image}
                 />
               </div>
-              <div className="archive_individual_actor_container">
+              <div
+                className={`archive_individual_actor_container ${
+                  darkMode ? "dark" : ""
+                }`}
+              >
                 <BsArrowRight
                   className="achive_actor_separator_arrow"
                   color={"#fff"}
                   size={30}
                 />
               </div>
-              <div className="archive_individual_actor_container">
+              <div
+                className={`archive_individual_actor_container ${
+                  darkMode ? "dark" : ""
+                }`}
+              >
                 <h2>Goal Actor</h2>
                 <ActorMovieContainer
                   name={lastActorShown.name}
@@ -277,7 +295,7 @@ export const Archive = () => {
                   <div className="top_path_button_container">
                     {
                       <p
-                        className={`spoiler_warning ${
+                        className={`spoiler_warning ${darkMode ? "dark" : ""} ${
                           pathOpened ? "open" : ""
                         }`}
                       >
@@ -334,6 +352,7 @@ export const Archive = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };
