@@ -1,6 +1,4 @@
-@use "../../components/Header/mixins/header_hover" as header_hover;
-
-.archive_container {
+.contact_container {
   position: relative;
   width: 100%;
   min-height: 100vh;
@@ -11,7 +9,6 @@
   justify-content: flex-start;
   margin: 0 auto;
   padding-top: 4rem;
-  padding-bottom: 8rem;
   background: #fff;
   box-sizing: border-box;
   transition: background 0.4s ease, color 0.4s ease;
@@ -25,7 +22,7 @@
     }
   }
 
-  .archived_game_title {
+  .contact_title_header {
     position: relative;
     height: 3rem;
     width: 100%;
@@ -44,59 +41,49 @@
     }
   }
 
-  .archive_prompt {
-    font-size: 1rem;
-    margin: 1.5rem 1.5rem 2rem 1.5rem;
-  }
-
-  .archive_date_container {
-    color: #fff;
-    background: #323232;
-    &.dark {
-      background: #1e1e1e;
-    }
-  }
-
-  .archive_results_container {
+  .contact_form {
+    margin-top: 1.5rem;
     width: 100%;
-    padding: 1rem 0;
-    .archive_date_container {
-      width: 100%;
+    padding-bottom: 3rem;
+    background: #e6e6e6;
+    &.dark {
+      background: none;
+    }
+    @media only screen and (max-width: 900px) {
+      padding-bottom: 10rem;
     }
   }
 
-  .archive_individual_actor_container {
-    h2 {
-      color: #000 !important;
+  .contact_prompt {
+    margin: 1rem 1.5rem 0rem 1.5rem;
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  .contact_input_container {
+    .form-control {
+      background: #fff;
+      color: #000;
     }
     &.dark {
-      h2 {
-        color: #fff !important;
+      .form-control {
+        background: #0e1117;
+        color: #fff;
       }
     }
   }
 
-  .achive_actor_separator_arrow,
-  .spoiler_warning {
-    path {
-      fill: #000;
-    }
-    color: #000;
+  .contact_success_message_container {
+    color: rgb(84, 155, 2);
+    background: #fff;
+    padding: 1rem;
+    font-weight: 700;
+
     &.dark {
-      color: #fff;
-      path {
-        fill: #fff;
-      }
+      background: #0e1117;
+      color: rgb(104, 175, 22);
+      outline: 1px solid rgb(100, 100, 100);
     }
   }
-}
-
-.header_back_button {
-  @include header_hover.header-hover;
-  cursor: pointer;
-  position: absolute;
-  left: 1.5rem;
-  top: 0;
-  bottom: 0;
-  margin: auto;
 }

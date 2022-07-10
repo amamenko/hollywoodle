@@ -1,3 +1,5 @@
+@use "./mixins/_header_hover.scss" as header_hover;
+
 .header {
   position: fixed;
   z-index: 999999999;
@@ -39,43 +41,19 @@
   }
 }
 
-@mixin hover-colors {
-  color: rgb(200, 200, 200) !important;
-  svg {
-    color: rgb(200, 200, 200) !important;
-  }
-  fill: rgb(200, 200, 200) !important;
-  path {
-    stroke: rgb(200, 200, 200) !important;
-  }
-}
-
-@mixin header-hover {
-  @media only screen and (min-width: 768px) {
-    &:hover {
-      @include hover-colors();
-    }
-
-    &:focus,
-    &:active {
-      @include hover-colors();
-    }
-  }
-}
-
 .react-tiny-popover-container {
   z-index: 999999999;
 }
 
 .popover_content_container {
   width: 200px;
-  height: 190px;
+  height: 100%;
   background: rgb(0, 0, 0);
   &.dark {
     background: rgb(50, 50, 50);
   }
   color: #fff;
-  padding: 1rem;
+  padding: 1rem 1rem 2rem 1rem;
 
   a {
     text-decoration: none;
@@ -245,7 +223,7 @@
 @mixin header_icon {
   position: absolute;
   cursor: pointer;
-  @include header-hover;
+  @include header_hover.header_hover;
 }
 
 .header_graph_icon {
@@ -260,15 +238,15 @@
 }
 
 .bm-burger-button {
-  @include header-hover;
+  @include header_hover.header_hover;
   .burger_icon {
     position: absolute;
     cursor: pointer;
-    @include header-hover;
+    @include header_hover.header_hover;
   }
 
   svg {
-    @include header-hover;
+    @include header_hover.header_hover;
   }
 }
 

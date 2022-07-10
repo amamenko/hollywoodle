@@ -12,6 +12,8 @@ export interface ContextProps {
   changeCurrentMoves: React.Dispatch<React.SetStateAction<number>>;
   win: boolean;
   changeWin: React.Dispatch<React.SetStateAction<boolean>>;
+  alreadyRewarded: boolean;
+  changeAlreadyRewarded: React.Dispatch<React.SetStateAction<boolean>>;
   darkMode: boolean;
   changeDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
   currentEmojiGrid: string[];

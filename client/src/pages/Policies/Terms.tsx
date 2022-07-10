@@ -192,11 +192,13 @@ export const TermsAndConditions = () => {
           If you are one of the organizations listed in paragraph 2 above and
           are interested in linking to our website, you must inform us by
           sending an e-mail to Hollywoodle at{" "}
-          <a href="hollywoodlegame@gmail.com">hollywoodlegame@gmail.com</a>.
-          Please include your name, your organization name, contact information
-          as well as the URL of your site, a list of any URLs from which you
-          intend to link to our Website, and a list of the URLs on our site to
-          which you would like to link. Wait 2-3 weeks for a response.
+          <a href="mailto:hollywoodlegame@gmail.com">
+            hollywoodlegame@gmail.com
+          </a>
+          . Please include your name, your organization name, contact
+          information as well as the URL of your site, a list of any URLs from
+          which you intend to link to our Website, and a list of the URLs on our
+          site to which you would like to link. Wait 2-3 weeks for a response.
         </p>
         <p>Approved organizations may hyperlink to our Website as follows:</p>
         <ul>

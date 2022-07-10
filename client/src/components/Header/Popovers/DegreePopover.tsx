@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AiOutlineQuestionCircle } from "react-icons/ai";
+import { AiFillQuestionCircle } from "react-icons/ai";
 import { Popover, ArrowContainer } from "react-tiny-popover";
 import { AppContext } from "../../../App";
 
@@ -49,7 +49,7 @@ export const DegreesPopover = ({
       )}
     >
       <div className="popover_anchor_container">
-        <AiOutlineQuestionCircle size={25} />
+        <AiFillQuestionCircle size={25} />
       </div>
     </Popover>
   );

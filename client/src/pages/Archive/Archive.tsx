@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
 import Calendar from "react-calendar";
 import {
   CgChevronLeftO,
@@ -22,6 +21,7 @@ import { GameContext } from "../../pages/Main";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../../components/Footer/Footer";
 import { toast } from "react-toastify";
+import { BackButton } from "../BackButton";
 import "./Archive.scss";
 import "react-calendar/dist/Calendar.css";
 
@@ -41,16 +41,16 @@ export const Archive = () => {
     objectiveCurrentDate,
     changeCurrentDegrees,
     changePathRankCount,
+    changeAlreadyRewarded,
   } = useContext(AppContext);
   const { changeMostRecentMovie, changeMostRecentActor } =
     useContext(GameContext);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const formatDate = (someDate: Date) => {
     return format(someDate, "MM/dd/yyyy", {
       timeZone: "America/New_York",
     });
   };
-
   const [calendarLimit, changeCalendarLimit] = useState<Date | undefined>(
     undefined
   );
@@ -63,6 +63,10 @@ export const Archive = () => {
   const [pathOpened, changePathOpened] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (objectiveCurrentDate && !value) {
       const parsedDate = parse(objectiveCurrentDate, "MM/dd/yyyy", new Date());
       changeCalendarLimit(parsedDate);
@@ -71,10 +75,6 @@ export const Archive = () => {
       changePathOpened(false);
     }
   }, [objectiveCurrentDate, value]);
-
-  const handleCloseModal = () => {
-    changePathOpened(false);
-  };
 
   const handlePlayButton = () => {
     if (currentArchiveDate !== currentlyPlayingDate) {
@@ -99,6 +99,7 @@ export const Archive = () => {
         rank: "",
         count: "",
       });
+      changeAlreadyRewarded(false);
       navigate("/", { replace: true });
     }
   };
@@ -186,14 +187,9 @@ export const Archive = () => {
   return (
     <div className={`archive_container ${darkMode ? "dark" : ""}`}>
       <h2 className={`archived_game_title ${darkMode ? "dark" : ""}`}>
+        <BackButton />
         PLAY AN ARCHIVED GAME
       </h2>
-      <button
-        className="close_modal_button archived_game"
-        onClick={handleCloseModal}
-      >
-        <AiOutlineClose size={20} color="#fff" />
-      </button>
       <p className="archive_prompt">
         Select a past Hollywoodle game by picking an available date from the
         calendar.
@@ -227,7 +223,7 @@ export const Archive = () => {
         />
       )}
       <div className="archive_results_container">
-        <div className="archive_date_container">
+        <div className={`archive_date_container ${darkMode ? "dark" : ""}`}>
           <p>Selected Date:</p>
           <h3>{currentArchiveDate}</h3>
         </div>
@@ -255,8 +251,9 @@ export const Archive = () => {
                 }`}
               >
                 <BsArrowRight
-                  className="achive_actor_separator_arrow"
-                  color={"#fff"}
+                  className={`achive_actor_separator_arrow ${
+                    darkMode ? "dark" : ""
+                  }`}
                   size={30}
                 />
               </div>

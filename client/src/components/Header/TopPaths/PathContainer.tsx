@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Collapse } from "react-collapse";
 import { Button } from "reactstrap";
+import { AppContext } from "../../../App";
 
 export const PathContainer = ({
   rank,
@@ -19,6 +20,7 @@ export const PathContainer = ({
   changePathCollapsed: React.Dispatch<React.SetStateAction<string>>;
   currentPage: number;
 }) => {
+  const { darkMode } = useContext(AppContext);
   useEffect(() => {
     return () => changePathCollapsed("");
   }, [changePathCollapsed]);
@@ -36,7 +38,7 @@ export const PathContainer = ({
   };
 
   return (
-    <div className="individual_path_container">
+    <div className={`individual_path_container ${darkMode ? "dark" : ""}`}>
       <div
         className={`${
           path ? "circle_and_numbers_container" : "circle_container"
@@ -69,7 +71,7 @@ export const PathContainer = ({
             isOpened={pathCollapsed === rank.toString()}
             initialStyle={{ height: 0, overflow: "hidden" }}
           >
-            <div className={"collapse_container dark"}>
+            <div className={`collapse_container  ${darkMode ? "dark" : ""}`}>
               <p className="collapsed_path_full_info">{path}</p>
             </div>
           </Collapse>

@@ -210,9 +210,13 @@ export const ArchivedModal = ({
   };
 
   return (
-    <RemoveScroll enabled={showArchivedModal}>
+    <RemoveScroll
+      // enabled={showArchivedModal}
+      enabled={false}
+    >
       <Modal
-        isOpen={showArchivedModal}
+        // isOpen={showArchivedModal}
+        isOpen={false}
         onRequestClose={handleCloseModal}
         contentLabel="Support Modal"
         className="modal_container archived_modal"

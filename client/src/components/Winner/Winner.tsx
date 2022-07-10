@@ -13,6 +13,7 @@ import { getOrdinalSuffix } from "./getOrdinalSuffix";
 import { GameContext } from "../../pages/Main";
 import { TwitterFollowButton } from "./TwitterFollowButton";
 import { Button } from "reactstrap";
+import { Link } from "react-router-dom";
 import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
 
@@ -39,6 +40,8 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
     currentlyPlayingDate,
     objectiveCurrentDate,
     changeShowTopPathsModal,
+    alreadyRewarded,
+    changeAlreadyRewarded,
   } = useContext(AppContext);
   const { changeMostRecentMovie, changeMostRecentActor } =
     useContext(GameContext);
@@ -120,6 +123,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
       rank: "",
       count: "",
     });
+    changeAlreadyRewarded(false);
 
     if (shareLinkClicked) {
       changeShareLinkClicked(false);
@@ -142,7 +146,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
 
   // Throw popcorn as soon as the winner component mounts
   useEffect(() => {
-    if (ref && typeof ref === "object" && ref.current) {
+    if (ref && typeof ref === "object" && ref.current && !alreadyRewarded) {
       if (ref.current.container) {
         ref.current.container.style.width = "100%";
         ref.current.container.style.height = "100vh";
@@ -160,8 +164,9 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
         }, 3500);
       }
       ref.current.rewardMe();
+      changeAlreadyRewarded(true);
     }
-  }, [ref]);
+  }, [ref, alreadyRewarded, changeAlreadyRewarded]);
 
   useEffect(() => {
     const handleAnimateOutTimeout = (
@@ -320,12 +325,14 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
               )}
             </p>
             {currentlyPlayingDate === objectiveCurrentDate ? (
-              <Button
-                className="who_button top_paths_button"
-                onClick={() => changeShowTopPathsModal(true)}
-              >
-                VIEW ALL TODAY'S PATHS
-              </Button>
+              <Link to="/paths">
+                <Button
+                  className="who_button top_paths_button"
+                  onClick={() => changeShowTopPathsModal(true)}
+                >
+                  VIEW ALL TODAY'S PATHS
+                </Button>
+              </Link>
             ) : (
               <></>
             )}

@@ -69,7 +69,8 @@ export const Burger = ({
           <AiOutlineHome size={25} />
           <p>Home</p>
         </Link>
-        <div
+        <Link
+          to="/paths"
           className="menu-item"
           onClick={() => {
             changeBurgerMenuOpen(false);
@@ -78,8 +79,9 @@ export const Burger = ({
         >
           <IoFootstepsOutline className="contact_icon" size={25} />
           <p>All Paths</p>
-        </div>
-        <div
+        </Link>
+        <Link
+          to="/contact"
           className="menu-item"
           onClick={() => {
             changeBurgerMenuOpen(false);
@@ -88,7 +90,7 @@ export const Burger = ({
         >
           <GrContact className="contact_icon" size={20} />
           <p>Contact</p>
-        </div>
+        </Link>
         <div
           className="menu-item"
           onClick={() => {

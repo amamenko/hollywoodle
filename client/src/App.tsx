@@ -57,6 +57,7 @@ const App = () => {
   const [currentDegrees, changeCurrentDegrees] = useState<number>(0);
   const [currentEmojiGrid, changeEmojiGrid] = useState<string[]>([]);
   const [win, changeWin] = useState(false);
+  const [alreadyRewarded, changeAlreadyRewarded] = useState(false);
 
   // General app settings
   const [darkMode, changeDarkMode] = useState(true);
@@ -288,6 +289,8 @@ const App = () => {
           changeCurrentMoves,
           win,
           changeWin,
+          alreadyRewarded,
+          changeAlreadyRewarded,
           darkMode,
           changeDarkMode,
           currentEmojiGrid,

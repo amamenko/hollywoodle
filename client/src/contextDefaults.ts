@@ -23,6 +23,8 @@ export const contextDefaults = {
   changeCurrentMoves: () => {},
   win: false,
   changeWin: () => {},
+  alreadyRewarded: false,
+  changeAlreadyRewarded: () => {},
   darkMode: true,
   changeDarkMode: () => [],
   currentEmojiGrid: [],

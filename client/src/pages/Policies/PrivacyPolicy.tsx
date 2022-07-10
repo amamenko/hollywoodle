@@ -474,8 +474,10 @@ export const PrivacyPolicy = () => {
         <p>
           It is your right to completely delete any data we have collected on
           you. Please send an email to us at{" "}
-          <a href="hollywoodlegame@gmail.com">hollywoodlegame@gmail.com</a> to
-          request deletion of your data.
+          <a href="mailto:hollywoodlegame@gmail.com">
+            hollywoodlegame@gmail.com
+          </a>{" "}
+          to request deletion of your data.
         </p>
         <h2>Links to Other Websites</h2>
         <p>

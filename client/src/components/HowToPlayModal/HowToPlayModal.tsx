@@ -4,7 +4,6 @@ import { CountdownTimer } from "../Countdown/CountdownTimer";
 import { RemoveScroll } from "react-remove-scroll";
 import { toast } from "react-toastify";
 import "./HowToPlayModal.scss";
-import { Link } from "react-router-dom";
 
 export const HowToPlayModal = () => {
   const [displayModal, changeDisplayModal] = useState(false);
@@ -16,14 +15,14 @@ export const HowToPlayModal = () => {
 
   return (
     <RemoveScroll className="modal_scroll_container" enabled={displayModal}>
-      <Link to="/" className="how_to_play_icon_container">
+      <div className="how_to_play_icon_container">
         <AiOutlineQuestionCircle
           className="how_to_play_icon"
           color={"#fff"}
           size={25}
           onClick={() => changeDisplayModal(!displayModal)}
         />
-      </Link>
+      </div>
       <div className={`how_to_play_modal ${displayModal ? "show" : ""}`}>
         <button
           className="close_modal_button"

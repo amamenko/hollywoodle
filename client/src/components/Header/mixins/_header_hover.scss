@@ -1,0 +1,23 @@
+@mixin hover_colors {
+  color: rgb(200, 200, 200) !important;
+  svg {
+    color: rgb(200, 200, 200) !important;
+  }
+  fill: rgb(200, 200, 200) !important;
+  path {
+    stroke: rgb(200, 200, 200) !important;
+  }
+}
+
+@mixin header_hover {
+  @media only screen and (min-width: 768px) {
+    &:hover {
+      @include hover_colors();
+    }
+
+    &:focus,
+    &:active {
+      @include hover_colors();
+    }
+  }
+}

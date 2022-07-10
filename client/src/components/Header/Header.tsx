@@ -17,6 +17,7 @@ import { MovesPopover } from "./Popovers/MovesPopover";
 import { DegreesPopover } from "./Popovers/DegreePopover";
 import { TopPaths } from "./TopPaths/TopPaths";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./Header.scss";
 
 export const Header = () => {
@@ -28,6 +29,7 @@ export const Header = () => {
     currentDegrees,
     currentHoliday,
   } = useContext(AppContext);
+  const location = useLocation();
   const [modalOpen, changeModalOpen] = useState(false);
   const [showSupportModal, changeShowSupportModal] = useState(false);
   const [showArchivedModal, changeShowArchivedModal] = useState(false);
@@ -37,7 +39,6 @@ export const Header = () => {
   const [burgerMenuOpen, changeBurgerMenuOpen] = useState(false);
   const [degreesPopoverOpen, changeDegreesPopoverOpen] = useState(false);
   const [movesPopoverOpen, changeMovesPopoverOpen] = useState(false);
-  const pathname = window.location.pathname;
 
   const toggleDegreesPopover = () => {
     changeDegreesPopoverOpen(!degreesPopoverOpen);
@@ -63,7 +64,6 @@ export const Header = () => {
       }
     }
   }, [archivedGame, currentlyPlayingDate, objectiveCurrentDate]);
-
   return (
     <div className={`header ${darkMode ? "dark" : ""}`}>
       <div className="inner_header_container">
@@ -95,18 +95,19 @@ export const Header = () => {
         ) : (
           <LogoWhite className="hollywoodle_logo" />
         )}
-        <GiBackwardTime
-          className="archive_icon"
-          color={"#fff"}
-          size={28}
-          onClick={() => changeShowArchivedModal(true)}
-        />
-        <Link to="/">
-          <ArchivedModal
-            showArchivedModal={showArchivedModal}
-            changeShowArchivedModal={changeShowArchivedModal}
+
+        <Link to="/archive">
+          <GiBackwardTime
+            className="archive_icon"
+            color={"#fff"}
+            size={28}
+            onClick={() => changeShowArchivedModal(true)}
           />
         </Link>
+        <ArchivedModal
+          showArchivedModal={showArchivedModal}
+          changeShowArchivedModal={changeShowArchivedModal}
+        />
         <Support
           showSupportModal={showSupportModal}
           changeShowSupportModal={changeShowSupportModal}
@@ -122,7 +123,7 @@ export const Header = () => {
       </div>
       <div
         className={`points_container ${darkMode ? "dark" : ""}`}
-        style={{ display: pathname === "/" ? "flex" : "none" }}
+        style={{ display: location.pathname === "/" ? "flex" : "none" }}
       >
         {archivedGame && (
           <p className={`archived_denotation ${darkMode ? "dark" : ""}`}>

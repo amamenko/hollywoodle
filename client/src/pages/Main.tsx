@@ -9,6 +9,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PrivacyPolicy } from "./Policies/PrivacyPolicy";
 import { TermsAndConditions } from "./Policies/Terms";
 import { Archive } from "./Archive/Archive";
+import { Contact } from "./Contact/Contact";
+import { AllPaths } from "./AllPaths/AllPaths";
 
 export const GameContext = createContext<GameContextProps>(gameContextDefaults);
 
@@ -68,7 +70,9 @@ export const Main = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Game />} />
+          <Route path="/paths" element={<AllPaths />} />
           <Route path="/archive" element={<Archive />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsAndConditions />} />
         </Routes>
