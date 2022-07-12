@@ -42,11 +42,38 @@
     &.dark {
       background: #0e1117;
     }
+
+    &.selection_buttons {
+      border: none;
+      justify-content: space-between;
+      margin-top: 1rem;
+      @media only screen and (min-width: 500px) {
+        justify-content: space-evenly;
+      }
+
+      .archived_selection_button {
+        width: 100%;
+        margin: 0 1.5rem;
+        background: #000;
+        color: #fff;
+        border: 1px solid #fff;
+        transition: background 0.4s ease, color 0.4s ease, border 0.4s ease;
+
+        &.selected {
+          background: #b9b9b9;
+          color: #000;
+          border: 1px solid transparent;
+        }
+      }
+    }
   }
 
   .archive_prompt {
     font-size: 1rem;
-    margin: 1.5rem 1.5rem 2rem 1.5rem;
+    margin: 1rem 1.5rem 2rem 1.5rem;
+    @media only screen and (min-width: 600px) {
+      margin: 1.5rem 1.5rem 2rem 1.5rem;
+    }
   }
 
   .archive_date_container {
@@ -88,6 +115,17 @@
         fill: #fff;
       }
     }
+  }
+
+  .react-autosuggest__suggestions-container {
+    left: 1.5rem;
+    width: 88%;
+    @media only screen and (min-width: 768px) {
+      width: 90%;
+    }
+  }
+  .autosuggest_input_container {
+    margin: 0 1.5rem;
   }
 }
 

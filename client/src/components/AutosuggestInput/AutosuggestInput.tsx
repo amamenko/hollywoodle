@@ -35,8 +35,12 @@ export const sortAsc = (a: GuessType, b: GuessType) => {
 
 export const AutosuggestInput = ({
   typeOfGuess = "movie",
+  archivedSearch = false,
+  archiveCallback,
 }: {
   typeOfGuess: "movie" | "actor";
+  archivedSearch?: boolean;
+  archiveCallback?: Function;
 }) => {
   const currentIsMobile = isMobile();
 
@@ -139,223 +143,234 @@ export const AutosuggestInput = ({
       // Don't show any more toasts in queue
       setTimeout(() => toast.clearWaitingQueue(), 500);
     } else {
-      let currentActorId: number = Number(firstActor.id);
+      if (!archivedSearch) {
+        let currentActorId: number = Number(firstActor.id);
 
-      const sortedGuesses = guesses.sort(sortAsc);
+        const sortedGuesses = guesses.sort(sortAsc);
 
-      const prevGuess = sortedGuesses[guesses.length - 1];
-      // Latest guess comes first
-      sortedGuesses.reverse();
-      const lastCorrectActor = sortedGuesses.find(
-        (el) => el.type === "actor" && !el.incorrect
-      );
+        const prevGuess = sortedGuesses[guesses.length - 1];
+        // Latest guess comes first
+        sortedGuesses.reverse();
+        const lastCorrectActor = sortedGuesses.find(
+          (el) => el.type === "actor" && !el.incorrect
+        );
 
-      const formatGuessObj = (guess: GuessType) => {
-        if (guess && guess.guess) {
-          return {
-            id: Number(guess.id),
-            guess: guess.guess.toString(),
-            type: guess.type.toString(),
-            year: guess.year.toString(),
-          };
+        const formatGuessObj = (guess: GuessType) => {
+          if (guess && guess.guess) {
+            return {
+              id: Number(guess.id),
+              guess: guess.guess.toString(),
+              type: guess.type.toString(),
+              year: guess.year.toString(),
+            };
+          } else {
+            return { id: 0, guess: "", type: "", year: "" };
+          }
+        };
+
+        const lastCorrectMovie = sortedGuesses.find(
+          (el) => el.type === "movie" && !el.incorrect
+        );
+
+        if (typeOfGuess === "actor") {
+          if (
+            lastCorrectMovie &&
+            lastCorrectMovie.cast &&
+            Array.isArray(lastCorrectMovie.cast)
+          ) {
+            changeMovieCast(lastCorrectMovie.cast);
+            currentActorId = id;
+          }
         } else {
-          return { id: 0, guess: "", type: "", year: "" };
+          currentActorId = lastCorrectActor
+            ? Number(lastCorrectActor.id)
+            : prevGuess && prevGuess.type === "actor"
+            ? Number(prevGuess.id)
+            : Number(firstActor.id);
         }
-      };
 
-      const lastCorrectMovie = sortedGuesses.find(
-        (el) => el.type === "movie" && !el.incorrect
-      );
+        let incorrectStatus: boolean | string = true;
+        let gameOver = false;
 
-      if (typeOfGuess === "actor") {
-        if (
-          lastCorrectMovie &&
-          lastCorrectMovie.cast &&
-          Array.isArray(lastCorrectMovie.cast)
-        ) {
-          changeMovieCast(lastCorrectMovie.cast);
-          currentActorId = id;
-        }
-      } else {
-        currentActorId = lastCorrectActor
-          ? Number(lastCorrectActor.id)
-          : prevGuess && prevGuess.type === "actor"
-          ? Number(prevGuess.id)
-          : Number(firstActor.id);
-      }
+        if (movieCast.find((id) => id === lastActor.id)) {
+          incorrectStatus = "partial";
+          if (movieCast.find((id) => id === currentActorId)) {
+            changeCurrentDegrees(currentDegrees + 1);
+            incorrectStatus = false;
+            // User has won and completed the game
+            changeWin(true);
+            gameOver = true;
 
-      let incorrectStatus: boolean | string = true;
-      let gameOver = false;
+            if (currentlyPlayingDate === objectiveCurrentDate) {
+              if (localStorage.getItem("hollywoodle-statistics")) {
+                const storageStr = localStorage.getItem(
+                  "hollywoodle-statistics"
+                );
+                let storageObj: {
+                  [key: string]: number | number[] | string | boolean;
+                } = {};
 
-      if (movieCast.find((id) => id === lastActor.id)) {
-        incorrectStatus = "partial";
-        if (movieCast.find((id) => id === currentActorId)) {
-          changeCurrentDegrees(currentDegrees + 1);
-          incorrectStatus = false;
-          // User has won and completed the game
-          changeWin(true);
-          gameOver = true;
+                try {
+                  storageObj = JSON.parse(storageStr ? storageStr : "");
+                } catch (e) {
+                  console.error(e);
+                }
 
-          if (currentlyPlayingDate === objectiveCurrentDate) {
-            if (localStorage.getItem("hollywoodle-statistics")) {
-              const storageStr = localStorage.getItem("hollywoodle-statistics");
-              let storageObj: {
-                [key: string]: number | number[] | string | boolean;
-              } = {};
+                const currentStreak = Number(storageObj.current_streak) + 1;
+                let currentAvgs: number[] = [];
 
-              try {
-                storageObj = JSON.parse(storageStr ? storageStr : "");
-              } catch (e) {
-                console.error(e);
-              }
+                if (
+                  storageObj.avg_moves &&
+                  Array.isArray(storageObj.avg_moves)
+                ) {
+                  currentAvgs = storageObj.avg_moves;
+                }
 
-              const currentStreak = Number(storageObj.current_streak) + 1;
-              let currentAvgs: number[] = [];
+                currentAvgs.push(currentMoves + 1);
 
-              if (storageObj.avg_moves && Array.isArray(storageObj.avg_moves)) {
-                currentAvgs = storageObj.avg_moves;
-              }
+                const currentDateStr = formatInTimeZone(
+                  new Date(),
+                  "America/New_York",
+                  "MM/dd/yyyy"
+                );
 
-              currentAvgs.push(currentMoves + 1);
+                if (
+                  // Make sure the date of answer submission is the same as objective date
+                  objectiveCurrentDate === currentDateStr &&
+                  objectiveCurrentDate === storageObj.current_date &&
+                  !storageObj.played_today
+                ) {
+                  if (!updateWinData) changeUpdateWinData(true);
+                  // if (
+                  //   storageObj.username &&
+                  //   storageObj.leaderboard_eligible &&
+                  //   !storageObj.leaderboard_viewed
+                  // ) {
+                  //   // User is eligible for today's leaderboard - check if qualifies
+                  //   await handleUpdateLeaderboard(
+                  //     path
+                  //     currentDegrees,
+                  //     currentMoves,
+                  //     storageObj
+                  //   );
+                  // }
 
-              const currentDateStr = formatInTimeZone(
-                new Date(),
-                "America/New_York",
-                "MM/dd/yyyy"
-              );
-
-              if (
-                // Make sure the date of answer submission is the same as objective date
-                objectiveCurrentDate === currentDateStr &&
-                objectiveCurrentDate === storageObj.current_date &&
-                !storageObj.played_today
-              ) {
-                if (!updateWinData) changeUpdateWinData(true);
-                // if (
-                //   storageObj.username &&
-                //   storageObj.leaderboard_eligible &&
-                //   !storageObj.leaderboard_viewed
-                // ) {
-                //   // User is eligible for today's leaderboard - check if qualifies
-                //   await handleUpdateLeaderboard(
-                //     path
-                //     currentDegrees,
-                //     currentMoves,
-                //     storageObj
-                //   );
-                // }
-
+                  localStorage.setItem(
+                    "hollywoodle-statistics",
+                    JSON.stringify({
+                      current_date: objectiveCurrentDate,
+                      last_played: objectiveCurrentDate,
+                      current_streak: currentStreak,
+                      max_streak: Math.max(
+                        currentStreak,
+                        Number(storageObj.max_streak)
+                      ),
+                      avg_moves: currentAvgs,
+                      played_today: true,
+                      // username: storageObj.username,
+                      // username_can_be_changed: storageObj.username_can_be_changed,
+                      // leaderboard_viewed: storageObj.leaderboard_viewed,
+                      // leaderboard_eligible: false,
+                    })
+                  );
+                }
+              } else {
                 localStorage.setItem(
                   "hollywoodle-statistics",
                   JSON.stringify({
                     current_date: objectiveCurrentDate,
                     last_played: objectiveCurrentDate,
-                    current_streak: currentStreak,
-                    max_streak: Math.max(
-                      currentStreak,
-                      Number(storageObj.max_streak)
-                    ),
-                    avg_moves: currentAvgs,
+                    current_streak: 1,
+                    max_streak: 1,
+                    avg_moves: [currentMoves + 1],
                     played_today: true,
-                    // username: storageObj.username,
-                    // username_can_be_changed: storageObj.username_can_be_changed,
-                    // leaderboard_viewed: storageObj.leaderboard_viewed,
+                    // username: "",
+                    // username_can_be_changed: new Date().getTime(),
+                    // leaderboard_viewed: false,
                     // leaderboard_eligible: false,
                   })
                 );
               }
-            } else {
-              localStorage.setItem(
-                "hollywoodle-statistics",
-                JSON.stringify({
-                  current_date: objectiveCurrentDate,
-                  last_played: objectiveCurrentDate,
-                  current_streak: 1,
-                  max_streak: 1,
-                  avg_moves: [currentMoves + 1],
-                  played_today: true,
-                  // username: "",
-                  // username_can_be_changed: new Date().getTime(),
-                  // leaderboard_viewed: false,
-                  // leaderboard_eligible: false,
-                })
-              );
             }
           }
-        }
-      } else {
-        if (movieCast.find((id) => id === currentActorId)) {
-          if (typeOfGuess === "movie") {
-            changeCurrentDegrees(currentDegrees + 1);
+        } else {
+          if (movieCast.find((id) => id === currentActorId)) {
+            if (typeOfGuess === "movie") {
+              changeCurrentDegrees(currentDegrees + 1);
+            }
+            incorrectStatus = false;
+          } else {
+            incorrectStatus = true;
           }
-          incorrectStatus = false;
-        } else {
-          incorrectStatus = true;
         }
-      }
 
-      const newGuess: GuessType = {
-        guess_number: guesses.length,
-        id,
-        guess: name,
-        prev_guess: formatGuessObj(prevGuess),
-        last_correct_actor: formatGuessObj(
-          lastCorrectActor ? lastCorrectActor : {}
-        ),
-        last_correct_movie: formatGuessObj(
-          lastCorrectMovie ? lastCorrectMovie : {}
-        ),
-        year,
-        image,
-        incorrect: incorrectStatus,
-        cast: movieCast,
-        type: typeOfGuess,
-      };
+        const newGuess: GuessType = {
+          guess_number: guesses.length,
+          id,
+          guess: name,
+          prev_guess: formatGuessObj(prevGuess),
+          last_correct_actor: formatGuessObj(
+            lastCorrectActor ? lastCorrectActor : {}
+          ),
+          last_correct_movie: formatGuessObj(
+            lastCorrectMovie ? lastCorrectMovie : {}
+          ),
+          year,
+          image,
+          incorrect: incorrectStatus,
+          cast: movieCast,
+          type: typeOfGuess,
+        };
 
-      const pointsAlloted =
-        incorrectStatus === "partial" ? 2 : incorrectStatus ? 3 : 1;
+        const pointsAlloted =
+          incorrectStatus === "partial" ? 2 : incorrectStatus ? 3 : 1;
 
-      const currentTotalMoves = currentMoves + pointsAlloted;
+        const currentTotalMoves = currentMoves + pointsAlloted;
 
-      const emojiGridClone = currentEmojiGrid.slice();
+        const emojiGridClone = currentEmojiGrid.slice();
 
-      if (incorrectStatus === "partial") {
-        emojiGridClone.push("🟧");
-        emojiGridClone.push("🟧");
-      } else if (incorrectStatus) {
-        emojiGridClone.push("🟥");
-        emojiGridClone.push("🟥");
-        emojiGridClone.push("🟥");
+        if (incorrectStatus === "partial") {
+          emojiGridClone.push("🟧");
+          emojiGridClone.push("🟧");
+        } else if (incorrectStatus) {
+          emojiGridClone.push("🟥");
+          emojiGridClone.push("🟥");
+          emojiGridClone.push("🟥");
+        } else {
+          emojiGridClone.push("🟩");
+        }
+
+        if (gameOver) {
+          if (currentTotalMoves > 10) {
+            emojiGridClone.push("💣");
+          } else if (currentTotalMoves >= 5) {
+            emojiGridClone.push("🍸");
+          } else {
+            emojiGridClone.push("🏆");
+          }
+        }
+
+        changeEmojiGrid(emojiGridClone);
+        changeInputInitiallyFocused(true);
+        changeCurrentMoves(currentTotalMoves);
+        changeHintCollapsed(false);
+        changeGuesses([...guesses, newGuess]);
+        changeInputValue("");
+        changeCurrentSelection({
+          id: 0,
+          name: "",
+          year: "",
+          image: "",
+        });
+
+        // Only scroll more on click on larger screens
+        if (!currentIsMobile.any) {
+          scroll.scrollMore(400);
+        }
       } else {
-        emojiGridClone.push("🟩");
-      }
-
-      if (gameOver) {
-        if (currentTotalMoves > 10) {
-          emojiGridClone.push("💣");
-        } else if (currentTotalMoves >= 5) {
-          emojiGridClone.push("🍸");
-        } else {
-          emojiGridClone.push("🏆");
+        if (archiveCallback && typeof archiveCallback === "function") {
+          archiveCallback(name);
         }
-      }
-
-      changeEmojiGrid(emojiGridClone);
-      changeInputInitiallyFocused(true);
-      changeCurrentMoves(currentTotalMoves);
-      changeHintCollapsed(false);
-      changeGuesses([...guesses, newGuess]);
-      changeInputValue("");
-      changeCurrentSelection({
-        id: 0,
-        name: "",
-        year: "",
-        image: "",
-      });
-
-      // Only scroll more on click on larger screens
-      if (!currentIsMobile.any) {
-        scroll.scrollMore(400);
       }
     }
   };
@@ -375,12 +390,21 @@ export const AutosuggestInput = ({
     }>
   ) => {
     const suggestion = data.suggestion;
-    changeCurrentSelection({
+    const selectionObj = {
       id: Number(suggestion.id),
       name: suggestion.name.toString(),
       year: suggestion.year ? suggestion.year.toString() : "",
       image: suggestion.image.toString(),
-    });
+    };
+    if (archivedSearch) {
+      changeCurrentSelection({
+        ...selectionObj,
+        // Falsy ID so that no query to TMDB is triggered
+        id: 0,
+      });
+    } else {
+      changeCurrentSelection(selectionObj);
+    }
   };
 
   const renderSuggestion = (suggestion: {
@@ -447,10 +471,13 @@ export const AutosuggestInput = ({
         onSuggestionSelected={handleSuggestionSelected}
       />
       <div className="guess_button_container">
-        <div className="question_emoji">
-          {" "}
-          {typeOfGuess === "movie" ? "🎬" : "🎭"}
-        </div>
+        {archivedSearch ? (
+          <></>
+        ) : (
+          <div className="question_emoji">
+            {typeOfGuess === "movie" ? "🎬" : "🎭"}
+          </div>
+        )}
         <Button
           className={`guess_button ladda-button ${
             darkMode ? "dark" : "light"
@@ -459,11 +486,17 @@ export const AutosuggestInput = ({
           innerRef={laddaRef}
           onClick={() => handleInputGuess(currentSelection)}
         >
-          <span className="ladda-label">GUESS {typeOfGuess.toUpperCase()}</span>
+          <span className="ladda-label">
+            {archivedSearch ? "SEARCH BY" : "GUESS"} {typeOfGuess.toUpperCase()}
+          </span>
         </Button>
-        <div className="question_emoji reversed">
-          {typeOfGuess === "movie" ? "🎬" : "🎭"}
-        </div>
+        {archivedSearch ? (
+          <></>
+        ) : (
+          <div className="question_emoji reversed">
+            {typeOfGuess === "movie" ? "🎬" : "🎭"}
+          </div>
+        )}
       </div>
       {
         <div className="guess_hint_button_container">

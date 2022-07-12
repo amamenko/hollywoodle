@@ -97,12 +97,25 @@ app.get("/api/actor", [], async (req: Request, res: Response) => {
 
 app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
   const requestedDate = req.query.date;
+  const requestedName = req.query.name;
   const dateRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/gim;
   if (typeof requestedDate === "string" && dateRegex.test(requestedDate)) {
     const actors = await Actor.find({ date: requestedDate }).catch((e) =>
       console.error(e)
     );
     res.send(actors);
+  } else if (requestedName && typeof requestedName === "string") {
+    const actor = await Actor.find({ name: requestedName }).catch((e) =>
+      console.error(e)
+    );
+    if (actor[0] && actor[0].date) {
+      const allActors = await Actor.find({ date: actor[0].date }).catch((e) =>
+        console.error(e)
+      );
+      res.send(allActors);
+    } else {
+      res.send([]);
+    }
   } else {
     res.send([]);
   }

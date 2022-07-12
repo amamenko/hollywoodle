@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { Footer } from "../../components/Footer/Footer";
 import { toast } from "react-toastify";
 import { BackButton } from "../BackButton";
+import { AutosuggestInput } from "../../components/AutosuggestInput/AutosuggestInput";
 import "./Archive.scss";
 import "react-calendar/dist/Calendar.css";
 
@@ -61,6 +62,8 @@ export const Archive = () => {
     useState<ActorObj>(firstActor);
   const [lastActorShown, changeLastActorShown] = useState<ActorObj>(lastActor);
   const [pathOpened, changePathOpened] = useState(false);
+  const [calendarMode, changeCalendarMode] = useState("calendar");
+  const [searchedActorName, changeSearchedActorName] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -113,49 +116,52 @@ export const Archive = () => {
     const matchingDateActorsArr = currentArchivedActorsResults.filter(
       (actor) => actor.date === currentArchiveDate
     );
+    const source = axios.CancelToken.source();
+
+    const nodeEnv = process.env.REACT_APP_NODE_ENV
+      ? process.env.REACT_APP_NODE_ENV
+      : "";
+
+    const fetchData = async () => {
+      await axios
+        .get(
+          nodeEnv && nodeEnv === "production"
+            ? `${process.env.REACT_APP_PROD_SERVER}/api/archive_actor`
+            : "http://localhost:4000/api/archive_actor",
+          {
+            params: searchedActorName
+              ? { name: searchedActorName }
+              : { date: currentArchiveDate },
+          }
+        )
+        .then((res) => res.data)
+        .then((data) => {
+          if (searchedActorName) changeSearchedActorName("");
+          if (data && data.length > 0) {
+            changeCurrentArchivedActorsResults([
+              ...currentArchivedActorsResults,
+              ...data,
+            ]);
+            const firstType = data.find((el: ActorObj) => el.type === "first");
+            const lastType = data.find((el: ActorObj) => el.type === "last");
+            if (firstType && firstType.name) changeFirstActorShown(firstType);
+            if (lastType && lastType.name) changeLastActorShown(lastType);
+          }
+          changeResultsLoading(false);
+        })
+        .catch((e) => {
+          if (searchedActorName) changeSearchedActorName("");
+          changeResultsLoading(false);
+          console.error(e);
+        });
+    };
+
     if (
-      currentArchiveDate &&
-      currentArchiveDate !== objectiveCurrentDate &&
-      matchingDateActorsArr.length === 0
+      (currentArchiveDate &&
+        currentArchiveDate !== objectiveCurrentDate &&
+        matchingDateActorsArr.length === 0) ||
+      searchedActorName
     ) {
-      const source = axios.CancelToken.source();
-
-      const nodeEnv = process.env.REACT_APP_NODE_ENV
-        ? process.env.REACT_APP_NODE_ENV
-        : "";
-
-      const fetchData = async () => {
-        await axios
-          .get(
-            nodeEnv && nodeEnv === "production"
-              ? `${process.env.REACT_APP_PROD_SERVER}/api/archive_actor`
-              : "http://localhost:4000/api/archive_actor",
-            {
-              params: { date: currentArchiveDate },
-            }
-          )
-          .then((res) => res.data)
-          .then((data) => {
-            if (data) {
-              changeCurrentArchivedActorsResults([
-                ...currentArchivedActorsResults,
-                ...data,
-              ]);
-              const firstType = data.find(
-                (el: ActorObj) => el.type === "first"
-              );
-              const lastType = data.find((el: ActorObj) => el.type === "last");
-              if (firstType && firstType.name) changeFirstActorShown(firstType);
-              if (lastType && lastType.name) changeLastActorShown(lastType);
-            }
-            changeResultsLoading(false);
-          })
-          .catch((e) => {
-            changeResultsLoading(false);
-            console.error(e);
-          });
-      };
-
       changeResultsLoading(true);
       changePathOpened(false);
       fetchData();
@@ -173,6 +179,7 @@ export const Archive = () => {
       if (lastType && lastType.name) changeLastActorShown(lastType);
     }
   }, [
+    searchedActorName,
     objectiveCurrentDate,
     currentArchiveDate,
     currentArchivedActorsResults,
@@ -190,165 +197,209 @@ export const Archive = () => {
         <BackButton />
         PLAY AN ARCHIVED GAME
       </h2>
+      {/* <h2
+        className={`archived_game_title selection_buttons ${
+          darkMode ? "dark" : ""
+        }`}
+      >
+        <span
+          className={`archived_selection_button ${
+            calendarMode === "calendar" ? "selected" : ""
+          } who_button btn btn-secondary`}
+          onClick={() => changeCalendarMode("calendar")}
+        >
+          CALENDAR
+        </span>
+        <span
+          className={`archived_selection_button ${
+            calendarMode === "search" ? "selected" : ""
+          } who_button btn btn-secondary`}
+          onClick={() => changeCalendarMode("search")}
+        >
+          SEARCH
+        </span>
+      </h2> */}
       <p className="archive_prompt">
-        Select a past Hollywoodle game by picking an available date from the
-        calendar.
+        Select a past Hollywoodle game{" "}
+        {calendarMode === "calendar"
+          ? "by picking an available date from the calendar."
+          : "by searching for a particular actor's name."}
         <br />
         <br />
         Available top paths are the lowest degree, most popular paths chosen by
         players on the day of that particular actor pairing.
       </p>
-      {objectiveCurrentDate && calendarLimit && value && (
-        <Calendar
-          onChange={handleDateChange}
-          value={value}
-          calendarType={"US"}
-          defaultView={"month"}
-          minDetail={"year"}
-          defaultValue={calendarLimit}
-          maxDate={calendarLimit}
-          minDate={new Date(2022, 3, 1)}
-          prevLabel={<CgChevronLeftO size={25} color="#fff" />}
-          prev2Label={<CgChevronDoubleLeftO size={25} color="#fff" />}
-          nextLabel={<CgChevronRightO size={25} color="#fff" />}
-          next2Label={<CgChevronDoubleRightO size={25} color="#fff" />}
-          tileContent={({ activeStartDate, date, view }) => {
-            return calendarLimit &&
-              formatDate(date) === formatDate(calendarLimit) ? (
-              <AiFillStar size={25} className="current_date_star" />
-            ) : null;
-          }}
-          onClickDay={(value) => changeCurrentArchiveDate(formatDate(value))}
-          showNeighboringMonth={false}
-        />
-      )}
-      <div className="archive_results_container">
-        <div className={`archive_date_container ${darkMode ? "dark" : ""}`}>
-          <p>Selected Date:</p>
-          <h3>{currentArchiveDate}</h3>
-        </div>
-        <div className="archive_date_actors_container">
-          {resultsLoading ? (
-            <div className="archive_loading_container">
-              <ClipLoader color="#fff" size={100} />
-            </div>
-          ) : firstActorShown && lastActorShown ? (
-            <>
-              <div
-                className={`archive_individual_actor_container ${
-                  darkMode ? "dark" : ""
-                }`}
-              >
-                <h2>Starting Actor</h2>
-                <ActorMovieContainer
-                  name={firstActorShown.name}
-                  image={firstActorShown.image}
-                />
-              </div>
-              <div
-                className={`archive_individual_actor_container ${
-                  darkMode ? "dark" : ""
-                }`}
-              >
-                <BsArrowRight
-                  className={`achive_actor_separator_arrow ${
-                    darkMode ? "dark" : ""
-                  }`}
-                  size={30}
-                />
-              </div>
-              <div
-                className={`archive_individual_actor_container ${
-                  darkMode ? "dark" : ""
-                }`}
-              >
-                <h2>Goal Actor</h2>
-                <ActorMovieContainer
-                  name={lastActorShown.name}
-                  image={lastActorShown.image}
-                />
-              </div>
-            </>
-          ) : (
-            <p>No available results for that date!</p>
+      {calendarMode === "calendar" ? (
+        <>
+          {objectiveCurrentDate && calendarLimit && value && (
+            <Calendar
+              onChange={handleDateChange}
+              value={value}
+              calendarType={"US"}
+              defaultView={"month"}
+              minDetail={"year"}
+              defaultValue={calendarLimit}
+              maxDate={calendarLimit}
+              minDate={new Date(2022, 3, 1)}
+              prevLabel={<CgChevronLeftO size={25} color="#fff" />}
+              prev2Label={<CgChevronDoubleLeftO size={25} color="#fff" />}
+              nextLabel={<CgChevronRightO size={25} color="#fff" />}
+              next2Label={<CgChevronDoubleRightO size={25} color="#fff" />}
+              tileContent={({ activeStartDate, date, view }) => {
+                return calendarLimit &&
+                  formatDate(date) === formatDate(calendarLimit) ? (
+                  <AiFillStar size={25} className="current_date_star" />
+                ) : null;
+              }}
+              onClickDay={(value) =>
+                changeCurrentArchiveDate(formatDate(value))
+              }
+              showNeighboringMonth={false}
+            />
           )}
-        </div>
-        {!resultsLoading && (
-          <div className="archived_buttons_container">
-            <Button
-              onClick={handlePlayButton}
-              className={`guess_button archived_play_button ${
-                darkMode ? "dark" : ""
-              } ${
-                currentArchiveDate === currentlyPlayingDate ? "disabled" : ""
-              }`}
-            >
-              PLAY
-            </Button>
-            {firstActorShown.most_popular_path?.degrees ||
-            lastActorShown.most_popular_path?.degrees ? (
-              currentArchiveDate !== currentlyPlayingDate ? (
+          <div className="archive_results_container">
+            <div className={`archive_date_container ${darkMode ? "dark" : ""}`}>
+              <p>Selected Date:</p>
+              <h3>{currentArchiveDate}</h3>
+            </div>
+            <div className="archive_date_actors_container">
+              {resultsLoading ? (
+                <div className="archive_loading_container">
+                  <ClipLoader color="#fff" size={100} />
+                </div>
+              ) : firstActorShown && lastActorShown ? (
                 <>
-                  <div className="top_path_button_container">
-                    {
-                      <p
-                        className={`spoiler_warning ${darkMode ? "dark" : ""} ${
-                          pathOpened ? "open" : ""
-                        }`}
-                      >
-                        Spoilers ahead!
-                      </p>
-                    }
-                    <Button
-                      onClick={() => changePathOpened(!pathOpened)}
-                      className={`who_button btn btn-secondary dark ${
-                        currentArchiveDate === currentlyPlayingDate
-                          ? "disabled"
-                          : ""
-                      }`}
-                    >
-                      {pathOpened ? "HIDE" : "REVEAL"} TOP PATH
-                    </Button>
-                  </div>
-                  <Collapse
-                    isOpened={pathOpened}
-                    initialStyle={{ height: 0, overflow: "hidden" }}
+                  <div
+                    className={`archive_individual_actor_container ${
+                      darkMode ? "dark" : ""
+                    }`}
                   >
-                    <div
-                      className={`archived_collapse collapse_container ${
+                    <h2>Starting Actor</h2>
+                    <ActorMovieContainer
+                      name={firstActorShown.name}
+                      image={firstActorShown.image}
+                    />
+                  </div>
+                  <div
+                    className={`archive_individual_actor_container ${
+                      darkMode ? "dark" : ""
+                    }`}
+                  >
+                    <BsArrowRight
+                      className={`achive_actor_separator_arrow ${
                         darkMode ? "dark" : ""
                       }`}
-                    >
-                      {pathOpened ? (
-                        <p className="collapsed_path_full_info">
-                          <span>
-                            {firstActorShown.most_popular_path?.degrees ||
-                              lastActorShown.most_popular_path?.degrees}{" "}
-                            {firstActorShown.most_popular_path?.degrees === 1 ||
-                            lastActorShown.most_popular_path?.degrees === 1
-                              ? "degree"
-                              : "degrees"}{" "}
-                            of separation:
-                          </span>
-                          <br /> <br />
-                          {firstActorShown.most_popular_path?.path ||
-                            lastActorShown.most_popular_path?.path}
-                        </p>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </Collapse>
+                      size={30}
+                    />
+                  </div>
+                  <div
+                    className={`archive_individual_actor_container ${
+                      darkMode ? "dark" : ""
+                    }`}
+                  >
+                    <h2>Goal Actor</h2>
+                    <ActorMovieContainer
+                      name={lastActorShown.name}
+                      image={lastActorShown.image}
+                    />
+                  </div>
                 </>
               ) : (
-                <></>
-              )
-            ) : (
-              <></>
+                <p>No available results for that date!</p>
+              )}
+            </div>
+            {!resultsLoading && (
+              <div className="archived_buttons_container">
+                <Button
+                  onClick={handlePlayButton}
+                  className={`guess_button archived_play_button ${
+                    darkMode ? "dark" : ""
+                  } ${
+                    currentArchiveDate === currentlyPlayingDate
+                      ? "disabled"
+                      : ""
+                  }`}
+                >
+                  PLAY
+                </Button>
+                {firstActorShown.most_popular_path?.degrees ||
+                lastActorShown.most_popular_path?.degrees ? (
+                  currentArchiveDate !== currentlyPlayingDate ? (
+                    <>
+                      <div className="top_path_button_container">
+                        {
+                          <p
+                            className={`spoiler_warning ${
+                              darkMode ? "dark" : ""
+                            } ${pathOpened ? "open" : ""}`}
+                          >
+                            Spoilers ahead!
+                          </p>
+                        }
+                        <Button
+                          onClick={() => changePathOpened(!pathOpened)}
+                          className={`who_button btn btn-secondary dark ${
+                            currentArchiveDate === currentlyPlayingDate
+                              ? "disabled"
+                              : ""
+                          }`}
+                        >
+                          {pathOpened ? "HIDE" : "REVEAL"} TOP PATH
+                        </Button>
+                      </div>
+                      <Collapse
+                        isOpened={pathOpened}
+                        initialStyle={{ height: 0, overflow: "hidden" }}
+                      >
+                        <div
+                          className={`archived_collapse collapse_container ${
+                            darkMode ? "dark" : ""
+                          }`}
+                        >
+                          {pathOpened ? (
+                            <p className="collapsed_path_full_info">
+                              <span>
+                                {firstActorShown.most_popular_path?.degrees ||
+                                  lastActorShown.most_popular_path
+                                    ?.degrees}{" "}
+                                {firstActorShown.most_popular_path?.degrees ===
+                                  1 ||
+                                lastActorShown.most_popular_path?.degrees === 1
+                                  ? "degree"
+                                  : "degrees"}{" "}
+                                of separation:
+                              </span>
+                              <br /> <br />
+                              {firstActorShown.most_popular_path?.path ||
+                                lastActorShown.most_popular_path?.path}
+                            </p>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      </Collapse>
+                    </>
+                  ) : (
+                    <></>
+                  )
+                ) : (
+                  <></>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
+        </>
+      ) : (
+        <AutosuggestInput
+          typeOfGuess="actor"
+          archivedSearch={true}
+          archiveCallback={(name: string) => {
+            if (searchedActorName !== name) {
+              changeSearchedActorName(name);
+            }
+          }}
+        />
+      )}
       <Footer />
     </div>
   );
