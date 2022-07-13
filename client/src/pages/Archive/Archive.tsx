@@ -23,6 +23,7 @@ import { Footer } from "../../components/Footer/Footer";
 import { toast } from "react-toastify";
 import { BackButton } from "../BackButton";
 import { AutosuggestInput } from "../../components/AutosuggestInput/AutosuggestInput";
+import { ArchiveSearchResult } from "../../interfaces/ArchiveSearchResult.interface";
 import "./Archive.scss";
 import "react-calendar/dist/Calendar.css";
 
@@ -63,7 +64,12 @@ export const Archive = () => {
   const [lastActorShown, changeLastActorShown] = useState<ActorObj>(lastActor);
   const [pathOpened, changePathOpened] = useState(false);
   const [calendarMode, changeCalendarMode] = useState("calendar");
+
+  // Archive search functionality
   const [searchedActorName, changeSearchedActorName] = useState("");
+  const [searchResults, changeSearchResults] = useState<
+    ArchiveSearchResult[] | undefined
+  >(undefined);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -136,16 +142,43 @@ export const Archive = () => {
         )
         .then((res) => res.data)
         .then((data) => {
-          if (searchedActorName) changeSearchedActorName("");
           if (data && data.length > 0) {
-            changeCurrentArchivedActorsResults([
-              ...currentArchivedActorsResults,
-              ...data,
-            ]);
-            const firstType = data.find((el: ActorObj) => el.type === "first");
-            const lastType = data.find((el: ActorObj) => el.type === "last");
-            if (firstType && firstType.name) changeFirstActorShown(firstType);
-            if (lastType && lastType.name) changeLastActorShown(lastType);
+            if (searchedActorName) {
+              let allDates: string[] = data.map((el: ActorObj) => el.date);
+              // Get only unique dates
+              allDates = Array.from(new Set(allDates));
+              const modifiedData = allDates.map((date: string) => {
+                return {
+                  name: searchedActorName,
+                  date,
+                  actors: data.filter((el: ActorObj) => el.date === date),
+                };
+              });
+              changeSearchResults(modifiedData);
+              changeSearchedActorName("");
+            } else {
+              changeCurrentArchivedActorsResults([
+                ...currentArchivedActorsResults,
+                ...data,
+              ]);
+              const firstType = data.find(
+                (el: ActorObj) => el.type === "first"
+              );
+              const lastType = data.find((el: ActorObj) => el.type === "last");
+              if (firstType && firstType.name) changeFirstActorShown(firstType);
+              if (lastType && lastType.name) changeLastActorShown(lastType);
+            }
+          } else {
+            if (searchedActorName) {
+              changeSearchedActorName("");
+              changeSearchResults([
+                {
+                  name: searchedActorName,
+                  date: "",
+                  actors: [],
+                },
+              ]);
+            }
           }
           changeResultsLoading(false);
         })
@@ -390,15 +423,83 @@ export const Archive = () => {
           </div>
         </>
       ) : (
-        <AutosuggestInput
-          typeOfGuess="actor"
-          archivedSearch={true}
-          archiveCallback={(name: string) => {
-            if (searchedActorName !== name) {
-              changeSearchedActorName(name);
-            }
-          }}
-        />
+        <>
+          <AutosuggestInput
+            typeOfGuess="actor"
+            archivedSearch={true}
+            archiveCallback={(name: string) => {
+              if (searchedActorName !== name) {
+                changeSearchedActorName(name);
+              }
+            }}
+          />
+          {searchResults &&
+          searchResults.length > 0 &&
+          searchResults[0]?.date ? (
+            <div className="archive_search_results_container">
+              <p className="archive_search_results_found">
+                <b>{searchResults.length}</b> result
+                {searchResults.length === 1 ? "" : "s"} found for{" "}
+                <b>{searchResults[0].name}</b>:
+              </p>
+              {searchResults.map((result, i) => {
+                return (
+                  <div className="archive_search_result" key={i}>
+                    <p className="archive_search_date">
+                      <span>Game Date</span>
+                      <span>{result.date}</span>
+                    </p>
+                    <div className="archive_search_actors_container">
+                      {result.actors.map((actor, i) => {
+                        return (
+                          <>
+                            <div className="archive_search_actors_container">
+                              <div
+                                className={`archive_individual_actor_container ${
+                                  darkMode ? "dark" : ""
+                                }`}
+                              >
+                                {i === 0 ? (
+                                  <h2>Starting Actor</h2>
+                                ) : (
+                                  <h2>Goal Actor</h2>
+                                )}
+                                <ActorMovieContainer
+                                  name={actor.name}
+                                  image={actor.image}
+                                />
+                              </div>
+                            </div>
+                            {i === 0 ? (
+                              <div className="archive_search_actors_container">
+                                <BsArrowRight
+                                  className={`achive_actor_separator_arrow ${
+                                    darkMode ? "dark" : ""
+                                  }`}
+                                  size={30}
+                                />
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : searchResults && Array.isArray(searchResults) ? (
+            <div className="archive_search_results_container">
+              <p className="archive_search_results_found">
+                No results found for <b>{searchResults[0].name}</b>.
+              </p>
+            </div>
+          ) : (
+            <></>
+          )}
+        </>
       )}
       <Footer />
     </div>

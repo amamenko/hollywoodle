@@ -108,10 +108,13 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
     const actor = await Actor.find({ name: requestedName }).catch((e) =>
       console.error(e)
     );
-    if (actor[0] && actor[0].date) {
-      const allActors = await Actor.find({ date: actor[0].date }).catch((e) =>
-        console.error(e)
-      );
+    const allDates = Array.isArray(actor) ? actor?.map((el) => el.date) : [];
+    if (allDates.length > 0) {
+      const allActors = await Actor.find({
+        date: {
+          $in: allDates,
+        },
+      }).catch((e) => console.error(e));
       res.send(allActors);
     } else {
       res.send([]);

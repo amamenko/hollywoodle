@@ -127,6 +127,66 @@
   .autosuggest_input_container {
     margin: 0 1.5rem;
   }
+  .archive_search_results_container {
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .archive_search_results_found {
+      border-top: 1px solid #414141;
+      padding: 1.5rem 0 0 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .archive_search_result {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      .archive_search_actors_container {
+        width: 75%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+        h2 {
+          font-size: 0.8rem;
+          font-weight: 500;
+          margin-bottom: 1rem;
+        }
+        p {
+          font-size: 0.9rem;
+          max-width: 90px;
+        }
+      }
+      .archive_individual_actor_container {
+        max-width: 100px;
+        img {
+          max-width: 3rem;
+        }
+      }
+      .archive_search_date {
+        display: flex;
+        flex-direction: column;
+        background: #1e1e1e;
+        text-align: center;
+        font-weight: 700;
+        border-top: 1px solid #414141;
+        border-bottom: 1px solid #414141;
+        width: 100%;
+        margin-top: 0;
+        padding: 0.5rem 0 0.5rem 0.5rem;
+        span {
+          &:first-child {
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-bottom: 0.3rem;
+          }
+        }
+      }
+    }
+  }
 }
 
 .header_back_button {
