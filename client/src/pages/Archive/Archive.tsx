@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import {
   CgChevronLeftO,
@@ -11,19 +11,16 @@ import { BsArrowRight } from "react-icons/bs";
 import { parse } from "date-fns";
 import { format } from "date-fns-tz";
 import { ActorMovieContainer } from "../../components/ActorMovieContainer/ActorMovieContainer";
-import { Button } from "reactstrap";
 import ClipLoader from "react-spinners/ClipLoader";
 import axios from "axios";
 import { AppContext } from "../../App";
-import { Collapse } from "react-collapse";
 import { ActorObj } from "../../interfaces/ActorObj.interface";
-import { GameContext } from "../../pages/Main";
-import { useNavigate } from "react-router-dom";
 import { Footer } from "../../components/Footer/Footer";
 import { toast } from "react-toastify";
 import { BackButton } from "../BackButton";
 import { AutosuggestInput } from "../../components/AutosuggestInput/AutosuggestInput";
 import { ArchiveSearchResult } from "../../interfaces/ArchiveSearchResult.interface";
+import { ArchiveButtons } from "./Buttons/ArchiveButtons";
 import "./Archive.scss";
 import "react-calendar/dist/Calendar.css";
 
@@ -32,22 +29,10 @@ export const Archive = () => {
     darkMode,
     firstActor,
     lastActor,
-    currentlyPlayingDate,
-    changeCurrentlyPlayingDate,
     currentArchivedActorsResults,
     changeCurrentArchivedActorsResults,
-    changeGuesses,
-    changeCurrentMoves,
-    changeWin,
-    changeEmojiGrid,
     objectiveCurrentDate,
-    changeCurrentDegrees,
-    changePathRankCount,
-    changeAlreadyRewarded,
   } = useContext(AppContext);
-  const { changeMostRecentMovie, changeMostRecentActor } =
-    useContext(GameContext);
-  const navigate = useNavigate();
   const formatDate = (someDate: Date) => {
     return format(someDate, "MM/dd/yyyy", {
       timeZone: "America/New_York",
@@ -84,34 +69,6 @@ export const Archive = () => {
       changePathOpened(false);
     }
   }, [objectiveCurrentDate, value]);
-
-  const handlePlayButton = () => {
-    if (currentArchiveDate !== currentlyPlayingDate) {
-      changeCurrentlyPlayingDate(currentArchiveDate);
-      changeGuesses([]);
-      changeCurrentMoves(0);
-      changeCurrentDegrees(0);
-      changeWin(false);
-      changeEmojiGrid([]);
-      changePathOpened(false);
-      changeMostRecentMovie({
-        guess: "",
-        type: "",
-        year: "",
-      });
-      changeMostRecentActor({
-        guess: "",
-        type: "",
-        year: "",
-      });
-      changePathRankCount({
-        rank: "",
-        count: "",
-      });
-      changeAlreadyRewarded(false);
-      navigate("/", { replace: true });
-    }
-  };
 
   // Remove all displayed toasts on modal open
   useEffect(() => {
@@ -342,83 +299,13 @@ export const Archive = () => {
               )}
             </div>
             {!resultsLoading && (
-              <div className="archived_buttons_container">
-                <Button
-                  onClick={handlePlayButton}
-                  className={`guess_button archived_play_button ${
-                    darkMode ? "dark" : ""
-                  } ${
-                    currentArchiveDate === currentlyPlayingDate
-                      ? "disabled"
-                      : ""
-                  }`}
-                >
-                  PLAY
-                </Button>
-                {firstActorShown.most_popular_path?.degrees ||
-                lastActorShown.most_popular_path?.degrees ? (
-                  currentArchiveDate !== currentlyPlayingDate ? (
-                    <>
-                      <div className="top_path_button_container">
-                        {
-                          <p
-                            className={`spoiler_warning ${
-                              darkMode ? "dark" : ""
-                            } ${pathOpened ? "open" : ""}`}
-                          >
-                            Spoilers ahead!
-                          </p>
-                        }
-                        <Button
-                          onClick={() => changePathOpened(!pathOpened)}
-                          className={`who_button btn btn-secondary dark ${
-                            currentArchiveDate === currentlyPlayingDate
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          {pathOpened ? "HIDE" : "REVEAL"} TOP PATH
-                        </Button>
-                      </div>
-                      <Collapse
-                        isOpened={pathOpened}
-                        initialStyle={{ height: 0, overflow: "hidden" }}
-                      >
-                        <div
-                          className={`archived_collapse collapse_container ${
-                            darkMode ? "dark" : ""
-                          }`}
-                        >
-                          {pathOpened ? (
-                            <p className="collapsed_path_full_info">
-                              <span>
-                                {firstActorShown.most_popular_path?.degrees ||
-                                  lastActorShown.most_popular_path
-                                    ?.degrees}{" "}
-                                {firstActorShown.most_popular_path?.degrees ===
-                                  1 ||
-                                lastActorShown.most_popular_path?.degrees === 1
-                                  ? "degree"
-                                  : "degrees"}{" "}
-                                of separation:
-                              </span>
-                              <br /> <br />
-                              {firstActorShown.most_popular_path?.path ||
-                                lastActorShown.most_popular_path?.path}
-                            </p>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      </Collapse>
-                    </>
-                  ) : (
-                    <></>
-                  )
-                ) : (
-                  <></>
-                )}
-              </div>
+              <ArchiveButtons
+                pathOpened={pathOpened}
+                changePathOpened={changePathOpened}
+                currentArchiveDate={currentArchiveDate}
+                firstActorShown={firstActorShown}
+                lastActorShown={lastActorShown}
+              />
             )}
           </div>
         </>
@@ -433,67 +320,84 @@ export const Archive = () => {
               }
             }}
           />
-          {searchResults &&
-          searchResults.length > 0 &&
-          searchResults[0]?.date ? (
+          {resultsLoading ? (
+            <div className="archive_search_loading">
+              <div className="archive_loading_container">
+                <ClipLoader color="#fff" size={100} />
+              </div>
+            </div>
+          ) : searchResults &&
+            searchResults.length > 0 &&
+            searchResults[0]?.date ? (
             <div className="archive_search_results_container">
               <p className="archive_search_results_found">
-                <b>{searchResults.length}</b> result
-                {searchResults.length === 1 ? "" : "s"} found for{" "}
+                <b>{searchResults.length}</b> game
+                {searchResults.length === 1 ? "" : "s"} found containing{" "}
                 <b>{searchResults[0].name}</b>:
               </p>
               {searchResults.map((result, i) => {
                 return (
-                  <div className="archive_search_result" key={i}>
-                    <p className="archive_search_date">
-                      <span>Game Date</span>
-                      <span>{result.date}</span>
-                    </p>
-                    <div className="archive_search_actors_container">
-                      {result.actors.map((actor, i) => {
-                        return (
-                          <>
-                            <div className="archive_search_actors_container">
-                              <div
-                                className={`archive_individual_actor_container ${
-                                  darkMode ? "dark" : ""
-                                }`}
-                              >
-                                {i === 0 ? (
-                                  <h2>Starting Actor</h2>
-                                ) : (
-                                  <h2>Goal Actor</h2>
-                                )}
-                                <ActorMovieContainer
-                                  name={actor.name}
-                                  image={actor.image}
-                                />
-                              </div>
-                            </div>
-                            {i === 0 ? (
+                  <Fragment key={i}>
+                    <div className="archive_search_result" key={i}>
+                      <p className="archive_search_date">
+                        <span>Game Date</span>
+                        <span>{result.date}</span>
+                      </p>
+                      <div className="archive_search_actors_container">
+                        {result.actors.map((actor, i) => {
+                          return (
+                            <Fragment key={i}>
                               <div className="archive_search_actors_container">
-                                <BsArrowRight
-                                  className={`achive_actor_separator_arrow ${
+                                <div
+                                  className={`archive_individual_actor_container ${
                                     darkMode ? "dark" : ""
                                   }`}
-                                  size={30}
-                                />
+                                >
+                                  {i === 0 ? (
+                                    <h2>Starting Actor</h2>
+                                  ) : (
+                                    <h2>Goal Actor</h2>
+                                  )}
+                                  <ActorMovieContainer
+                                    name={actor.name}
+                                    image={actor.image}
+                                  />
+                                </div>
                               </div>
-                            ) : (
-                              <></>
-                            )}
-                          </>
-                        );
-                      })}
+                              {i === 0 ? (
+                                <div className="archive_search_actors_container">
+                                  <BsArrowRight
+                                    className={`achive_actor_separator_arrow ${
+                                      darkMode ? "dark" : ""
+                                    }`}
+                                    size={30}
+                                  />
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                            </Fragment>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
+                    {!resultsLoading && (
+                      <ArchiveButtons
+                        pathOpened={pathOpened}
+                        changePathOpened={changePathOpened}
+                        currentArchiveDate={result.date}
+                        firstActorShown={result.actors[0]}
+                        lastActorShown={result.actors[1]}
+                      />
+                    )}
+                  </Fragment>
                 );
               })}
             </div>
           ) : searchResults && Array.isArray(searchResults) ? (
             <div className="archive_search_results_container">
               <p className="archive_search_results_found">
-                No results found for <b>{searchResults[0].name}</b>.
+                No games found containing <b>{searchResults[0].name}</b>.
               </p>
             </div>
           ) : (

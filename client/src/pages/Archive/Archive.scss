@@ -25,6 +25,14 @@
     }
   }
 
+  .archive_search_loading {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
   .archived_game_title {
     position: relative;
     height: 3rem;

@@ -370,6 +370,12 @@ export const AutosuggestInput = ({
       } else {
         if (archiveCallback && typeof archiveCallback === "function") {
           archiveCallback(name);
+          changeCurrentSelection({
+            id: 0,
+            name: "",
+            year: "",
+            image: "",
+          });
         }
       }
     }
@@ -501,6 +507,7 @@ export const AutosuggestInput = ({
       {
         <div className="guess_hint_button_container">
           {guesses.length > 0 &&
+            !archivedSearch &&
             guesses.some((guess: GuessType) => !guess.incorrect) && (
               <WhoButton
                 typeOfGuess={typeOfGuess}

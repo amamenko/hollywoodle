@@ -58,4 +58,6 @@ export const contextDefaults = {
   changeShowTopPathsModal: () => {},
   currentHoliday: "",
   changeCurrentHoliday: () => {},
+  changeFirstActor: () => {},
+  changeLastActor: () => {},
 };

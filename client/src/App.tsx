@@ -319,6 +319,8 @@ const App = () => {
           changeShowTopPathsModal,
           currentHoliday,
           changeCurrentHoliday,
+          changeFirstActor,
+          changeLastActor,
         }}
       >
         <ToastContainer limit={1} />

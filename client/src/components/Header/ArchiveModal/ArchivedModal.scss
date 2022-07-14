@@ -271,7 +271,7 @@
     transition: color 0.3s ease;
 
     &.open {
-      color: transparent;
+      color: transparent !important;
     }
   }
 }
