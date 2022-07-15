@@ -181,13 +181,23 @@ export const Archive = () => {
     if (pathOpened) changePathOpened(false);
   };
 
+  const selectCalendar = () => {
+    changeCalendarMode("calendar");
+    if (pathOpened) changePathOpened(false);
+  };
+
+  const selectSearch = () => {
+    changeCalendarMode("search");
+    if (pathOpened) changePathOpened(false);
+  };
+
   return (
     <div className={`archive_container ${darkMode ? "dark" : ""}`}>
       <h2 className={`archived_game_title ${darkMode ? "dark" : ""}`}>
         <BackButton />
         PLAY AN ARCHIVED GAME
       </h2>
-      {/* <h2
+      <h2
         className={`archived_game_title selection_buttons ${
           darkMode ? "dark" : ""
         }`}
@@ -196,7 +206,7 @@ export const Archive = () => {
           className={`archived_selection_button ${
             calendarMode === "calendar" ? "selected" : ""
           } who_button btn btn-secondary`}
-          onClick={() => changeCalendarMode("calendar")}
+          onClick={selectCalendar}
         >
           CALENDAR
         </span>
@@ -204,11 +214,11 @@ export const Archive = () => {
           className={`archived_selection_button ${
             calendarMode === "search" ? "selected" : ""
           } who_button btn btn-secondary`}
-          onClick={() => changeCalendarMode("search")}
+          onClick={selectSearch}
         >
           SEARCH
         </span>
-      </h2> */}
+      </h2>
       <p className="archive_prompt">
         Select a past Hollywoodle game{" "}
         {calendarMode === "calendar"
@@ -311,15 +321,21 @@ export const Archive = () => {
         </>
       ) : (
         <>
-          <AutosuggestInput
-            typeOfGuess="actor"
-            archivedSearch={true}
-            archiveCallback={(name: string) => {
-              if (searchedActorName !== name) {
-                changeSearchedActorName(name);
-              }
-            }}
-          />
+          <div
+            className={`archive_search_input_container ${
+              darkMode ? "dark" : ""
+            }`}
+          >
+            <AutosuggestInput
+              typeOfGuess="actor"
+              archivedSearch={true}
+              archiveCallback={(name: string) => {
+                if (searchedActorName !== name) {
+                  changeSearchedActorName(name);
+                }
+              }}
+            />
+          </div>
           {resultsLoading ? (
             <div className="archive_search_loading">
               <div className="archive_loading_container">
@@ -339,10 +355,21 @@ export const Archive = () => {
                 return (
                   <Fragment key={i}>
                     <div className="archive_search_result" key={i}>
-                      <p className="archive_search_date">
-                        <span>Game Date</span>
-                        <span>{result.date}</span>
-                      </p>
+                      <div
+                        className={`archive_search_date ${
+                          darkMode ? "dark" : ""
+                        }`}
+                      >
+                        <span className={"circle_and_numbers_container"}>
+                          <span className="rank_circle">
+                            <p>{i + 1}</p>
+                          </span>
+                        </span>
+                        <span className="search_game_date_header">
+                          Game Date
+                        </span>
+                        <span className="search_game_date">{result.date}</span>
+                      </div>
                       <div className="archive_search_actors_container">
                         {result.actors.map((actor, i) => {
                           return (

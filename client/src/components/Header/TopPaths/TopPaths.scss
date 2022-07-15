@@ -56,44 +56,6 @@
   min-height: 5rem;
   border: 1px solid #30363d;
 
-  .circle_container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .circle_and_numbers_container {
-    display: flex;
-    align-items: center;
-    margin-top: 1.5rem;
-  }
-
-  .rank_circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    background: rgb(240, 240, 240);
-    border-radius: 50px;
-    width: 2.5rem;
-    height: 2.5rem;
-    color: #000;
-    margin: 0 auto;
-    margin-left: 1rem;
-
-    p {
-      font-weight: 900;
-      position: absolute;
-      top: 25%;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      padding: 0;
-      margin: 0;
-      text-align: center;
-    }
-  }
-
   .path_numbers_container {
     display: flex;
     flex-direction: column;
@@ -165,5 +127,43 @@
     overflow: auto;
     height: 100%;
     padding: 2rem 0;
+  }
+}
+
+.circle_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.circle_and_numbers_container {
+  display: flex;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.rank_circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  background: rgb(240, 240, 240);
+  border-radius: 50px;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #000;
+  margin: 0 auto;
+  margin-left: 1rem;
+
+  p {
+    font-weight: 900;
+    position: absolute;
+    top: 25%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    text-align: center;
   }
 }

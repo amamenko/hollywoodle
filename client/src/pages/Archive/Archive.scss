@@ -55,6 +55,10 @@
       border: none;
       justify-content: space-between;
       margin-top: 1rem;
+      background: #fff;
+      &.dark {
+        background: #0e1117;
+      }
       @media only screen and (min-width: 500px) {
         justify-content: space-evenly;
       }
@@ -157,6 +161,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        margin-top: 0.5rem;
         margin-bottom: 0.5rem;
         h2 {
           font-size: 0.8rem;
@@ -175,24 +180,56 @@
         }
       }
       .archive_search_date {
+        position: relative;
         display: flex;
         flex-direction: column;
-        background: #1e1e1e;
+        background: #323232;
         text-align: center;
         font-weight: 700;
         border-top: 1px solid #414141;
         border-bottom: 1px solid #414141;
         width: 100%;
         margin-top: 0;
-        padding: 0.5rem 0 0.5rem 0.5rem;
-        span {
-          &:first-child {
-            font-size: 0.8rem;
-            font-weight: 400;
-            margin-bottom: 0.3rem;
+        padding: 0.6rem 0 0.6rem 0;
+        color: #fff;
+        &.dark {
+          background: #1e1e1e;
+          border-top: 1px solid #414141;
+          border-bottom: 1px solid #414141;
+        }
+        .search_game_date_header {
+          font-size: 0.8rem;
+          font-weight: 400;
+          margin-bottom: 0.25rem;
+        }
+        .search_game_date {
+          font-size: 1.17em;
+        }
+        .circle_and_numbers_container {
+          .rank_circle {
+            width: 2rem;
+            height: 2rem;
+            p {
+              top: 20%;
+            }
           }
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          margin: 0 auto;
         }
       }
+    }
+  }
+
+  .archive_search_input_container {
+    width: 100%;
+    background: #e6e6e6;
+    padding-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    &.dark {
+      background: #161b22;
+      outline: 1px solid #30363d;
     }
   }
 }
