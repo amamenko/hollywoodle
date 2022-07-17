@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
@@ -30,11 +30,9 @@ export const Burger = ({
 }) => {
   const { darkMode, changeDarkMode, changeShowTopPathsModal, currentHoliday } =
     useContext(AppContext);
-  const [checked, changeChecked] = useState(true);
 
-  const handleChange = (checked: boolean) => {
+  const handleChange = () => {
     changeDarkMode(!darkMode);
-    changeChecked(checked);
   };
 
   const handleDismissModal = () => changeBurgerMenuOpen(false);
@@ -106,7 +104,7 @@ export const Burger = ({
             <Switch
               className="react-switch"
               onChange={handleChange}
-              checked={checked}
+              checked={darkMode}
               checkedIcon={false}
               uncheckedIcon={false}
             />
