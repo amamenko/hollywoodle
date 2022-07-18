@@ -1,11 +1,12 @@
 import { FC } from "react";
 import { GrTwitter } from "react-icons/gr";
 
-interface TwitterButtonProps {
+export interface TwitterButtonProps {
   twitterShareLink?: string;
   twitterShareText?: string;
   twitterShareHashtags?: string[];
 }
+
 const TwitterButton: FC<TwitterButtonProps> = ({
   twitterShareLink,
   twitterShareText,

@@ -25,28 +25,36 @@
   }
 
   .share_button {
-    appearance: none;
-    outline: none;
-    background: transparent;
-    cursor: pointer;
-    width: 2rem;
-    padding: 0.5rem;
-    border: 1px solid #000;
-    border-radius: 50%;
-    color: #000;
+    &:not(.share) {
+      appearance: none;
+      outline: none;
+      background: transparent;
+      cursor: pointer;
+      width: 2rem;
+      padding: 0.5rem;
+      border: 1px solid #000;
+      border-radius: 50%;
+      color: #000;
+    }
 
-    svg {
+    svg:not(.kofiimg) {
       pointer-events: none;
       display: block;
       width: 14px;
       height: 14px;
     }
 
-    &:hover {
+    &:hover:not(.share) {
       background: #fff;
 
       > svg {
         fill: #000;
+      }
+    }
+
+    &.kofi-button {
+      &:hover {
+        background-color: rgb(53, 111, 48);
       }
     }
   }
@@ -56,7 +64,7 @@
       color: #fff;
       border: 1px solid #fff;
 
-      &:hover {
+      &:hover:not(.share) {
         background: #fff;
 
         > svg {
@@ -104,6 +112,17 @@
   font-size: 0.875rem;
   box-shadow: 0 1px 1px rgb(173 168 168 / 10%);
   border-radius: 3px;
+}
+
+.winner_kofi_button {
+  .tooltip_outer_wrapper {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+      "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
+    box-sizing: inherit;
+    padding: 0 0.5rem;
+    font-weight: 400;
+  }
 }
 
 .tooltip_container {
@@ -160,5 +179,12 @@
     border-width: 0.5875rem;
     border-style: solid;
     border-color: #222 transparent transparent transparent;
+  }
+}
+
+.kofi-button {
+  .tooltip_container {
+    bottom: 1rem;
+    left: 40%;
   }
 }

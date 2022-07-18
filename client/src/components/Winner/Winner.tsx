@@ -5,7 +5,7 @@ import Dicaprio from "../../assets/Dicaprio.png";
 import Cats from "../../assets/Cats.jpg";
 import { RewardElement } from "react-rewards";
 import { CountdownTimer } from "../Countdown/CountdownTimer";
-import TwitterButton from "./ShareButtons/TwitterButton";
+// import TwitterButton from "./ShareButtons/TwitterButton";
 import CopyLinkButton from "./ShareButtons/CopyLinkButton";
 import { sortAsc } from "../AutosuggestInput/AutosuggestInput";
 import KofiButton from "kofi-button";
@@ -14,6 +14,8 @@ import { GameContext } from "../../pages/Main";
 import { TwitterFollowButton } from "./TwitterFollowButton";
 import { Button } from "reactstrap";
 import { Link } from "react-router-dom";
+import { ShareButton } from "./NewButtons/ShareButton";
+import { ShareViaTweet } from "./NewButtons/ShareViaTweet";
 import "./ShareButtons/ShareButtons.scss";
 import "./Winner.scss";
 
@@ -345,6 +347,20 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
           <CountdownTimer />
         </b>
       </div>
+      <div
+        className={`winner_new_share_buttons share_links_list ${
+          darkMode ? "dark" : ""
+        }`}
+      >
+        <ShareButton
+          shareLinkClicked={shareLinkClicked}
+          changeShareLinkClicked={changeShareLinkClicked}
+          changeLastClicked={changeLastClicked}
+          shareLinkAnimatingOut={shareLinkAnimatingOut}
+          copyShareLink={`${finalShareText.trim()}`}
+        />
+        <ShareViaTweet twitterShareText={finalShareText} />
+      </div>
       <div className="winner_kofi_button">
         <p>Loving Hollywoodle?</p>
         <KofiButton
@@ -365,13 +381,13 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
           className={`share_links_list ${darkMode ? "dark" : ""}`}
           aria-label="share"
         >
-          <CopyLinkButton
+          {/* <CopyLinkButton
             shareLinkClicked={shareLinkClicked}
             changeShareLinkClicked={changeShareLinkClicked}
             changeLastClicked={changeLastClicked}
             shareLinkAnimatingOut={shareLinkAnimatingOut}
             copyShareLink={`${finalShareText.trim()}`}
-          />
+          /> */}
           <CopyLinkButton
             shareLinkClicked={pathShareLinkClicked}
             changeShareLinkClicked={changePathShareLinkClicked}
@@ -380,7 +396,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
             copyShareLink={finalPath}
             path={true}
           />
-          <TwitterButton twitterShareText={finalShareText} />
+          {/* <TwitterButton twitterShareText={finalShareText} /> */}
         </ul>
       </div>
     </div>
