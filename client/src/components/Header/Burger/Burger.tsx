@@ -14,6 +14,7 @@ import { AppContext } from "../../../App";
 import { BiHeart } from "react-icons/bi";
 import { TwitterFollowButton } from "../../Winner/TwitterFollowButton";
 import Switch from "react-switch";
+// import { GiTargetArrows } from "react-icons/gi";
 import "./Burger.scss";
 import "../Header.scss";
 
@@ -78,6 +79,15 @@ export const Burger = ({
           <IoFootstepsOutline className="contact_icon" size={25} />
           <p>All Paths</p>
         </Link>
+        {/* <div
+          className="menu-item"
+          onClick={() => {
+            changeBurgerMenuOpen(false);
+          }}
+        >
+          <GiTargetArrows className="contact_icon" size={25} />
+          <p>Battle</p>
+        </div> */}
         <Link
           to="/contact"
           className="menu-item"

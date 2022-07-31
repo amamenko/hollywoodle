@@ -129,6 +129,15 @@
     }
   }
 
+  .react-calendar__month-view__days__day {
+    min-height: 36px;
+    max-height: 36px;
+    .current_date_star {
+      margin-top: 0.1rem;
+      max-height: 36px;
+    }
+  }
+
   .react-autosuggest__suggestions-container {
     left: 1.5rem;
     width: 88%;
