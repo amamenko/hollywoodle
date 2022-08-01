@@ -1,0 +1,69 @@
+.battle_container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  max-width: 32rem;
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin: 0 auto;
+  padding-top: 4rem;
+  background: #fff;
+  box-sizing: border-box;
+  transition: background 0.4s ease, color 0.4s ease;
+
+  &.dark {
+    background: #010408;
+    color: #fff;
+
+    @media only screen and (min-width: 32rem) {
+      outline: 1px solid #30363d;
+    }
+  }
+
+  .battle_prompt {
+    margin: 1rem 1.5rem 0rem 1.5rem;
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  .battle_title_header {
+    position: relative;
+    height: 3rem;
+    width: 100%;
+    margin-bottom: 0;
+    margin-top: 0;
+    border-bottom: 1px solid #30363d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: #323232;
+    color: #fff;
+
+    &.dark {
+      background: #0e1117;
+    }
+  }
+
+  .battle_input_section {
+    width: 100%;
+    .contact_input_container {
+      .form-control {
+        background: #fff;
+        color: #000;
+      }
+      &.dark {
+        .form-control {
+          background: #0e1117;
+          color: #fff;
+        }
+      }
+    }
+    .submit_button_container {
+      margin: 1rem 0 0 0;
+    }
+  }
+}

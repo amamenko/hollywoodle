@@ -79,7 +79,8 @@ export const Burger = ({
           <IoFootstepsOutline className="contact_icon" size={25} />
           <p>All Paths</p>
         </Link>
-        {/* <div
+        {/* <Link
+          to="/battle"
           className="menu-item"
           onClick={() => {
             changeBurgerMenuOpen(false);
@@ -87,7 +88,7 @@ export const Burger = ({
         >
           <GiTargetArrows className="contact_icon" size={25} />
           <p>Battle</p>
-        </div> */}
+        </Link> */}
         <Link
           to="/contact"
           className="menu-item"
