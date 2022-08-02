@@ -5,12 +5,18 @@ import { GameContextProps } from "../interfaces/GameContextProps.interface";
 import { GuessObj } from "../interfaces/GuessObj.interface";
 import { Game } from "./Game";
 import { Header } from "../components/Header/Header";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { PrivacyPolicy } from "./Policies/PrivacyPolicy";
 import { TermsAndConditions } from "./Policies/Terms";
 import { Archive } from "./Archive/Archive";
 import { Contact } from "./Contact/Contact";
 import { AllPaths } from "./AllPaths/AllPaths";
+// import { News } from "./News/News";
 // import { Battle } from "./Battle/Battle";
 
 export const GameContext = createContext<GameContextProps>(gameContextDefaults);
@@ -74,9 +80,11 @@ export const Main = () => {
           <Route path="/paths" element={<AllPaths />} />
           <Route path="/archive" element={<Archive />} />
           {/* <Route path="/battle" element={<Battle />} /> */}
+          {/* <Route path="/news" element={<News />} /> */}
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
     </GameContext.Provider>
