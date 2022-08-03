@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { updateDatabaseActors } from "./functions/updateDatabaseActors";
 import { Actor } from "./models/Actor";
 import { Leaderboard } from "./models/Leaderboard";
+import { News } from "./models/News";
 import cron from "node-cron";
 import cors from "cors";
 import enforce from "express-sslify";
@@ -142,6 +143,11 @@ app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
     const update = await updateLeaderboard(req.body as RequestQuery);
     res.send(update);
   }
+});
+
+app.get("/api/news", [], async (req: Request, res: Response) => {
+  const allNews = await News.find().sort({ date: -1 });
+  res.send(allNews);
 });
 
 app.get("/api/top_paths", [], async (req: Request, res: Response) => {
