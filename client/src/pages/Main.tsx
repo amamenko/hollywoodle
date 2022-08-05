@@ -17,6 +17,7 @@ import { Archive } from "./Archive/Archive";
 import { Contact } from "./Contact/Contact";
 import { AllPaths } from "./AllPaths/AllPaths";
 // import { News } from "./News/News";
+// import { Article } from "./News/Article";
 // import { Battle } from "./Battle/Battle";
 
 export const GameContext = createContext<GameContextProps>(gameContextDefaults);
@@ -80,7 +81,8 @@ export const Main = () => {
           <Route path="/paths" element={<AllPaths />} />
           <Route path="/archive" element={<Archive />} />
           {/* <Route path="/battle" element={<Battle />} /> */}
-          {/* <Route path="/news" element={<News />} /> */}
+          {/* <Route path="/news" element={<News />} />
+          <Route path="/news/:topicId" element={<Article />} /> */}
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsAndConditions />} />

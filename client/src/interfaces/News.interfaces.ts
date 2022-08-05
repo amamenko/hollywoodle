@@ -5,4 +5,5 @@ export interface NewsObj {
   image: string;
   text: string;
   title: string;
+  slug: string;
 }

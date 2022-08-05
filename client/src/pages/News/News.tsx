@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { NewsObj } from "../../interfaces/News.interfaces";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AppContext } from "../../App";
 import { Footer } from "../../components/Footer/Footer";
 import { BackButton } from "../BackButton";
@@ -60,31 +60,36 @@ export const News = () => {
       <div className="news_prompt">
         <p>The latest breaking Hollywoodle news.</p>
       </div>
-      <div className="all_articles_container">
+      <ul className="all_articles_container">
         {currentNews.map((el) => {
           return (
-            <article className="individual_news_preview" key={el._id}>
-              <div className="individual_news_thumbnail_container">
-                <img src={el.image} alt={el.title} />
-              </div>
-              <div className="individual_news_text_container">
-                <h2>{el.title}</h2>
-                <div className="individual_news_details">
-                  <p className="news_category">{el.category}</p>
-                  <p className="details_divider">|</p>
-                  <p>{el.date}</p>
+            <li className="individual_news_preview" key={el._id}>
+              <Link
+                className="news_link"
+                to={`${location.pathname}/${el.slug}`}
+              >
+                <div className="individual_news_thumbnail_container">
+                  <img src={el.image} alt={el.title} />
                 </div>
-                <p className="article_text_preview_container">
-                  <span className="article_text_preview">{el.text}</span>
-                  <span className="article_text_preview_read_more">
-                    read more
-                  </span>
-                </p>
-              </div>
-            </article>
+                <div className="individual_news_text_container">
+                  <h2>{el.title}</h2>
+                  <div className="individual_news_details">
+                    <p className="news_category">{el.category}</p>
+                    <p className="details_divider">|</p>
+                    <p>{el.date}</p>
+                  </div>
+                  <p className="article_text_preview_container">
+                    <span className="article_text_preview">{el.text}</span>
+                    <span className="article_text_preview_read_more">
+                      read more
+                    </span>
+                  </p>
+                </div>
+              </Link>
+            </li>
           );
         })}
-      </div>
+      </ul>
       <Footer />
     </div>
   );

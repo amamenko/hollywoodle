@@ -52,7 +52,12 @@
 
   .all_articles_container {
     border-bottom: 1px solid rgb(100, 100, 100);
+    padding: 0;
     margin: 2rem 1.75rem;
+    .news_link {
+      display: flex;
+      color: transparent;
+    }
     .individual_news_preview {
       display: flex;
       align-items: center;
@@ -87,6 +92,7 @@
         margin-left: 0.75rem;
         flex: 1;
         h2 {
+          color: #fff;
           @include header_hover.header-hover;
           cursor: pointer;
           font-size: 75%;
@@ -106,7 +112,7 @@
           display: flex;
           align-items: center;
           width: 100%;
-          color: rgb(180, 180, 180);
+          color: rgb(180, 180, 180) !important;
           margin: 0 0 0.5rem 0;
           .news_category {
             @include header_hover.header-hover;
@@ -119,6 +125,7 @@
         }
         .article_text_preview_container {
           display: flex;
+          color: #fff;
           .article_text_preview {
             max-width: 100px;
             overflow: hidden;
