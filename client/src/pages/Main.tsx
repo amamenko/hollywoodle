@@ -17,7 +17,7 @@ import { Archive } from "./Archive/Archive";
 import { Contact } from "./Contact/Contact";
 import { AllPaths } from "./AllPaths/AllPaths";
 // import { News } from "./News/News";
-// import { Article } from "./News/Article";
+// import { Article } from "./News/Article/Article";
 // import { Battle } from "./Battle/Battle";
 
 export const GameContext = createContext<GameContextProps>(gameContextDefaults);

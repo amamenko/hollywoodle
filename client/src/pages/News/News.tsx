@@ -6,12 +6,32 @@ import { AppContext } from "../../App";
 import { Footer } from "../../components/Footer/Footer";
 import { BackButton } from "../BackButton";
 import axios from "axios";
+import ContentLoader from "react-content-loader";
 import "./News.scss";
+
+const NewsLoader = ({ darkMode }: { darkMode: boolean }) => (
+  <ContentLoader
+    speed={1}
+    animate={true}
+    viewBox="0 0 350 100"
+    title="Loading news..."
+    backgroundColor={darkMode ? "rgb(145, 146, 146)" : "rgb(215, 216, 217)"}
+    foregroundColor={darkMode ? "rgb(115, 115, 115)" : "rgb(208, 208, 208)"}
+  >
+    <rect x="0.84" y="9.93" rx="5" ry="5" width="145.55" height="80.59" />
+    <rect x="158.84" y="20.67" rx="0" ry="0" width="148.72" height="12.12" />
+    <rect x="158.84" y="46.67" rx="0" ry="0" width="89" height="9" />
+    <rect x="258.84" y="46.67" rx="0" ry="0" width="40" height="9" />
+    <rect x="158.84" y="71.67" rx="0" ry="0" width="89" height="9" />
+    <rect x="258.84" y="71.67" rx="0" ry="0" width="50" height="9" />
+  </ContentLoader>
+);
 
 export const News = () => {
   const { darkMode } = useContext(AppContext);
   const location = useLocation();
   const [currentNews, changeCurrentNews] = useState<NewsObj[]>([]);
+  const [dataLoaded, changeDataLoaded] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,6 +50,7 @@ export const News = () => {
       : "";
 
     const fetchData = async () => {
+      changeDataLoaded(false);
       await axios
         .get(
           nodeEnv && nodeEnv === "production"
@@ -38,10 +59,11 @@ export const News = () => {
         )
         .then((res) => res.data)
         .then((data) => {
-          console.log({ data });
+          changeDataLoaded(true);
           changeCurrentNews(data);
         })
         .catch((e) => {
+          changeDataLoaded(true);
           console.error(e);
         });
     };
@@ -60,36 +82,50 @@ export const News = () => {
       <div className="news_prompt">
         <p>The latest breaking Hollywoodle news.</p>
       </div>
-      <ul className="all_articles_container">
-        {currentNews.map((el) => {
-          return (
-            <li className="individual_news_preview" key={el._id}>
-              <Link
-                className="news_link"
-                to={`${location.pathname}/${el.slug}`}
-              >
-                <div className="individual_news_thumbnail_container">
-                  <img src={el.image} alt={el.title} />
-                </div>
-                <div className="individual_news_text_container">
-                  <h2>{el.title}</h2>
-                  <div className="individual_news_details">
-                    <p className="news_category">{el.category}</p>
-                    <p className="details_divider">|</p>
-                    <p>{el.date}</p>
+      {dataLoaded ? (
+        <ul className="all_articles_container">
+          {currentNews.map((el) => {
+            return (
+              <li className="individual_news_preview" key={el._id}>
+                <Link
+                  className="news_link"
+                  to={`${location.pathname}/${el.slug}`}
+                >
+                  <div className="individual_news_thumbnail_container">
+                    <img src={el.image} alt={el.title} />
                   </div>
-                  <p className="article_text_preview_container">
-                    <span className="article_text_preview">{el.text}</span>
-                    <span className="article_text_preview_read_more">
-                      read more
-                    </span>
-                  </p>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+                  <div className="individual_news_text_container">
+                    <h2>{el.title}</h2>
+                    <div className="individual_news_details">
+                      <p className="news_category">{el.category}</p>
+                      <p className="details_divider">|</p>
+                      <p>{el.date}</p>
+                    </div>
+                    <p className="article_text_preview_container">
+                      <span className="article_text_preview">{el.text}</span>
+                      <span className="article_text_preview_read_more">
+                        read more
+                      </span>
+                    </p>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div className="news_loader_container">
+          <span>
+            <NewsLoader darkMode={darkMode} />
+          </span>
+          <span>
+            <NewsLoader darkMode={darkMode} />
+          </span>
+          <span>
+            <NewsLoader darkMode={darkMode} />
+          </span>
+        </div>
+      )}
       <Footer />
     </div>
   );
