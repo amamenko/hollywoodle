@@ -1,31 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { NewsObj } from "../../interfaces/News.interfaces";
 import { toast } from "react-toastify";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { AppContext } from "../../App";
 import { Footer } from "../../components/Footer/Footer";
 import { BackButton } from "../BackButton";
 import axios from "axios";
-import ContentLoader from "react-content-loader";
+import { NewsListPlaceholder } from "./NewsListPlaceholder";
+import { NewsPreview } from "./NewsPreview";
 import "./News.scss";
-
-const NewsLoader = ({ darkMode }: { darkMode: boolean }) => (
-  <ContentLoader
-    speed={1}
-    animate={true}
-    viewBox="0 0 350 100"
-    title="Loading news..."
-    backgroundColor={darkMode ? "rgb(145, 146, 146)" : "rgb(215, 216, 217)"}
-    foregroundColor={darkMode ? "rgb(115, 115, 115)" : "rgb(208, 208, 208)"}
-  >
-    <rect x="0.84" y="9.93" rx="5" ry="5" width="145.55" height="80.59" />
-    <rect x="158.84" y="20.67" rx="0" ry="0" width="148.72" height="12.12" />
-    <rect x="158.84" y="46.67" rx="0" ry="0" width="89" height="9" />
-    <rect x="258.84" y="46.67" rx="0" ry="0" width="40" height="9" />
-    <rect x="158.84" y="71.67" rx="0" ry="0" width="89" height="9" />
-    <rect x="258.84" y="71.67" rx="0" ry="0" width="50" height="9" />
-  </ContentLoader>
-);
 
 export const News = () => {
   const { darkMode } = useContext(AppContext);
@@ -59,11 +42,26 @@ export const News = () => {
         )
         .then((res) => res.data)
         .then((data) => {
-          changeDataLoaded(true);
+          setTimeout(() => changeDataLoaded(true), 300);
           changeCurrentNews(data);
+          // Wait for all images to fully load before rendering data
+          const loadImage = (imageURL: string) => {
+            return new Promise((resolve, reject) => {
+              const loadImg = new Image();
+              loadImg.src = imageURL;
+              loadImg.onload = () => resolve(imageURL);
+              loadImg.onerror = (err) => reject(err);
+            });
+          };
+          const allImages: string[] = data.map((el: NewsObj) =>
+            el.image.toString()
+          );
+          Promise.allSettled(allImages.map((image) => loadImage(image)))
+            .then(() => setTimeout(() => changeDataLoaded(true), 300))
+            .catch((err) => console.error("Failed to load images", err));
         })
         .catch((e) => {
-          changeDataLoaded(true);
+          setTimeout(() => changeDataLoaded(true), 300);
           console.error(e);
         });
     };
@@ -84,47 +82,16 @@ export const News = () => {
       </div>
       {dataLoaded ? (
         <ul className="all_articles_container">
-          {currentNews.map((el) => {
+          {currentNews.map((article) => {
             return (
-              <li className="individual_news_preview" key={el._id}>
-                <Link
-                  className="news_link"
-                  to={`${location.pathname}/${el.slug}`}
-                >
-                  <div className="individual_news_thumbnail_container">
-                    <img src={el.image} alt={el.title} />
-                  </div>
-                  <div className="individual_news_text_container">
-                    <h2>{el.title}</h2>
-                    <div className="individual_news_details">
-                      <p className="news_category">{el.category}</p>
-                      <p className="details_divider">|</p>
-                      <p>{el.date}</p>
-                    </div>
-                    <p className="article_text_preview_container">
-                      <span className="article_text_preview">{el.text}</span>
-                      <span className="article_text_preview_read_more">
-                        read more
-                      </span>
-                    </p>
-                  </div>
-                </Link>
-              </li>
+              <Fragment key={article._id}>
+                <NewsPreview article={article} />
+              </Fragment>
             );
           })}
         </ul>
       ) : (
-        <div className="news_loader_container">
-          <span>
-            <NewsLoader darkMode={darkMode} />
-          </span>
-          <span>
-            <NewsLoader darkMode={darkMode} />
-          </span>
-          <span>
-            <NewsLoader darkMode={darkMode} />
-          </span>
-        </div>
+        <NewsListPlaceholder />
       )}
       <Footer />
     </div>

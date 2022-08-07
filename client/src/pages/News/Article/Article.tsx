@@ -1,60 +1,84 @@
-import { useContext } from "react";
-// import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { AppContext } from "../../../App";
 import { Footer } from "../../../components/Footer/Footer";
 import { BackButton } from "../../BackButton";
-import ContentLoader from "react-content-loader";
+import { ArticlePlaceholder } from "./ArticlePlaceholder";
+import { FullArticle } from "./FullArticle";
+import axios from "axios";
+import { NewsObj } from "../../../interfaces/News.interfaces";
 import "./Article.scss";
 
-const ArticleLoader = ({ darkMode }: { darkMode: boolean }) => (
-  <ContentLoader
-    speed={1}
-    width={800}
-    viewBox="0 0 800 1500"
-    backgroundColor={darkMode ? "rgb(145, 146, 146)" : "rgb(215, 216, 217)"}
-    foregroundColor={darkMode ? "rgb(115, 115, 115)" : "rgb(208, 208, 208)"}
-  >
-    <rect x="42" y="57" rx="4" ry="4" width="417" height="29" />
-    <rect x="42" y="105" rx="4" ry="4" width="67" height="15" />
-    <rect x="217" y="157" rx="4" ry="4" width="433" height="291" />
-    <rect x="48" y="515" rx="4" ry="4" width="720" height="15" />
-    <rect x="49" y="547" rx="4" ry="4" width="598" height="15" />
-    <rect x="48" y="581" rx="4" ry="4" width="720" height="15" />
-    <rect x="49" y="612" rx="4" ry="4" width="520" height="15" />
-    <rect x="48" y="652" rx="4" ry="4" width="720" height="15" />
-    <rect x="48" y="684" rx="4" ry="4" width="598" height="15" />
-    <rect x="48" y="718" rx="4" ry="4" width="720" height="15" />
-    <rect x="49" y="748" rx="4" ry="4" width="419" height="15" />
-  </ContentLoader>
-);
-
 export const Article = () => {
-  // let { topicId } = useParams();
+  let { topicId } = useParams();
   const { darkMode } = useContext(AppContext);
+  const [currentArticle, changeCurrentArticle] = useState<NewsObj>({
+    _id: "",
+    title: "",
+    image: "",
+    category: "",
+    date: "",
+    slug: "",
+    text: "",
+  });
+  const [articleLoading, changeArticleLoading] = useState(false);
+
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+
+    const nodeEnv = process.env.REACT_APP_NODE_ENV
+      ? process.env.REACT_APP_NODE_ENV
+      : "";
+
+    const fetchData = async () => {
+      changeArticleLoading(true);
+      await axios
+        .get(
+          nodeEnv && nodeEnv === "production"
+            ? `${process.env.REACT_APP_PROD_SERVER}/api/news_article`
+            : "http://localhost:4000/api/news_article",
+          {
+            params: { slug: topicId },
+          }
+        )
+        .then((res) => res.data)
+        .then((data) => {
+          if (data) {
+            if (
+              data.title &&
+              data.image &&
+              data.category &&
+              data.date &&
+              data.slug &&
+              data.text &&
+              data._id
+            ) {
+              changeCurrentArticle(data);
+            }
+          }
+          setTimeout(() => changeArticleLoading(false), 300);
+        })
+        .catch((e) => {
+          setTimeout(() => changeArticleLoading(false), 300);
+          console.error(e);
+        });
+    };
+
+    fetchData();
+    return () => source.cancel();
+  }, [topicId]);
 
   return (
     <div className={`news_container ${darkMode ? "dark" : ""}`}>
       <h2 className={`news_title_header ${darkMode ? "dark" : ""}`}>
-        <BackButton />
+        <BackButton customNav={"/news"} />
         HOLLYWOODLE NEWS
       </h2>
-      <div className="loader_container">
-        <ArticleLoader darkMode={darkMode} />
-      </div>
-      {/* <div className="article_container">
-        <h2 className="article_title">WELCOME TO HOLLYWOODLE</h2>
-        <div className="article_details">
-          <p className="article_date">04/01/2022</p>
-          <p className="details_divider">|</p>
-          <p>Game Updates</p>
-        </div>
-        <div className="article_image_container">
-          <img
-            src="https://i.imgur.com/aDTTMs8.png"
-            alt="WELCOME TO HOLLYWOODLE"
-          />
-        </div>
-      </div> */}
+      {articleLoading || !currentArticle.title || !currentArticle._id ? (
+        <ArticlePlaceholder />
+      ) : (
+        <FullArticle currentArticle={currentArticle} />
+      )}
       <Footer />
     </div>
   );

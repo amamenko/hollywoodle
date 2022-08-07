@@ -1,3 +1,5 @@
+@use "../../../components/Header/mixins/header_hover" as header_hover;
+
 .loader_container {
   width: 100%;
   display: flex;
@@ -12,6 +14,7 @@
   align-items: flex-start;
   justify-content: center;
   margin: 0 1.5rem;
+  height: 100%;
   .article_title {
     font-weight: 800;
     font-size: 2rem;
@@ -36,6 +39,52 @@
     justify-content: center;
     img {
       width: 100%;
+    }
+  }
+  .article_text_container {
+    height: 100%;
+    margin-top: 0.5rem;
+    line-height: 1.75;
+    padding-bottom: 8rem;
+  }
+  .article_bottom_container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgb(215, 215, 215);
+    margin-top: 3rem;
+    padding-top: 3rem;
+    .article_read_more_news,
+    .article_back_to_top {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    @mixin dark_hover {
+      &.dark {
+        &:hover {
+          color: rgb(180, 180, 180) !important;
+          svg {
+            fill: rgb(180, 180, 180) !important;
+          }
+        }
+      }
+    }
+    .article_read_more_news {
+      @include header_hover.header-hover;
+      svg {
+        margin-right: 0.25rem;
+      }
+      @include dark_hover;
+    }
+    .article_back_to_top {
+      @include header_hover.header-hover;
+      svg {
+        margin-left: 0.5rem;
+      }
+      @include dark_hover;
     }
   }
 }

@@ -150,6 +150,12 @@ app.get("/api/news", [], async (req: Request, res: Response) => {
   res.send(allNews);
 });
 
+app.get("/api/news_article", [], async (req: Request, res: Response) => {
+  const slugRequest = req.query.slug || "";
+  const foundArticle = await News.findOne({ slug: slugRequest });
+  res.send(foundArticle);
+});
+
 app.get("/api/top_paths", [], async (req: Request, res: Response) => {
   const pageRequest: number = Number(req.query.page) || 0;
   const topPaths: { [key: string]: { [key: string]: string | number }[] }[] =

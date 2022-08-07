@@ -1,11 +1,15 @@
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
-export const BackButton = () => {
+export const BackButton = ({ customNav }: { customNav?: string }) => {
   const navigate = useNavigate();
 
   const handleGoBackOnePage = () => {
-    navigate(-1);
+    if (customNav) {
+      navigate(customNav);
+    } else {
+      navigate(-1);
+    }
   };
   return (
     <IoArrowBackCircleOutline

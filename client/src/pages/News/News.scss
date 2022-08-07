@@ -51,11 +51,12 @@
   }
 
   .news_loader_container {
-    width: 85%;
+    width: 86%;
+    align-self: center;
     position: relative;
     display: flex;
     flex-direction: column;
-    margin: 0 1.75rem;
+    margin: 0.5rem 1.75rem 0 1.75rem;
     span {
       &:first-child {
         border-top: 1px solid rgb(100, 100, 100);
@@ -63,6 +64,9 @@
       }
       border-bottom: 1px solid rgb(100, 100, 100);
       padding: 1rem 0;
+    }
+    @media only screen and (min-width: 768px) {
+      width: 88%;
     }
   }
 
@@ -109,13 +113,22 @@
         margin-left: 0.75rem;
         flex: 1;
         h2 {
-          color: #fff;
+          color: #000;
           @include header_hover.header-hover;
           cursor: pointer;
           font-size: 75%;
           margin: 0 0 0.5rem 0;
           @media only screen and (min-width: 768px) {
             font-size: 100%;
+          }
+          &:hover {
+            color: rgb(125, 125, 125) !important;
+          }
+          &.dark {
+            color: #fff;
+            &:hover {
+              color: rgb(180, 180, 180) !important;
+            }
           }
         }
         p {
@@ -129,20 +142,32 @@
           display: flex;
           align-items: center;
           width: 100%;
-          color: rgb(180, 180, 180) !important;
+          color: rgb(80, 80, 80) !important;
           margin: 0 0 0.5rem 0;
           .news_category {
             @include header_hover.header-hover;
             cursor: pointer;
             font-weight: 500;
+            &:hover {
+              color: rgb(125, 125, 125) !important;
+              &.dark {
+                color: rgb(180, 180, 180) !important;
+              }
+            }
           }
           .details_divider {
             margin: 0 10px;
           }
+          &.dark {
+            color: rgb(180, 180, 180) !important;
+          }
         }
         .article_text_preview_container {
           display: flex;
-          color: #fff;
+          color: #000;
+          &.dark {
+            color: #fff;
+          }
           .article_text_preview {
             max-width: 100px;
             overflow: hidden;
@@ -159,6 +184,18 @@
             @include header_hover.header-hover;
             cursor: pointer;
             font-weight: 600;
+          }
+          &:hover {
+            .article_text_preview_read_more {
+              color: rgb(125, 125, 125) !important;
+            }
+          }
+          &.dark {
+            &:hover {
+              .article_text_preview_read_more {
+                color: rgb(180, 180, 180) !important;
+              }
+            }
           }
         }
       }
