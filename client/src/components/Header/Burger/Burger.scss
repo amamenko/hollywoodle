@@ -24,6 +24,9 @@
 .bm-cross-button {
   height: 24px;
   width: 24px;
+  @media only screen and (min-width: 768px) {
+    margin-right: 1rem;
+  }
 }
 
 /* Color/shape of close button cross */

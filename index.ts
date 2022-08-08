@@ -8,7 +8,7 @@ import { News } from "./models/News";
 import cron from "node-cron";
 import cors from "cors";
 import enforce from "express-sslify";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import http from "http";
 import { Server } from "socket.io";
 import { updateLeaderboard } from "./functions/updateLeaderboard";
@@ -147,6 +147,8 @@ app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
 
 app.get("/api/news", [], async (req: Request, res: Response) => {
   const allNews = await News.find().sort({ date: -1 });
+  const parseFunc = (date: string) => parse(date, "MMMM d, yyyy", new Date());
+  allNews.sort((a, b) => (parseFunc(a.date) > parseFunc(b.date) ? -1 : 1));
   res.send(allNews);
 });
 

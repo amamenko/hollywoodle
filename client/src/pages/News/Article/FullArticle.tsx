@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../../../App";
 import { NewsObj } from "../../../interfaces/News.interfaces";
 import { GoTriangleLeft, GoTriangleUp } from "react-icons/go";
@@ -21,6 +21,11 @@ export const FullArticle = ({
       container: "article_container",
     });
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Element name="top" className="article_container">
       <h2 className="article_title">{currentArticle.title}</h2>

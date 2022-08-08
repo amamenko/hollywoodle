@@ -37,15 +37,28 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 190px;
+    max-height: 190px;
+    overflow: hidden;
+    @media only screen and (min-width: 768px) {
+      min-height: 260px;
+      max-height: 260px;
+    }
     img {
+      flex: 1;
+      object-fit: cover;
       width: 100%;
+      height: 190px;
+      overflow: hidden;
+      @media only screen and (min-width: 768px) {
+        height: 260px;
+      }
     }
   }
   .article_text_container {
     height: 100%;
     margin-top: 0.5rem;
     line-height: 1.75;
-    padding-bottom: 8rem;
   }
   .article_bottom_container {
     width: 100%;

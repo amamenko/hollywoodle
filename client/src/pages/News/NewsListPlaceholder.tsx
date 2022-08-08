@@ -39,6 +39,21 @@ export const NewsListPlaceholder = () => {
       <span>
         <NewsLoader darkMode={darkMode} />
       </span>
+      <span>
+        <NewsLoader darkMode={darkMode} />
+      </span>
+      <span>
+        <NewsLoader darkMode={darkMode} />
+      </span>
+      <span>
+        <NewsLoader darkMode={darkMode} />
+      </span>
+      <span>
+        <NewsLoader darkMode={darkMode} />
+      </span>
+      <span>
+        <NewsLoader darkMode={darkMode} />
+      </span>
     </div>
   );
 };
