@@ -24,6 +24,10 @@ export const Article = () => {
   const [articleLoading, changeArticleLoading] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const source = axios.CancelToken.source();
 
     const nodeEnv = process.env.REACT_APP_NODE_ENV

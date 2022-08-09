@@ -1,0 +1,23 @@
+@mixin hover_colors_dark {
+  color: rgb(155, 155, 155) !important;
+  svg {
+    color: rgb(155, 155, 155) !important;
+  }
+  fill: rgb(155, 155, 155) !important;
+  path {
+    stroke: rgb(155, 155, 155) !important;
+  }
+}
+
+@mixin header_hover_dark {
+  @media only screen and (min-width: 768px) {
+    &:hover {
+      @include hover_colors_dark();
+    }
+
+    &:focus,
+    &:active {
+      @include hover_colors_dark();
+    }
+  }
+}

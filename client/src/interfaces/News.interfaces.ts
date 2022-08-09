@@ -6,4 +6,5 @@ export interface NewsObj {
   text: string;
   title: string;
   slug: string;
+  draft?: boolean;
 }

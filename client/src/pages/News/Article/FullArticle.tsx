@@ -37,7 +37,7 @@ export const FullArticle = ({
       <div className="article_image_container">
         <img src={currentArticle.image} alt={currentArticle.title} />
       </div>
-      <div className="article_text_container">
+      <div className={`article_text_container ${darkMode ? "dark" : ""}`}>
         <span dangerouslySetInnerHTML={{ __html: currentArticle.text }} />
         <div className="article_bottom_container">
           <span

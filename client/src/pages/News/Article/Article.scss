@@ -1,4 +1,5 @@
 @use "../../../components/Header/mixins/header_hover" as header_hover;
+@use "../../../components/Header/mixins/header_hover_dark" as header_hover_dark;
 
 .loader_container {
   width: 100%;
@@ -59,6 +60,24 @@
     height: 100%;
     margin-top: 0.5rem;
     line-height: 1.75;
+    a {
+      @include header_hover.header-hover;
+      text-decoration: none;
+      color: #000;
+      border-bottom: 1px solid #000;
+      padding-bottom: 0.1rem;
+      border-bottom: 1px solid rgb(200, 200, 200);
+    }
+    &.dark {
+      a {
+        @include header_hover_dark.header_hover_dark;
+        color: #fff;
+        border-bottom: 1px solid #fff;
+        &:hover {
+          border-bottom: 1px solid rgb(155, 155, 155);
+        }
+      }
+    }
   }
   .article_bottom_container {
     width: 100%;

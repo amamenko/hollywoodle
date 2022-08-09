@@ -146,7 +146,7 @@ app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
 });
 
 app.get("/api/news", [], async (req: Request, res: Response) => {
-  const allNews = await News.find().sort({ date: -1 });
+  const allNews = await News.find({ draft: { $ne: true } });
   const parseFunc = (date: string) => parse(date, "MMMM d, yyyy", new Date());
   allNews.sort((a, b) => (parseFunc(a.date) > parseFunc(b.date) ? -1 : 1));
   res.send(allNews);

@@ -10,7 +10,11 @@ export const NewsPreview = ({ article }: { article: NewsObj }) => {
   return (
     <li className="individual_news_preview">
       <Link className="news_link" to={`${location.pathname}/${article.slug}`}>
-        <div className="individual_news_thumbnail_container">
+        <div
+          className={`individual_news_thumbnail_container ${
+            darkMode ? "dark" : ""
+          }`}
+        >
           <img src={article.image} alt={article.title} />
         </div>
         <div className="individual_news_text_container">

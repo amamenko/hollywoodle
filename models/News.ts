@@ -8,6 +8,7 @@ const newsSchema = new mongoose.Schema(
     image: String,
     category: String,
     slug: String,
+    draft: { type: Boolean, required: false },
   },
   { timestamps: true }
 );
