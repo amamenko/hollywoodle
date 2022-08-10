@@ -147,7 +147,7 @@
           }
         }
         p {
-          font-size: 0.55rem;
+          font-size: 0.6rem;
           margin: 0;
           @media only screen and (min-width: 768px) {
             font-size: 0.75rem;
@@ -184,7 +184,7 @@
             color: #fff;
           }
           .article_text_preview {
-            max-width: 100px;
+            max-width: 125px;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;

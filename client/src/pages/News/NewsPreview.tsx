@@ -31,8 +31,8 @@ export const NewsPreview = ({ article }: { article: NewsObj }) => {
           >
             <span className="article_text_preview">
               {
-                // Remove open and closing p tags
-                article.text.replace(/<\/?p[^>]*>/g, "")
+                // Remove HTML tags from text
+                article.text.replace(/(<([^>]+)>)/gim, "")
               }
             </span>
             <span className="article_text_preview_read_more">read more</span>
