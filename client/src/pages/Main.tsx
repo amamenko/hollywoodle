@@ -18,6 +18,7 @@ import { Contact } from "./Contact/Contact";
 import { AllPaths } from "./AllPaths/AllPaths";
 // import { News } from "./News/News";
 // import { Article } from "./News/Article/Article";
+import { Helmet } from "react-helmet";
 // import { Battle } from "./Battle/Battle";
 
 export const GameContext = createContext<GameContextProps>(gameContextDefaults);
@@ -74,6 +75,34 @@ export const Main = () => {
         changeMostRecentActor,
       }}
     >
+      <Helmet>
+        <title>Hollywoodle</title>
+        <meta name="title" content="Hollywoodle" />
+        <meta
+          name="description"
+          content="Six Degrees of Kevin Bacon meets Wordle. Connect the two actors with movies they've starred in or costars they've shared in as few moves as possible!"
+        />
+        {/* Open Graph / Facebook  */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.hollywoodle.ml/" />
+        <meta property="og:title" content="Hollywoodle" />
+        <meta
+          property="og:description"
+          content="Six Degrees of Kevin Bacon meets Wordle. Connect the two actors with movies they've starred in or costars they've shared in as few moves as possible!"
+        />
+        <meta property="og:image" content="https://i.imgur.com/ML7OvjA.png" />
+        {/* Twitter */}
+        <meta property="twitter:url" content="https://www.hollywoodle.ml/" />
+        <meta property="twitter:title" content="Hollywoodle" />
+        <meta
+          property="twitter:description"
+          content="Six Degrees of Kevin Bacon meets Wordle. Connect the two actors with movies they've starred in or costars they've shared in as few moves as possible!"
+        />
+        <meta
+          property="twitter:image"
+          content="https://i.imgur.com/ML7OvjA.png"
+        />
+      </Helmet>
       <Router>
         <Header />
         <Routes>

@@ -18,7 +18,9 @@ export const NewsPreview = ({ article }: { article: NewsObj }) => {
           <img src={article.image} alt={article.title} />
         </div>
         <div className="individual_news_text_container">
-          <h2 className={`${darkMode ? "dark" : ""}`}>{article.title}</h2>
+          <h2 className={`${darkMode ? "dark" : ""}`}>
+            {article.title.toUpperCase()}
+          </h2>
           <div className={`individual_news_details ${darkMode ? "dark" : ""}`}>
             <p className="news_category">{article.category}</p>
             <p className="details_divider">|</p>
