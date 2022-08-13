@@ -7,6 +7,7 @@ import { ArticlePlaceholder } from "./ArticlePlaceholder";
 import { FullArticle } from "./FullArticle";
 import axios from "axios";
 import { NewsObj } from "../../../interfaces/News.interfaces";
+import { loadImage } from "../loadImage";
 import "./Article.scss";
 
 export const Article = () => {
@@ -60,7 +61,16 @@ export const Article = () => {
               changeCurrentArticle(data);
             }
           }
-          setTimeout(() => changeArticleLoading(false), 300);
+          Promise.allSettled([loadImage(data.image)])
+            .then(() =>
+              setTimeout(() => {
+                changeArticleLoading(false);
+                // Signal to prerender.io service that page has finished rendering
+                const newWindow = window as any;
+                if (!newWindow.prerenderReady) newWindow.prerenderReady = true;
+              }, 300)
+            )
+            .catch((err) => console.error("Failed to load images", err));
         })
         .catch((e) => {
           setTimeout(() => changeArticleLoading(false), 300);
@@ -78,7 +88,7 @@ export const Article = () => {
         <BackButton customNav={"/news"} />
         HOLLYWOODLE NEWS
       </h2>
-      {articleLoading || !currentArticle.title || !currentArticle._id ? (
+      {articleLoading ? (
         <ArticlePlaceholder />
       ) : (
         <FullArticle currentArticle={currentArticle} />

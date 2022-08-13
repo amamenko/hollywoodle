@@ -8,6 +8,7 @@ import { BackButton } from "../BackButton";
 import axios from "axios";
 import { NewsListPlaceholder } from "./NewsListPlaceholder";
 import { NewsPreview } from "./NewsPreview";
+import { loadImage } from "./loadImage";
 import "./News.scss";
 
 export const News = () => {
@@ -44,15 +45,6 @@ export const News = () => {
         .then((data) => {
           setTimeout(() => changeDataLoaded(true), 300);
           changeCurrentNews(data);
-          // Wait for all images to fully load before rendering data
-          const loadImage = (imageURL: string) => {
-            return new Promise((resolve, reject) => {
-              const loadImg = new Image();
-              loadImg.src = imageURL;
-              loadImg.onload = () => resolve(imageURL);
-              loadImg.onerror = (err) => reject(err);
-            });
-          };
           const allImages: string[] = data.map((el: NewsObj) =>
             el.image.toString()
           );
