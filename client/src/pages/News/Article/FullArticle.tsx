@@ -1,10 +1,11 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../App";
 import { NewsObj } from "../../../interfaces/News.interfaces";
 import { GoTriangleLeft, GoTriangleUp } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { scroller, Element } from "react-scroll";
-import { Helmet } from "react-helmet";
+import { ShareButton } from "../../../components/Winner/NewButtons/ShareButton";
+import { ShareViaTweet } from "../../../components/Winner/NewButtons/ShareViaTweet";
 
 export const FullArticle = ({
   currentArticle,
@@ -12,12 +13,12 @@ export const FullArticle = ({
   currentArticle: NewsObj;
 }) => {
   const { darkMode } = useContext(AppContext);
+  const [shareLinkClicked, changeShareLinkClicked] = useState(false);
+  const [shareLinkAnimatingOut, changeShareLinkAnimatingOut] = useState(false);
+  const [lastClicked, changeLastClicked] = useState("");
   const navigate = useNavigate();
-  // Remove HTML tags from text
-  const descriptionSnippet = currentArticle.text
-    .replace(/(<([^>]+)>)/gim, "")
-    .slice(0, 150);
   const handleNavigateBack = () => navigate("/news");
+  const fullArticleLink = `https://hollywoodle.ml/news/${currentArticle.slug}`;
   const handleScrollToTop = () => {
     scroller.scrollTo("top", {
       duration: 500,
@@ -31,40 +32,31 @@ export const FullArticle = ({
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    const handleAnimateOutTimeout = (
+      clickedFn: (value: React.SetStateAction<boolean>) => void,
+      animatingOutFn: (value: React.SetStateAction<boolean>) => void
+    ) => {
+      setTimeout(() => {
+        animatingOutFn(true);
+      }, 4500);
+
+      setTimeout(() => {
+        clickedFn(false);
+        animatingOutFn(false);
+      }, 4800);
+    };
+
+    if (lastClicked === "link" && shareLinkClicked) {
+      handleAnimateOutTimeout(
+        changeShareLinkClicked,
+        changeShareLinkAnimatingOut
+      );
+    }
+  }, [lastClicked, shareLinkClicked]);
+
   return (
     <Element name="top" className="article_container">
-      <Helmet>
-        <title>{`${currentArticle.title} - News - Hollywoodle`}</title>
-        <meta
-          name="title"
-          content={`${currentArticle.title} - News - Hollywoodle`}
-        />
-        <meta name="description" content={descriptionSnippet} />
-        {/* Open Graph / Facebook  */}
-        <meta
-          property="og:url"
-          content={`https://www.hollywoodle.ml/news/${currentArticle.slug}`}
-        />
-        <meta
-          property="og:title"
-          content={`${currentArticle.title} - News - Hollywoodle`}
-        />
-        <meta property="og:description" content={descriptionSnippet} />
-        <meta property="og:image:width" content="600" />
-        <meta property="og:image:height" content="314" />
-        <meta property="og:image" content={currentArticle.image} />
-        {/* Twitter */}
-        <meta
-          property="twitter:url"
-          content={`https://www.hollywoodle.ml/news/${currentArticle.slug}`}
-        />
-        <meta
-          property="twitter:title"
-          content={`${currentArticle.title} - News - Hollywoodle`}
-        />
-        <meta property="twitter:description" content={descriptionSnippet} />
-        <meta property="twitter:image" content={currentArticle.image} />
-      </Helmet>
       <h2 className="article_title">{currentArticle.title.toUpperCase()}</h2>
       <div className="article_details">
         <p className="article_date">{currentArticle.date}</p>
@@ -73,6 +65,20 @@ export const FullArticle = ({
       </div>
       <div className="article_image_container">
         <img src={currentArticle.image} alt={currentArticle.title} />
+      </div>
+      <div
+        className={`article_share_buttons_container ${darkMode ? "dark" : ""}`}
+      >
+        <ShareButton
+          shareLinkClicked={shareLinkClicked}
+          changeShareLinkClicked={changeShareLinkClicked}
+          changeLastClicked={changeLastClicked}
+          shareLinkAnimatingOut={shareLinkAnimatingOut}
+          copyShareLink={`${fullArticleLink}`}
+        />
+        <ShareViaTweet
+          twitterShareText={`${currentArticle.title}\n${fullArticleLink} via @hollywoodlegame`}
+        />
       </div>
       <div className={`article_text_container ${darkMode ? "dark" : ""}`}>
         <span dangerouslySetInnerHTML={{ __html: currentArticle.text }} />

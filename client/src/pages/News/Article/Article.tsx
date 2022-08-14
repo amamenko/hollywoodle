@@ -8,6 +8,7 @@ import { FullArticle } from "./FullArticle";
 import axios from "axios";
 import { NewsObj } from "../../../interfaces/News.interfaces";
 import { loadImage } from "../loadImage";
+import { Helmet } from "react-helmet";
 import "./Article.scss";
 
 export const Article = () => {
@@ -23,6 +24,16 @@ export const Article = () => {
     text: "",
   });
   const [articleLoading, changeArticleLoading] = useState(false);
+
+  const descriptionSnippet =
+    currentArticle.text
+      // Remove HTML tags from text
+      .replace(/(<([^>]+)>)/gm, " ")
+      // Change double spaces to single space
+      .replace(/\s{2,}/gm, " ")
+      .trim()
+      .slice(0, 125)
+      .trim() + "...";
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -84,6 +95,38 @@ export const Article = () => {
 
   return (
     <div className={`news_container ${darkMode ? "dark" : ""}`}>
+      <Helmet>
+        <title>{`${currentArticle.title} - News - Hollywoodle`}</title>
+        <meta
+          name="title"
+          content={`${currentArticle.title} - News - Hollywoodle`}
+        />
+        <meta name="description" content={descriptionSnippet} />
+        {/* Open Graph / Facebook  */}
+        <meta
+          property="og:url"
+          content={`https://www.hollywoodle.ml/news/${currentArticle.slug}`}
+        />
+        <meta
+          property="og:title"
+          content={`${currentArticle.title} - News - Hollywoodle`}
+        />
+        <meta property="og:description" content={descriptionSnippet} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="314" />
+        <meta property="og:image" content={currentArticle.image} />
+        {/* Twitter */}
+        <meta
+          property="twitter:url"
+          content={`https://www.hollywoodle.ml/news/${currentArticle.slug}`}
+        />
+        <meta
+          property="twitter:title"
+          content={`${currentArticle.title} - News - Hollywoodle`}
+        />
+        <meta property="twitter:description" content={descriptionSnippet} />
+        <meta property="twitter:image" content={currentArticle.image} />
+      </Helmet>
       <h2 className={`news_title_header ${darkMode ? "dark" : ""}`}>
         <BackButton customNav={"/news"} />
         HOLLYWOODLE NEWS

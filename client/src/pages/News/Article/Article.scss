@@ -56,6 +56,46 @@
       }
     }
   }
+  .article_share_buttons_container {
+    border-bottom: 1px solid rgb(200, 200, 200);
+    padding: 2rem 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .winner_kofi_button {
+      margin: 0;
+      padding: 0;
+    }
+    .kofi-button {
+      margin: 0;
+    }
+    .winner_kofi_button:first-child {
+      &:hover {
+        .kofi-button {
+          background: rgba(83, 141, 78, 0.8);
+          .kofitext {
+            color: rgba(255, 255, 255, 0.8) !important;
+          }
+        }
+      }
+    }
+    &.dark {
+      border-bottom: 1px solid rgb(100, 100, 100);
+      .tooltip_outer_wrapper {
+        background: #fff;
+        border: 1px solid #fff;
+        color: #000;
+        fill: #000;
+      }
+      .tooltip_container {
+        > div::after {
+          border-top-color: #fff;
+          border-color: #fff transparent transparent transparent;
+        }
+      }
+    }
+  }
   .article_text_container {
     height: 100%;
     margin-top: 0.5rem;
