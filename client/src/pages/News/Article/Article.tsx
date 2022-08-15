@@ -26,8 +26,8 @@ export const Article = () => {
   });
   const [articleLoading, changeArticleLoading] = useState(false);
   const getNavPage = () => {
-    const linKState = location.state as { [key: string]: number };
-    const pageState = linKState.page;
+    const linkState = location.state as { [key: string]: number } | undefined;
+    const pageState = linkState ? linkState.page : "";
     if (pageState) {
       return `/news?page=${pageState}`;
     } else {
