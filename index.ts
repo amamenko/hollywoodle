@@ -146,10 +146,13 @@ app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
 });
 
 app.get("/api/news", [], async (req: Request, res: Response) => {
+  const pageRequest: number = Number(req.query.page) || 0;
   const allNews = await News.find({ draft: { $ne: true } });
+  const numResults = allNews.length;
   const parseFunc = (date: string) => parse(date, "MMMM d, yyyy", new Date());
   allNews.sort((a, b) => (parseFunc(a.date) > parseFunc(b.date) ? -1 : 1));
-  res.send(allNews);
+  const newsSnippet = allNews.slice(pageRequest * 10, pageRequest * 10 + 10);
+  res.send({ news: newsSnippet, total: numResults });
 });
 
 app.get("/api/news_article", [], async (req: Request, res: Response) => {

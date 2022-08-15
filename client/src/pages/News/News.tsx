@@ -1,7 +1,7 @@
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { NewsObj } from "../../interfaces/News.interfaces";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../App";
 import { Footer } from "../../components/Footer/Footer";
 import { BackButton } from "../BackButton";
@@ -9,79 +9,134 @@ import axios from "axios";
 import { NewsListPlaceholder } from "./NewsListPlaceholder";
 import { NewsPreview } from "./NewsPreview";
 import { loadImage } from "./loadImage";
+import ReactPaginate from "react-paginate";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import "./News.scss";
 
 export const News = () => {
   const { darkMode } = useContext(AppContext);
+  const navigate = useNavigate();
   const location = useLocation();
+  const queryPage = new URLSearchParams(window.location.search).get("page");
+  const currentPage = useRef(0);
+  const [pageCount, changePageCount] = useState(0);
   const [currentNews, changeCurrentNews] = useState<NewsObj[]>([]);
   const [dataLoaded, changeDataLoaded] = useState(false);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (queryPage && Number(queryPage) > 0) {
+      const finalPage = Number(queryPage) - 1;
+      currentPage.current = finalPage;
+      fetchData(finalPage);
+    } else {
+      navigate({ pathname: "/news", search: "?page=1" });
+    }
+  }, [queryPage, navigate]);
 
   // Remove all displayed toasts on modal open
   useEffect(() => {
     if (location.pathname === "/news") toast.dismiss();
   }, [location]);
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-
+  const fetchData = async (page?: number) => {
     const nodeEnv = process.env.REACT_APP_NODE_ENV
       ? process.env.REACT_APP_NODE_ENV
       : "";
 
-    const fetchData = async () => {
-      changeDataLoaded(false);
-      await axios
-        .get(
-          nodeEnv && nodeEnv === "production"
-            ? `${process.env.REACT_APP_PROD_SERVER}/api/news`
-            : "http://localhost:4000/api/news"
-        )
-        .then((res) => res.data)
-        .then((data) => {
-          setTimeout(() => changeDataLoaded(true), 300);
-          changeCurrentNews(data);
-          const allImages: string[] = data.map((el: NewsObj) =>
-            el.image.toString()
-          );
-          Promise.allSettled(allImages.map((image) => loadImage(image)))
-            .then(() => setTimeout(() => changeDataLoaded(true), 300))
-            .catch((err) => console.error("Failed to load images", err));
-        })
-        .catch((e) => {
-          setTimeout(() => changeDataLoaded(true), 300);
-          console.error(e);
-        });
-    };
+    changeDataLoaded(false);
+    await axios
+      .get(
+        nodeEnv && nodeEnv === "production"
+          ? `${process.env.REACT_APP_PROD_SERVER}/api/news`
+          : "http://localhost:4000/api/news",
+        {
+          params: {
+            page: page ? (page > 0 ? page : 0) : 0,
+          },
+        }
+      )
+      .then((res) => res.data)
+      .then((data) => {
+        setTimeout(() => changeDataLoaded(true), 300);
+        if (data.total) changePageCount(Math.ceil(data.total / itemsPerPage));
+        if (data.news) changeCurrentNews(data.news);
+        const allImages: string[] = data.news.map((el: NewsObj) =>
+          el.image.toString()
+        );
+        Promise.allSettled(allImages.map((image) => loadImage(image)))
+          .then(() => setTimeout(() => changeDataLoaded(true), 300))
+          .catch((err) => console.error("Failed to load images", err));
+      })
+      .catch((e) => {
+        setTimeout(() => changeDataLoaded(true), 300);
+        console.error(e);
+      });
+  };
 
-    fetchData();
-
+  useEffect(() => {
+    const source = axios.CancelToken.source();
+    fetchData(currentPage.current);
     return () => source.cancel();
   }, []);
+
+  const handlePageClick = (event: { [key: string]: number }) => {
+    currentPage.current = event.selected;
+    navigate({ pathname: "/news", search: `?page=${event.selected + 1}` });
+    fetchData(event.selected);
+  };
 
   return (
     <div className={`news_container ${darkMode ? "dark" : ""}`}>
       <h2 className={`news_title_header ${darkMode ? "dark" : ""}`}>
-        <BackButton />
+        <BackButton customNav="/" />
         HOLLYWOODLE NEWS
       </h2>
       <div className="news_prompt">
         <p>The latest breaking Hollywoodle news.</p>
       </div>
       {dataLoaded ? (
-        <ul className="all_articles_container">
-          {currentNews.map((article) => {
-            return (
-              <Fragment key={article._id}>
-                <NewsPreview article={article} />
-              </Fragment>
-            );
-          })}
-        </ul>
+        <>
+          <ul className="all_articles_container">
+            {currentNews.map((article) => {
+              return (
+                <Fragment key={article._id}>
+                  <NewsPreview
+                    article={article}
+                    page={currentPage.current + 1}
+                  />
+                </Fragment>
+              );
+            })}
+          </ul>
+          <div className="news_pagination_container">
+            <ReactPaginate
+              breakLabel="..."
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={2}
+              marginPagesDisplayed={1}
+              pageCount={pageCount}
+              previousLabel={<BiChevronLeft />}
+              nextLabel={<BiChevronRight />}
+              renderOnZeroPageCount={() => null}
+              breakClassName={"page-item"}
+              breakLinkClassName={"page-link"}
+              containerClassName={"pagination"}
+              pageClassName={"page-item"}
+              pageLinkClassName={"page-link"}
+              previousClassName={"page-item"}
+              previousLinkClassName={"page-link"}
+              nextClassName={"page-item"}
+              nextLinkClassName={"page-link"}
+              activeClassName={"active"}
+              forcePage={currentPage.current}
+            />
+          </div>
+        </>
       ) : (
         <NewsListPlaceholder />
       )}

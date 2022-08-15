@@ -3,13 +3,22 @@ import { Link, useLocation } from "react-router-dom";
 import { AppContext } from "../../App";
 import { NewsObj } from "../../interfaces/News.interfaces";
 
-export const NewsPreview = ({ article }: { article: NewsObj }) => {
+export const NewsPreview = ({
+  article,
+  page,
+}: {
+  article: NewsObj;
+  page?: number;
+}) => {
   const location = useLocation();
   const { darkMode } = useContext(AppContext);
-
   return (
     <li className="individual_news_preview">
-      <Link className="news_link" to={`${location.pathname}/${article.slug}`}>
+      <Link
+        className="news_link"
+        to={`${location.pathname}/${article.slug}`}
+        state={{ page }}
+      >
         <div
           className={`individual_news_thumbnail_container ${
             darkMode ? "dark" : ""

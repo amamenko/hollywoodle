@@ -3,10 +3,7 @@ import { slide as Menu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
 import { AiOutlineClose, AiOutlineHome } from "react-icons/ai";
-import {
-  IoFootstepsOutline,
-  // IoNewspaperOutline
-} from "react-icons/io5";
+import { IoFootstepsOutline, IoNewspaperOutline } from "react-icons/io5";
 import { GrContact } from "react-icons/gr";
 import { ReactComponent as LogoWhite } from "../../../assets/LogoWhite.svg";
 import { ReactComponent as LogoStars } from "../../../assets/LogoVariants/Stars/LogoStarsBurger.svg";
@@ -92,7 +89,7 @@ export const Burger = ({
           <GiTargetArrows className="contact_icon" size={25} />
           <p>Battle</p>
         </Link> */}
-        {/* <Link
+        <Link
           to="/news"
           className="menu-item"
           onClick={() => {
@@ -101,7 +98,7 @@ export const Burger = ({
         >
           <IoNewspaperOutline className="contact_icon" size={25} />
           <p>News</p>
-        </Link> */}
+        </Link>
         <Link
           to="/contact"
           className="menu-item"

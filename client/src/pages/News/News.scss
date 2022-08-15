@@ -71,6 +71,11 @@
     }
   }
 
+  .news_pagination_container {
+    display: flex;
+    align-self: center;
+  }
+
   .all_articles_container {
     border-bottom: 1px solid rgb(100, 100, 100);
     padding: 0;

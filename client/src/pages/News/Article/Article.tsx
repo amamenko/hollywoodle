@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { AppContext } from "../../../App";
 import { Footer } from "../../../components/Footer/Footer";
 import { BackButton } from "../../BackButton";
@@ -12,6 +12,7 @@ import { Helmet } from "react-helmet";
 import "./Article.scss";
 
 export const Article = () => {
+  const location = useLocation();
   let { topicId } = useParams();
   const { darkMode } = useContext(AppContext);
   const [currentArticle, changeCurrentArticle] = useState<NewsObj>({
@@ -24,6 +25,16 @@ export const Article = () => {
     text: "",
   });
   const [articleLoading, changeArticleLoading] = useState(false);
+  const getNavPage = () => {
+    const linKState = location.state as { [key: string]: number };
+    const pageState = linKState.page;
+    if (pageState) {
+      return `/news?page=${pageState}`;
+    } else {
+      return "/news";
+    }
+  };
+  const customNav = getNavPage();
 
   const descriptionSnippet =
     currentArticle.text
@@ -128,7 +139,7 @@ export const Article = () => {
         <meta property="twitter:image" content={currentArticle.image} />
       </Helmet>
       <h2 className={`news_title_header ${darkMode ? "dark" : ""}`}>
-        <BackButton customNav={"/news"} />
+        <BackButton customNav={customNav} />
         HOLLYWOODLE NEWS
       </h2>
       {articleLoading ? (

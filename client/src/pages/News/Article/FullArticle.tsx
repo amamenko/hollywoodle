@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../../App";
 import { NewsObj } from "../../../interfaces/News.interfaces";
 import { GoTriangleLeft, GoTriangleUp } from "react-icons/go";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { scroller, Element } from "react-scroll";
 import { ShareButton } from "../../../components/Winner/NewButtons/ShareButton";
 import { ShareViaTweet } from "../../../components/Winner/NewButtons/ShareViaTweet";
@@ -13,11 +13,20 @@ export const FullArticle = ({
   currentArticle: NewsObj;
 }) => {
   const { darkMode } = useContext(AppContext);
+  const location = useLocation();
   const [shareLinkClicked, changeShareLinkClicked] = useState(false);
   const [shareLinkAnimatingOut, changeShareLinkAnimatingOut] = useState(false);
   const [lastClicked, changeLastClicked] = useState("");
   const navigate = useNavigate();
-  const handleNavigateBack = () => navigate("/news");
+  const handleNavigateBack = () => {
+    const linKState = location.state as { [key: string]: number };
+    const pageState = linKState.page;
+    if (pageState) {
+      navigate(`/news?page=${pageState}`);
+    } else {
+      navigate("/news");
+    }
+  };
   const fullArticleLink = `https://hollywoodle.ml/news/${currentArticle.slug}`;
   const handleScrollToTop = () => {
     scroller.scrollTo("top", {

@@ -186,7 +186,7 @@ export const AllPaths = () => {
 
   const handlePageClick = (event: { [key: string]: number }) => {
     changePathCollapsed("");
-    currentPage.current = currentPage.current = event.selected;
+    currentPage.current = event.selected;
     fetchData(event.selected);
   };
 
