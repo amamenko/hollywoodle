@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { Collapse } from "react-collapse";
 import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
+// import { Like } from "./Like/Like";
 
 export const PathContainer = ({
   rank,
@@ -79,6 +80,7 @@ export const PathContainer = ({
       ) : (
         ""
       )}
+      {/* <Like rank={rank} /> */}
     </div>
   );
 };

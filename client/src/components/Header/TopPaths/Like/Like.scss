@@ -1,0 +1,64 @@
+.like_button_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  width: 33%;
+  color: #000;
+  .like_button_text {
+    margin: 0 0 0 0.5rem;
+    padding: 0;
+    font-weight: 600;
+  }
+  &:hover {
+    cursor: pointer;
+    background: rgb(215, 215, 215);
+  }
+}
+.keep_tooltip_on_hover {
+  font-size: 20px !important;
+  pointer-events: auto !important;
+  &:hover {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+.__react_component_tooltip {
+  border-radius: 50px !important;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-out !important;
+  opacity: 0 !important;
+  visibility: visible;
+  background: rgb(125, 125, 125) !important;
+  color: #000 !important;
+}
+
+.__react_component_tooltip.show {
+  visibility: visible;
+  opacity: 1 !important;
+}
+.tooltip_emoji_container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  .yawning_face_emoji {
+    width: 32px;
+    height: 32px;
+  }
+  .react_large_emojis {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0.5rem;
+    padding: 0;
+    cursor: pointer;
+    font-size: 2rem;
+    transition: transform 0.2s; /* Animation */
+    &:hover {
+      transform: scale(1.3);
+    }
+  }
+}
