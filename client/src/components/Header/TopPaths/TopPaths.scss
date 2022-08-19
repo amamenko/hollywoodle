@@ -167,3 +167,11 @@
     text-align: center;
   }
 }
+
+.bottom_path_reactions_container {
+  z-index: 1;
+  border-top: 1px solid rgb(85, 85, 85);
+  border-bottom: 1px solid rgb(85, 85, 85);
+  background: rgb(30, 30, 30);
+  width: 100%;
+}

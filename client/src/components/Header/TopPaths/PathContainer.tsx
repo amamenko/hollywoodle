@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { Collapse } from "react-collapse";
 import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
+// import { EmotesResults } from "./Like/EmotesResults";
 // import { Like } from "./Like/Like";
 
 export const PathContainer = ({
@@ -80,7 +81,10 @@ export const PathContainer = ({
       ) : (
         ""
       )}
-      {/* <Like rank={rank} /> */}
+      {/* <EmotesResults pathCollapsed={pathCollapsed === rank.toString()} />
+      <div className="bottom_path_reactions_container">
+        <Like rank={rank} />
+      </div> */}
     </div>
   );
 };
