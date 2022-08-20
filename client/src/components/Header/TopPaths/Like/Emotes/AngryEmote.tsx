@@ -1,23 +1,39 @@
 import ReactTooltip from "react-tooltip";
 import SamuelLJackson from "../../../../../assets/EmoteImages/SamuelLJackson.jpg";
 
-export const AngryEmote = ({ result }: { result?: boolean }) => {
+export const AngryEmote = ({
+  mainButton,
+  result,
+  changeEmoteSelected,
+}: {
+  mainButton?: boolean;
+  result?: boolean;
+  changeEmoteSelected?: React.Dispatch<React.SetStateAction<string>>;
+}) => {
+  const handleChangeEmote = () => {
+    if (changeEmoteSelected) changeEmoteSelected("Anger");
+  };
   return (
     <>
-      <ReactTooltip
-        className="keep_tooltip_on_hover emote_tiny_tooltip"
-        id={`anger${result ? "_result" : ""}_emote`}
-        place="top"
-        effect="solid"
-        arrowColor="transparent"
-      >
-        <p>Furious anger</p>
-      </ReactTooltip>
+      {!mainButton && (
+        <ReactTooltip
+          className="keep_tooltip_on_hover emote_tiny_tooltip"
+          id={`anger${result ? "_result" : ""}_emote`}
+          place="top"
+          effect="solid"
+          arrowColor="transparent"
+          delayShow={0}
+          delayHide={0}
+        >
+          <p>Anger</p>
+        </ReactTooltip>
+      )}
       <div
         className="image_emoji_container react_large_emojis"
         data-tip
         data-iscapture="true"
         data-for={`anger${result ? "_result" : ""}_emote`}
+        onClick={handleChangeEmote}
       >
         <img
           src={SamuelLJackson}

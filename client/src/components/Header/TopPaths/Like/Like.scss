@@ -1,5 +1,5 @@
 .like_button_container {
-  z-index: 999;
+  z-index: 999999 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,20 +8,100 @@
   color: #000;
   border-right: 1px solid rgb(75, 75, 75);
   background: rgb(65, 65, 65);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none; /* disable IOS popup when long-pressing on text */
+  &.like {
+    outline: 1px solid #9cc9ff;
+  }
+  &.anger {
+    outline: 1px solid rgb(247, 106, 120);
+  }
+  &.oscar {
+    outline: 1px solid #f1c40f;
+  }
+  &.wow {
+    outline: 1px solid yellow;
+  }
+  &.boring {
+    outline: 1px solid #b3cded;
+  }
+  &.haha {
+    outline: 1px solid rgb(252, 210, 132);
+  }
   .like_button_text {
     color: #fff;
     margin: 0 0 0 0.5rem;
     padding: 0;
     font-weight: 600;
+    &.like {
+      color: #9cc9ff;
+    }
+    &.anger {
+      color: rgb(247, 106, 120);
+    }
+    &.oscar {
+      color: #f1c40f;
+    }
+    &.wow {
+      color: yellow;
+    }
+    &.boring {
+      color: #b3cded;
+    }
+    &.haha {
+      color: rgb(252, 210, 132);
+    }
   }
   svg {
     fill: #fff;
   }
+  .thumbs_up_emote_container,
+  .react_large_emojis {
+    width: 18px;
+    height: 18px;
+    transform: scale(1);
+    padding: 0;
+    margin: 0;
+    svg {
+      fill: #000;
+    }
+    &.oscar_emote {
+      svg {
+        margin-top: 0.8rem !important;
+      }
+    }
+    &.like_emote {
+      background: #fff;
+      svg {
+        fill: #1778f2;
+      }
+    }
+    .samuel_l_jackson_image_emoji {
+      left: 2px;
+    }
+    .napoleon_bored_emoji {
+      bottom: 4px;
+    }
+    .ray_liotta_image_emoji {
+      left: -8px;
+      bottom: -3px;
+    }
+    &:hover {
+      transform: scale(1);
+    }
+  }
+
   &:hover {
     cursor: pointer;
     background: rgb(115, 115, 115);
     svg {
       color: rgb(100, 100, 100);
+    }
+    .thumbs_up_emote_container {
+      svg {
+        color: #000;
+      }
     }
   }
 }
@@ -63,6 +143,9 @@
 }
 
 .thumbs_up_emote_container {
+  &:not(.result) {
+    z-index: 5;
+  }
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,8 +163,10 @@
     background: rgb(115, 115, 115);
     overflow: hidden;
     svg {
+      width: 32px;
+      height: 32px;
       transform: scale(1.5);
-      margin-top: 1.25rem;
+      margin-top: 1.2rem;
     }
   }
 }
@@ -98,6 +183,7 @@
   overflow: hidden !important;
   border-radius: 50px;
   position: relative;
+  z-index: 1;
 }
 
 .samuel_l_jackson_image_emoji {
@@ -105,7 +191,6 @@
   left: 3.5px;
   bottom: 2px;
   width: 100%;
-  object-fit: cover;
   transform: scale(2.3);
 }
 
@@ -125,12 +210,12 @@
   transform: scale(3);
 }
 
-.keanu_bored_emoji {
+.napoleon_bored_emoji {
   position: absolute;
   left: 0px;
-  bottom: -0px;
+  bottom: 7px;
   width: 100%;
-  transform: scale(2.5);
+  transform: scale(2);
 }
 
 .react_large_emojis {
@@ -154,10 +239,6 @@
   font-weight: 600 !important;
   margin: -1rem 0 0 0 !important;
   padding: 0.25rem 0.5rem !important;
-  &.like_emote,
-  &.oscar_emote {
-    margin: -0.75rem 0 0 0 !important;
-  }
   background: #fff !important;
   color: #000 !important;
   border: 1px solid #000;
@@ -173,12 +254,17 @@
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   margin-bottom: 0.5rem;
+  p {
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+  }
   .emote_tiny_tooltip {
     margin: -0.25rem 0 0 0 !important;
     font-size: 0.55rem !important;
-  }
-  p {
-    font-weight: 600;
+    p {
+      color: #000;
+    }
   }
   @media only screen and (min-width: 768px) {
     .react_large_emojis {
@@ -191,7 +277,7 @@
       margin: 0;
     }
     p {
-      font-size: 0.85rem;
+      font-size: 0.65rem;
       margin-right: 0.2rem;
     }
   }
