@@ -371,41 +371,49 @@ export const Archive = () => {
                         <span className="search_game_date">{result.date}</span>
                       </div>
                       <div className="archive_search_actors_container">
-                        {result.actors.map((actor, i) => {
-                          return (
-                            <Fragment key={i}>
-                              <div className="archive_search_actors_container">
-                                <div
-                                  className={`archive_individual_actor_container ${
-                                    darkMode ? "dark" : ""
-                                  }`}
-                                >
-                                  {i === 0 ? (
-                                    <h2>Starting Actor</h2>
-                                  ) : (
-                                    <h2>Goal Actor</h2>
-                                  )}
-                                  <ActorMovieContainer
-                                    name={actor.name}
-                                    image={actor.image}
-                                  />
-                                </div>
-                              </div>
-                              {i === 0 ? (
+                        {result.actors
+                          .sort((a: ActorObj, b: ActorObj) => {
+                            return a.type === "first"
+                              ? -1
+                              : b.type === "first"
+                              ? 1
+                              : 0;
+                          })
+                          .map((actor, i) => {
+                            return (
+                              <Fragment key={i}>
                                 <div className="archive_search_actors_container">
-                                  <BsArrowRight
-                                    className={`achive_actor_separator_arrow ${
+                                  <div
+                                    className={`archive_individual_actor_container ${
                                       darkMode ? "dark" : ""
                                     }`}
-                                    size={30}
-                                  />
+                                  >
+                                    {i === 0 ? (
+                                      <h2>Starting Actor</h2>
+                                    ) : (
+                                      <h2>Goal Actor</h2>
+                                    )}
+                                    <ActorMovieContainer
+                                      name={actor.name}
+                                      image={actor.image}
+                                    />
+                                  </div>
                                 </div>
-                              ) : (
-                                <></>
-                              )}
-                            </Fragment>
-                          );
-                        })}
+                                {i === 0 ? (
+                                  <div className="archive_search_actors_container">
+                                    <BsArrowRight
+                                      className={`achive_actor_separator_arrow ${
+                                        darkMode ? "dark" : ""
+                                      }`}
+                                      size={30}
+                                    />
+                                  </div>
+                                ) : (
+                                  <></>
+                                )}
+                              </Fragment>
+                            );
+                          })}
                       </div>
                     </div>
                     {!resultsLoading && (
