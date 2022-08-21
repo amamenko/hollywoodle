@@ -29,7 +29,9 @@ export const LaughingEmote = ({
         </ReactTooltip>
       )}
       <div
-        className="image_emoji_container react_large_emojis"
+        className={`image_emoji_container react_large_emojis ${
+          result ? "result" : ""
+        }`}
         data-tip
         data-iscapture="true"
         data-for={`laughing${result ? "_result" : ""}_emote`}

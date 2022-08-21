@@ -11,12 +11,14 @@ export const postToTwitter = async () => {
   });
 
   const currentDate = format(new Date(), "MM/dd/yyyy");
-  const actors = await Actor.find({ date: currentDate }).catch((e) =>
-    console.error(e)
-  );
+  const actors =
+    (await Actor.find({ date: currentDate }).catch((e) => console.error(e))) ||
+    [];
   const fullWordDate = format(new Date(), "LLLL do, yyyy");
-  const actor1Name = actors[0]?.name;
-  const actor2Name = actors[1]?.name;
+  const foundFirstActor = actors.find((el) => el.type === "first");
+  const actor1Name = foundFirstActor ? foundFirstActor.name : actors[0]?.name;
+  const foundLastActor = actors.find((el) => el.type === "last");
+  const actor2Name = foundLastActor ? foundLastActor.name : actors[1]?.name;
 
   if (client) {
     if (actor1Name && actor2Name) {

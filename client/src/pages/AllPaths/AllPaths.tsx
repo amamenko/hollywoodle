@@ -12,6 +12,7 @@ import { PathContainer } from "../../components/Header/TopPaths/PathContainer";
 import { BackButton } from "../BackButton";
 import { Footer } from "../../components/Footer/Footer";
 import { useLocation } from "react-router-dom";
+import { Path } from "../../interfaces/Path.interface";
 import "./AllPaths.scss";
 
 export const AllPaths = () => {
@@ -30,13 +31,7 @@ export const AllPaths = () => {
   const location = useLocation();
   const [pathsLoading, changePathsLoading] = useState(false);
   const [pathCollapsed, changePathCollapsed] = useState<string>("");
-  const [topPaths, changeTopPaths] = useState<
-    {
-      degrees: number;
-      count: number;
-      path: string;
-    }[]
-  >([]);
+  const [topPaths, changeTopPaths] = useState<Path[]>([]);
   const [pageCount, changePageCount] = useState(0);
   // Aggregated top paths data metrics
   const [totalPathsFound, changeTotalPathsFound] = useState(0);
@@ -255,12 +250,14 @@ export const AllPaths = () => {
             {topPaths.map((el, i) => {
               if (el.degrees && el.count && el.path) {
                 return (
-                  <React.Fragment key={i}>
+                  <React.Fragment key={el._id}>
                     <PathContainer
+                      id={el._id}
                       rank={i}
                       degrees={el.degrees}
                       count={el.count}
                       path={el.path}
+                      emotes={el.emotes}
                       pathCollapsed={pathCollapsed}
                       changePathCollapsed={changePathCollapsed}
                       currentPage={currentPage.current}

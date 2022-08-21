@@ -7,6 +7,14 @@ const pathSchema = new mongoose.Schema({
       degrees: Number,
       count: Number,
       path: String,
+      emotes: {
+        like: Number,
+        oscar: Number,
+        anger: Number,
+        wow: Number,
+        boring: Number,
+        haha: Number,
+      },
     },
   ],
 });

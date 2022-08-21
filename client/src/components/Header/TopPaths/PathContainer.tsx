@@ -2,22 +2,27 @@ import { useContext, useEffect } from "react";
 import { Collapse } from "react-collapse";
 import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
+import { Emotes } from "../../../interfaces/Emotes.interface";
 // import { EmotesResults } from "./Like/EmotesResults";
 // import { Like } from "./Like/Like";
 
 export const PathContainer = ({
+  id,
   rank,
   degrees,
   count,
   path,
+  emotes,
   pathCollapsed,
   changePathCollapsed,
   currentPage,
 }: {
+  id: string;
   rank: number;
   degrees: number;
   count: number;
   path: string;
+  emotes: Emotes;
   pathCollapsed: string;
   changePathCollapsed: React.Dispatch<React.SetStateAction<string>>;
   currentPage: number;
@@ -81,9 +86,12 @@ export const PathContainer = ({
       ) : (
         ""
       )}
-      {/* <EmotesResults pathCollapsed={pathCollapsed === rank.toString()} />
+      {/* <EmotesResults
+        pathCollapsed={pathCollapsed === rank.toString()}
+        emotes={emotes}
+      />
       <div className="bottom_path_reactions_container">
-        <Like rank={rank} />
+        <Like rank={rank} id={id} />
       </div> */}
     </div>
   );

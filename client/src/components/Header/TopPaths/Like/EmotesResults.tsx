@@ -1,3 +1,4 @@
+import { Emotes } from "../../../../interfaces/Emotes.interface";
 import { AngryEmote } from "./Emotes/AngryEmote";
 import { BoringEmote } from "./Emotes/BoringEmote";
 import { LaughingEmote } from "./Emotes/LaughingEmote";
@@ -8,8 +9,10 @@ import "./Like.scss";
 
 export const EmotesResults = ({
   pathCollapsed,
+  emotes,
 }: {
   pathCollapsed: boolean;
+  emotes: Emotes;
 }) => {
   return (
     <div

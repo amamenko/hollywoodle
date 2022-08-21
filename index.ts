@@ -14,6 +14,7 @@ import { Server } from "socket.io";
 import { updateLeaderboard } from "./functions/updateLeaderboard";
 import { Path } from "./models/Path";
 import { updateTopPaths } from "./functions/updateTopPaths";
+import { updateEmotes } from "./functions/updateEmotes";
 import { updateActorMostPopularPath } from "./functions/updateActorMostPopularPath";
 import { getTopPathsAggregatedData } from "./functions/getTopPathsAggregatedData";
 import { postToTwitter } from "./functions/postToTwitter";
@@ -181,6 +182,13 @@ app.get("/api/top_paths", [], async (req: Request, res: Response) => {
 app.post("/api/update_top_paths", [], async (req: Request, res: Response) => {
   if (req.body && typeof req.body === "object") {
     const update = await updateTopPaths(req.body as RequestQuery);
+    res.send(update);
+  }
+});
+
+app.post("/api/update_emotes", [], async (req: Request, res: Response) => {
+  if (req.body && typeof req.body === "object") {
+    const update = await updateEmotes(req.body as RequestQuery);
     res.send(update);
   }
 });

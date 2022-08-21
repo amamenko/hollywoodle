@@ -9,8 +9,11 @@ import { WowEmote } from "./Emotes/WowEmote";
 import { BoringEmote } from "./Emotes/BoringEmote";
 import "./Like.scss";
 
-export const Like = ({ rank }: { rank: number }) => {
+export const Like = ({ rank, id }: { rank: number; id: string }) => {
   const [emoteSelected, changeEmoteSelected] = useState("");
+  const handleLikeButtonClick = () => {
+    if (emoteSelected) changeEmoteSelected("");
+  };
   return (
     <>
       <div
@@ -18,6 +21,7 @@ export const Like = ({ rank }: { rank: number }) => {
         data-tip
         data-iscapture="true"
         data-for={`likeButton${rank}`}
+        onClick={handleLikeButtonClick}
       >
         {emoteSelected === "Like" ? (
           <LikeEmote mainButton={true} />
@@ -45,8 +49,8 @@ export const Like = ({ rank }: { rank: number }) => {
         effect="solid"
         arrowColor="transparent"
         clickable={true}
-        delayHide={500}
-        delayShow={250}
+        delayHide={0}
+        delayShow={0}
       >
         <div className="tooltip_emoji_container">
           <LikeEmote changeEmoteSelected={changeEmoteSelected} />

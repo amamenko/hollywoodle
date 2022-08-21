@@ -1,4 +1,5 @@
 .like_button_container {
+  position: relative;
   z-index: 999999 !important;
   display: flex;
   align-items: center;
@@ -11,23 +12,42 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none; /* disable IOS popup when long-pressing on text */
+  padding-left: 1px;
+  @mixin moveOver1px {
+    @media only screen and (max-width: 768px) {
+      margin-left: 1px;
+      padding-left: 0;
+    }
+  }
   &.like {
-    outline: 1px solid #9cc9ff;
+    outline: 1px solid rgb(156, 201, 255);
+    background: rgba(156, 201, 255, 0.2);
+    @include moveOver1px;
   }
   &.anger {
     outline: 1px solid rgb(247, 106, 120);
+    background: rgba(247, 106, 120, 0.2);
+    @include moveOver1px;
   }
   &.oscar {
     outline: 1px solid #f1c40f;
+    background: rgba(247, 106, 120, 0.2);
+    @include moveOver1px;
   }
   &.wow {
-    outline: 1px solid yellow;
+    outline: 1px solid rgb(255, 255, 0);
+    background: rgba(255, 255, 0, 0.2);
+    @include moveOver1px;
   }
   &.boring {
-    outline: 1px solid #b3cded;
+    outline: 1px solid rgb(179, 205, 237);
+    background: rgba(179, 205, 237, 0.2);
+    @include moveOver1px;
   }
   &.haha {
     outline: 1px solid rgb(252, 210, 132);
+    background: rgba(252, 210, 132, 0.2);
+    @include moveOver1px;
   }
   .like_button_text {
     color: #fff;
@@ -61,6 +81,8 @@
     width: 18px;
     height: 18px;
     transform: scale(1);
+    -webkit-transform: scale(1);
+
     padding: 0;
     margin: 0;
     svg {
@@ -89,6 +111,7 @@
     }
     &:hover {
       transform: scale(1);
+      -webkit-transform: scale(1);
     }
   }
 
@@ -166,6 +189,7 @@
       width: 32px;
       height: 32px;
       transform: scale(1.5);
+      -webkit-transform: scale(1.5);
       margin-top: 1.2rem;
     }
   }
@@ -192,6 +216,7 @@
   bottom: 2px;
   width: 100%;
   transform: scale(2.3);
+  -webkit-transform: scale(2.3);
 }
 
 .owen_wilson_image_emoji {
@@ -200,6 +225,7 @@
   bottom: -2px;
   width: 100%;
   transform: scale(1.4);
+  -webkit-transform: scale(1.4);
 }
 
 .ray_liotta_image_emoji {
@@ -208,6 +234,7 @@
   bottom: -5px;
   width: 100%;
   transform: scale(3);
+  -webkit-transform: scale(3);
 }
 
 .napoleon_bored_emoji {
@@ -216,9 +243,13 @@
   bottom: 7px;
   width: 100%;
   transform: scale(2);
+  -webkit-transform: scale(2);
 }
 
 .react_large_emojis {
+  &:not(.result) {
+    z-index: 5;
+  }
   border: 1px solid #fff;
   max-height: 32px;
   border-radius: 50px;
@@ -229,15 +260,19 @@
   cursor: pointer;
   font-size: 2rem;
   transition: transform 0.2s;
+  transform: translateZ(0) scale(1);
+  -webkit-transform: translateZ(0) scale(1);
+  filter: blur(0);
   &:hover {
-    transform: scale(1.3);
+    transform: translateZ(0) scale(1.3);
+    -webkit-transform: translateZ(0) scale(1.3);
   }
 }
 
 .emote_tiny_tooltip {
   font-size: 0.75rem !important;
   font-weight: 600 !important;
-  margin: -1rem 0 0 0 !important;
+  margin: -0.5rem 0 0 0 !important;
   padding: 0.25rem 0.5rem !important;
   background: #fff !important;
   color: #000 !important;
@@ -269,11 +304,13 @@
   @media only screen and (min-width: 768px) {
     .react_large_emojis {
       transform: scale(0.75);
+      -webkit-transform: scale(0.75);
     }
   }
   @media only screen and (max-width: 768px) {
     .react_large_emojis {
       transform: scale(0.65);
+      -webkit-transform: scale(0.65);
       margin: 0;
     }
     p {
