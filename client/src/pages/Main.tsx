@@ -18,13 +18,19 @@ import { Contact } from "./Contact/Contact";
 import { AllPaths } from "./AllPaths/AllPaths";
 import { News } from "./News/News";
 import { Article } from "./News/Article/Article";
-import { Helmet } from "react-helmet";
 // import { Battle } from "./Battle/Battle";
+import { Helmet } from "react-helmet";
+import { format } from "date-fns-tz";
 
 export const GameContext = createContext<GameContextProps>(gameContextDefaults);
 
 export const Main = () => {
-  const { guesses } = useContext(AppContext);
+  const {
+    guesses,
+    fullTimezoneDate,
+    showTopPathsModal,
+    changeShowTopPathsModal,
+  } = useContext(AppContext);
   const [mostRecentMovie, changeMostRecentMovie] = useState<GuessObj>({
     guess: "",
     type: "",
@@ -35,6 +41,7 @@ export const Main = () => {
     type: "",
     year: "",
   });
+  const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
 
   useEffect(() => {
     const sortedGuesses = guesses.sort((a, b) => {
@@ -65,6 +72,51 @@ export const Main = () => {
       changeMostRecentActor(currentRecentActor);
     }
   }, [guesses, mostRecentActor]);
+
+  // Server-side is refreshing actor data, show loading component
+  useEffect(() => {
+    const endDateArr = fullTimezoneDate.split(" ");
+    const endTime = endDateArr[0];
+    const endTimeArr = endTime.split(":");
+    let hours: number | string = endTimeArr[0];
+    const minutes = endTimeArr[1];
+    const endTimeMorningNight = endDateArr[1];
+
+    if (endTimeMorningNight === "PM") {
+      if (hours !== "12") {
+        hours = Number(hours) + 12;
+      } else {
+        if (Number(hours) <= 10) hours = `0${hours}`;
+      }
+    } else {
+      if (hours === "12") {
+        hours = "00";
+      } else {
+        if (Number(hours) <= 10) hours = `0${hours}`;
+      }
+    }
+
+    const timesArr: string[] = [];
+    for (let i = 0; i <= 10; i++) {
+      timesArr.push(`${hours}${minutes}${i < 10 ? "0" + i : i}`);
+    }
+    const timeInterval = setInterval(() => {
+      const currentHoursSeconds = format(new Date(), "HHmmss", {
+        timeZone: "America/New_York",
+      });
+      if (timesArr.includes(currentHoursSeconds)) {
+        changeRefreshingDataTime(true);
+        if (showTopPathsModal) changeShowTopPathsModal(false);
+
+        // Reload page and fetch new data
+        if (currentHoursSeconds === `${hours}${minutes}10`) {
+          window.location.reload();
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(timeInterval);
+  }, [fullTimezoneDate, showTopPathsModal, changeShowTopPathsModal]);
 
   return (
     <GameContext.Provider
@@ -106,7 +158,10 @@ export const Main = () => {
       <Router>
         <Header />
         <Routes>
-          <Route path="/" element={<Game />} />
+          <Route
+            path="/"
+            element={<Game refreshingDataTime={refreshingDataTime} />}
+          />
           <Route path="/paths" element={<AllPaths />} />
           <Route path="/archive" element={<Archive />} />
           {/* <Route path="/battle" element={<Battle />} /> */}

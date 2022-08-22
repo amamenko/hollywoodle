@@ -10,11 +10,14 @@ import { handleMovieProp } from "../components/InteractiveResponse/handleMoviePr
 import { InteractiveResponse } from "../components/InteractiveResponse/InteractiveResponse";
 import { IntroModal } from "../components/IntroModal/IntroModal";
 import { Winner } from "../components/Winner/Winner";
-import { format } from "date-fns-tz";
 import { differenceInDays, parse } from "date-fns";
 import { GameContext } from "./Main";
 
-export const Game = () => {
+export const Game = ({
+  refreshingDataTime,
+}: {
+  refreshingDataTime: boolean;
+}) => {
   const {
     guesses,
     objectiveCurrentDate,
@@ -22,13 +25,9 @@ export const Game = () => {
     firstActor,
     lastActor,
     darkMode,
-    fullTimezoneDate,
-    showTopPathsModal,
-    changeShowTopPathsModal,
     win,
   } = useContext(AppContext);
   const { mostRecentMovie, mostRecentActor } = useContext(GameContext);
-  const [refreshingDataTime, changeRefreshingDataTime] = useState(false);
   const [showIntroModal, changeShowIntroModal] = useState(false);
 
   useEffect(() => {
@@ -116,52 +115,6 @@ export const Game = () => {
       }
     }
   }, [objectiveCurrentDate]);
-
-  // Server-side is refreshing actor data, show loading component
-  useEffect(() => {
-    const endDateArr = fullTimezoneDate.split(" ");
-    const endTime = endDateArr[0];
-    const endTimeArr = endTime.split(":");
-    let hours: number | string = endTimeArr[0];
-    const minutes = endTimeArr[1];
-    const endTimeMorningNight = endDateArr[1];
-
-    if (endTimeMorningNight === "PM") {
-      if (hours !== "12") {
-        hours = Number(hours) + 12;
-      } else {
-        if (Number(hours) <= 10) hours = `0${hours}`;
-      }
-    } else {
-      if (hours === "12") {
-        hours = "00";
-      } else {
-        if (Number(hours) <= 10) hours = `0${hours}`;
-      }
-    }
-
-    const timesArr: string[] = [];
-    for (let i = 0; i <= 10; i++) {
-      timesArr.push(`${hours}${minutes}${i < 10 ? "0" + i : i}`);
-    }
-    const timeInterval = setInterval(() => {
-      const currentHoursSeconds = format(new Date(), "HHmmss", {
-        timeZone: "America/New_York",
-      });
-
-      if (timesArr.includes(currentHoursSeconds)) {
-        changeRefreshingDataTime(true);
-        if (showTopPathsModal) changeShowTopPathsModal(false);
-
-        // Reload page and fetch new data
-        if (currentHoursSeconds === `${hours}${minutes}10`) {
-          window.location.reload();
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(timeInterval);
-  }, [fullTimezoneDate, showTopPathsModal, changeShowTopPathsModal]);
 
   // For winning - confetti purposes
   const rewardEl = useRef<RewardElement>(null);

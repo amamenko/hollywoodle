@@ -1,17 +1,23 @@
 import ReactTooltip from "react-tooltip";
 import SamuelLJackson from "../../../../../assets/EmoteImages/SamuelLJackson.jpg";
+import { handleUpdateEmotes } from "../handleUpdateEmotes";
 
 export const AngryEmote = ({
+  id,
   mainButton,
   result,
   changeEmoteSelected,
 }: {
+  id?: string;
   mainButton?: boolean;
   result?: boolean;
   changeEmoteSelected?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const handleChangeEmote = () => {
-    if (changeEmoteSelected) changeEmoteSelected("Anger");
+    if (changeEmoteSelected && id) {
+      changeEmoteSelected("Anger");
+      handleUpdateEmotes(id, "anger");
+    }
   };
   return (
     <>

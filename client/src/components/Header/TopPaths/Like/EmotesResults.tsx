@@ -17,20 +17,67 @@ export const EmotesResults = ({
   return (
     <div
       className="results_emote_container"
-      style={{ marginTop: pathCollapsed ? "0.5rem" : "0" }}
+      style={{
+        marginTop: pathCollapsed ? "0.5rem" : "0",
+        display:
+          !emotes.like &&
+          !emotes.oscar &&
+          !emotes.anger &&
+          !emotes.wow &&
+          !emotes.boring &&
+          !emotes.haha
+            ? "none"
+            : "flex",
+      }}
     >
-      <LikeEmote result={true} />
-      <p>125</p>
-      <OscarEmote result={true} />
-      <p>125</p>
-      <AngryEmote result={true} />
-      <p>125</p>
-      <WowEmote result={true} />
-      <p>125</p>
-      <BoringEmote result={true} />
-      <p>125</p>
-      <LaughingEmote result={true} />
-      <p>125</p>
+      {!emotes.like || emotes.like <= 0 ? (
+        <></>
+      ) : (
+        <>
+          <LikeEmote result={true} />
+          <p>{emotes.like}</p>
+        </>
+      )}
+      {!emotes.oscar || emotes.oscar <= 0 ? (
+        <></>
+      ) : (
+        <>
+          <OscarEmote result={true} />
+          <p>{emotes.oscar}</p>
+        </>
+      )}
+      {!emotes.anger || emotes.anger <= 0 ? (
+        <></>
+      ) : (
+        <>
+          <AngryEmote result={true} />
+          <p>{emotes.anger}</p>
+        </>
+      )}
+      {!emotes.wow || emotes.wow <= 0 ? (
+        <></>
+      ) : (
+        <>
+          <WowEmote result={true} />
+          <p>{emotes.wow}</p>
+        </>
+      )}
+      {!emotes.boring || emotes.boring <= 0 ? (
+        <></>
+      ) : (
+        <>
+          <BoringEmote result={true} />
+          <p>{emotes.boring}</p>
+        </>
+      )}
+      {!emotes.haha || emotes.haha <= 0 ? (
+        <></>
+      ) : (
+        <>
+          <LaughingEmote result={true} />
+          <p>{emotes.haha}</p>
+        </>
+      )}
     </div>
   );
 };

@@ -7,12 +7,16 @@ import { AngryEmote } from "./Emotes/AngryEmote";
 import { LaughingEmote } from "./Emotes/LaughingEmote";
 import { WowEmote } from "./Emotes/WowEmote";
 import { BoringEmote } from "./Emotes/BoringEmote";
+import { handleUpdateEmotes } from "./handleUpdateEmotes";
 import "./Like.scss";
 
 export const Like = ({ rank, id }: { rank: number; id: string }) => {
   const [emoteSelected, changeEmoteSelected] = useState("");
   const handleLikeButtonClick = () => {
-    if (emoteSelected) changeEmoteSelected("");
+    if (emoteSelected) {
+      handleUpdateEmotes(id, `reset_${emoteSelected}`);
+      changeEmoteSelected("");
+    }
   };
   return (
     <>
@@ -53,12 +57,12 @@ export const Like = ({ rank, id }: { rank: number; id: string }) => {
         delayShow={0}
       >
         <div className="tooltip_emoji_container">
-          <LikeEmote changeEmoteSelected={changeEmoteSelected} />
-          <OscarEmote changeEmoteSelected={changeEmoteSelected} />
-          <AngryEmote changeEmoteSelected={changeEmoteSelected} />
-          <WowEmote changeEmoteSelected={changeEmoteSelected} />
-          <BoringEmote changeEmoteSelected={changeEmoteSelected} />
-          <LaughingEmote changeEmoteSelected={changeEmoteSelected} />
+          <LikeEmote id={id} changeEmoteSelected={changeEmoteSelected} />
+          <OscarEmote id={id} changeEmoteSelected={changeEmoteSelected} />
+          <AngryEmote id={id} changeEmoteSelected={changeEmoteSelected} />
+          <WowEmote id={id} changeEmoteSelected={changeEmoteSelected} />
+          <BoringEmote id={id} changeEmoteSelected={changeEmoteSelected} />
+          <LaughingEmote id={id} changeEmoteSelected={changeEmoteSelected} />
         </div>
       </ReactTooltip>
     </>
