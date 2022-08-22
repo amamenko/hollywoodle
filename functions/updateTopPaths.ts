@@ -38,6 +38,14 @@ export const updateTopPaths = async (query: {
             degrees,
             path,
             count: 1,
+            emotes: {
+              like: 0,
+              oscar: 0,
+              anger: 0,
+              wow: 0,
+              boring: 0,
+              haha: 0,
+            },
           });
         }
         const sortedPaths = currentTopPathsClone.sort((a, b) => {
