@@ -1,22 +1,18 @@
 import ReactTooltip from "react-tooltip";
 import NapoleonDynamite from "../../../../../assets/EmoteImages/NapoleonDynamite.jpg";
-import { handleUpdateEmotes } from "../handleUpdateEmotes";
 
 export const BoringEmote = ({
-  id,
+  handleTriggerEmote,
   mainButton,
   result,
-  changeEmoteSelected,
 }: {
-  id?: string;
+  handleTriggerEmote?: (emote: string) => void;
   mainButton?: boolean;
   result?: boolean;
-  changeEmoteSelected?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const handleChangeEmote = () => {
-    if (changeEmoteSelected && id) {
-      changeEmoteSelected("Boring");
-      handleUpdateEmotes(id, "boring");
+    if (handleTriggerEmote && typeof handleTriggerEmote === "function") {
+      handleTriggerEmote("boring");
     }
   };
   return (

@@ -17,7 +17,7 @@ export const updateEmotes = async (query: {
       const foundEl = currentTopPathsClone[foundPathMatchIndex];
       if (emote.toString().includes("reset")) {
         const splitEmoteArr = emote.toString().split("_");
-        const emoteToReset = splitEmoteArr[1];
+        const emoteToReset = splitEmoteArr[1].toLowerCase();
         const finalNum = foundEl.emotes[emoteToReset] - 1;
         currentTopPathsClone[foundPathMatchIndex].emotes[emoteToReset] =
           finalNum >= 0 ? finalNum : 0;
@@ -29,7 +29,7 @@ export const updateEmotes = async (query: {
       const topPathsFilter = { date: currentDate };
       const pathsUpdate = { paths: currentTopPathsClone };
       await Path.findOneAndUpdate(topPathsFilter, pathsUpdate);
-      return { paths: currentTopPathsClone };
+      return "Successfully updated!";
     }
   }
 };

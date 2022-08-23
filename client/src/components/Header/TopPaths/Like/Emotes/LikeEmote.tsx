@@ -1,22 +1,18 @@
 import { IoMdThumbsUp } from "react-icons/io";
 import ReactTooltip from "react-tooltip";
-import { handleUpdateEmotes } from "../handleUpdateEmotes";
 
 export const LikeEmote = ({
-  id,
+  handleTriggerEmote,
   mainButton,
   result,
-  changeEmoteSelected,
 }: {
-  id?: string;
+  handleTriggerEmote?: (emote: string) => void;
   mainButton?: boolean;
   result?: boolean;
-  changeEmoteSelected?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const handleChangeEmote = () => {
-    if (changeEmoteSelected && id) {
-      changeEmoteSelected("Like");
-      handleUpdateEmotes(id, "like");
+    if (handleTriggerEmote && typeof handleTriggerEmote === "function") {
+      handleTriggerEmote("like");
     }
   };
   return (

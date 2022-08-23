@@ -1,22 +1,18 @@
 import ReactTooltip from "react-tooltip";
 import RayLiottaLaughing from "../../../../../assets/EmoteImages/RayLiottaLaughing.jpg";
-import { handleUpdateEmotes } from "../handleUpdateEmotes";
 
 export const LaughingEmote = ({
-  id,
+  handleTriggerEmote,
   mainButton,
   result,
-  changeEmoteSelected,
 }: {
-  id?: string;
+  handleTriggerEmote?: (emote: string) => void;
   mainButton?: boolean;
   result?: boolean;
-  changeEmoteSelected?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const handleChangeEmote = () => {
-    if (changeEmoteSelected && id) {
-      changeEmoteSelected("Haha");
-      handleUpdateEmotes(id, "haha");
+    if (handleTriggerEmote && typeof handleTriggerEmote === "function") {
+      handleTriggerEmote("haha");
     }
   };
   return (

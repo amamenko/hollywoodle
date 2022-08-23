@@ -137,6 +137,7 @@
   }
 }
 .__react_component_tooltip {
+  z-index: 9999999 !important;
   border-radius: 50px !important;
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-out !important;
   opacity: 0 !important;

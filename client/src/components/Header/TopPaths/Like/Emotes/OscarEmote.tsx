@@ -1,22 +1,18 @@
 import ReactTooltip from "react-tooltip";
 import { ReactComponent as Oscar } from "../../../../../assets/Oscar.svg";
-import { handleUpdateEmotes } from "../handleUpdateEmotes";
 
 export const OscarEmote = ({
-  id,
+  handleTriggerEmote,
   mainButton,
   result,
-  changeEmoteSelected,
 }: {
-  id?: string;
+  handleTriggerEmote?: (emote: string) => void;
   mainButton?: boolean;
   result?: boolean;
-  changeEmoteSelected?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const handleChangeEmote = () => {
-    if (changeEmoteSelected && id) {
-      changeEmoteSelected("Oscar");
-      handleUpdateEmotes(id, "oscar");
+    if (handleTriggerEmote && typeof handleTriggerEmote === "function") {
+      handleTriggerEmote("oscar");
     }
   };
   return (

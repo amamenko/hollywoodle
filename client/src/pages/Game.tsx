@@ -43,6 +43,7 @@ export const Game = ({
             max_streak: 0,
             avg_moves: [],
             played_today: false,
+            emotes: [],
             leaderboard_viewed: "",
             leaderboard_eligible: false,
           })
@@ -92,6 +93,10 @@ export const Game = ({
               storageObj.last_played.toString() === objectiveCurrentDate
                 ? true
                 : false,
+            emotes:
+              objectiveCurrentDate !== storageObj.current_date.toString()
+                ? []
+                : storageObj.emotes,
             leaderboard_viewed: storageObj.leaderboard_viewed
               ? storageObj.leaderboard_viewed.toString() ===
                 objectiveCurrentDate

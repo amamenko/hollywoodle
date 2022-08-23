@@ -1,22 +1,18 @@
 import ReactTooltip from "react-tooltip";
 import OwenWilsonWow from "../../../../../assets/EmoteImages/OwenWilsonWow.jpg";
-import { handleUpdateEmotes } from "../handleUpdateEmotes";
 
 export const WowEmote = ({
-  id,
+  handleTriggerEmote,
   mainButton,
   result,
-  changeEmoteSelected,
 }: {
-  id?: string;
+  handleTriggerEmote?: (emote: string) => void;
   mainButton?: boolean;
   result?: boolean;
-  changeEmoteSelected?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const handleChangeEmote = () => {
-    if (changeEmoteSelected && id) {
-      changeEmoteSelected("Wow");
-      handleUpdateEmotes(id, "wow");
+    if (handleTriggerEmote && typeof handleTriggerEmote === "function") {
+      handleTriggerEmote("wow");
     }
   };
   return (

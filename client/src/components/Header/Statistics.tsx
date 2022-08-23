@@ -104,6 +104,7 @@ export const Statistics = ({
         current_streak: 0,
         max_streak: 0,
         avg_moves: [],
+        emotes: storageObj.emotes,
         played_today: false,
       })
     );
