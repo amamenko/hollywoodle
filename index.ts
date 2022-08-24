@@ -53,6 +53,7 @@ const handleLiveChange = (change: { [key: string]: any }, key: string) => {
           (err: Error, response: number[]) => {
             if (err) {
               console.error(err);
+              console.log({ response });
             } else {
               let currentPage = 0;
               if (response && response[0]) currentPage = response[0];
