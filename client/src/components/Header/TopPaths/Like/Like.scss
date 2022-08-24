@@ -13,9 +13,9 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none; /* disable IOS popup when long-pressing on text */
   padding-left: 1px;
+  margin-left: 1px;
   @mixin moveOver1px {
     @media only screen and (max-width: 768px) {
-      margin-left: 1px;
       padding-left: 0;
     }
   }
@@ -301,6 +301,7 @@
     font-size: 0.55rem !important;
     p {
       color: #000;
+      margin: 0;
     }
   }
   @media only screen and (min-width: 768px) {

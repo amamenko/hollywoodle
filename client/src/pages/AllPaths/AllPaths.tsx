@@ -81,7 +81,7 @@ export const AllPaths = () => {
       .get(
         nodeEnv && nodeEnv === "production"
           ? `${process.env.REACT_APP_PROD_SERVER}/api/top_paths`
-          : "http:///localhost:4000/api/top_paths",
+          : "http://localhost:4000/api/top_paths",
         {
           params: {
             page: page || 0,

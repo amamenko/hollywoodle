@@ -3,8 +3,8 @@ import { Collapse } from "react-collapse";
 import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
 import { Emotes } from "../../../interfaces/Emotes.interface";
-import { EmotesResults } from "./Like/EmotesResults";
-import { Like } from "./Like/Like";
+// import { EmotesResults } from "./Like/EmotesResults";
+// import { Like } from "./Like/Like";
 
 export const PathContainer = ({
   id,
