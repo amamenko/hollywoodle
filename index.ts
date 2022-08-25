@@ -18,6 +18,7 @@ import { updateEmotes } from "./functions/updateEmotes";
 import { updateActorMostPopularPath } from "./functions/updateActorMostPopularPath";
 import { getTopPathsAggregatedData } from "./functions/getTopPathsAggregatedData";
 import { postToTwitter } from "./functions/postToTwitter";
+import { handleLiveChange } from "./functions/handleLiveChange";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -39,55 +40,16 @@ if (process.env.NODE_ENV === "production") {
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
 
-const handleLiveChange = (change: { [key: string]: any }, key: string) => {
-  if (change.operationType === "update") {
-    const allUpdatedFields = change.updateDescription.updatedFields;
-    if (allUpdatedFields) {
-      let changeData = allUpdatedFields[key];
-      if (key === "paths") {
-        const { totalPathsFound, totalPlayers, lowestDegree, highestDegree } =
-          getTopPathsAggregatedData(changeData);
-        io.timeout(10000).emit(
-          "pageCheck",
-          true,
-          (err: Error, response: number[]) => {
-            if (err) {
-              console.error(err);
-              console.log({ response });
-            } else {
-              let currentPage = 0;
-              if (response && response[0]) currentPage = response[0];
-              changeData = {
-                // Only return 10 results at a time relative to current page
-                paths: changeData.slice(
-                  currentPage * 10,
-                  currentPage * 10 + 10
-                ),
-                totalPathsFound,
-                totalPlayers,
-                lowestDegree,
-                highestDegree,
-              };
-              io.emit("changeData", changeData);
-            }
-          }
-        );
-      }
-      io.emit("changeData", changeData);
-    }
-  }
-};
+io.sockets.on("connection", (socket) => {
+  const leaderboardChangeStream = Leaderboard.watch();
+  leaderboardChangeStream.on("change", (change) => {
+    handleLiveChange(change, socket, "leaderboard");
+  });
 
-const leaderboardChangeStream = Leaderboard.watch();
-
-leaderboardChangeStream.on("change", (change) => {
-  handleLiveChange(change, "leaderboard");
-});
-
-const pathsChangeStream = Path.watch();
-
-pathsChangeStream.on("change", (change) => {
-  handleLiveChange(change, "paths");
+  const pathsChangeStream = Path.watch();
+  pathsChangeStream.on("change", (change) => {
+    handleLiveChange(change, socket, "paths");
+  });
 });
 
 app.get("/api/actor", [], async (req: Request, res: Response) => {

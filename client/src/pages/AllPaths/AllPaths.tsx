@@ -140,7 +140,7 @@ export const AllPaths = () => {
       );
       socketRef.current = socket;
 
-      socket.on("pageCheck", (arg, callback) => {
+      socket.on("pageCheck", (callback) => {
         callback(currentPage.current);
       });
 
