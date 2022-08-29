@@ -1,9 +1,9 @@
 FROM mhart/alpine-node:12 as build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --prod
+RUN npm ci --prod 
 
-FROM mhart/alpine-node:slim-12
+FROM mhart/alpine-node:12
 ENV NODE_ENV="production"
 ENV TZ="America/New_York"
 WORKDIR /app

@@ -171,6 +171,11 @@ cron.schedule("1 0 * * *", () => {
   postToTwitter();
 });
 
+app.get("/timezone", (req: Request, res: Response) => {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  res.send(timezone);
+});
+
 app.get("/", (req: Request, res: Response) => {
   res.send("The Hollywoodle server is up and running!");
 });
