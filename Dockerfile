@@ -1,10 +1,13 @@
-FROM node:15.12-alpine as build
+FROM mhart/alpine-node:12 as build
 WORKDIR /app
-COPY . .
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci --prod
 
-FROM node:15.12-alpine
+FROM mhart/alpine-node:slim-12
+ENV NODE_ENV="production"
 ENV TZ="America/New_York"
-COPY --from=build /app /
+WORKDIR /app
+COPY --from=build /app .
+COPY . .
 EXPOSE 4000
 CMD ["npm", "start"]
