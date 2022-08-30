@@ -25,6 +25,8 @@ export interface RequestQuery {
 }
 
 const app = express();
+// Populate req.ip
+app.set("trust proxy", true);
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
