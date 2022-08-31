@@ -19,6 +19,8 @@ import { updateActorMostPopularPath } from "./functions/updateActorMostPopularPa
 import { getTopPathsAggregatedData } from "./functions/getTopPathsAggregatedData";
 import { postToTwitter } from "./functions/postToTwitter";
 import { handleLiveChange } from "./functions/handleLiveChange";
+import requestStats from "request-stats";
+import { handleEventLog } from "./functions/handleEventLog";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -28,6 +30,11 @@ const app = express();
 // Populate req.ip
 app.set("trust proxy", true);
 const server = http.createServer(app);
+requestStats(server, (stats) => {
+  if (process.env.NODE_ENV === "production") {
+    handleEventLog(stats);
+  }
+});
 const io = new Server(server, { cors: { origin: "*" } });
 
 // Cross-Origin Requests
@@ -43,6 +50,13 @@ if (process.env.NODE_ENV === "production") {
 }
 
 io.sockets.on("connection", (socket) => {
+  const host = socket.handshake.headers.host;
+  const address = socket.handshake.address;
+  const connectionURL = socket.handshake.url;
+  const connectionStr = `host="${host}" address="${address}" path="${connectionURL}"`;
+  if (process.env.NODE_ENV === "production") {
+    console.log(`Socket connected: ${connectionStr}`);
+  }
   const leaderboardChangeStream = Leaderboard.watch();
   leaderboardChangeStream.on("change", (change) => {
     handleLiveChange(change, socket, "leaderboard");
@@ -51,6 +65,12 @@ io.sockets.on("connection", (socket) => {
   const pathsChangeStream = Path.watch();
   pathsChangeStream.on("change", (change) => {
     handleLiveChange(change, socket, "paths");
+  });
+
+  socket.on("disconnect", () => {
+    if (process.env.NODE_ENV === "production") {
+      console.log(`Socked disconnected: ${connectionStr}`);
+    }
   });
 });
 
@@ -94,7 +114,6 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
 export const getTodaysLeaderboard = async () => {
   const currentDate = format(new Date(), "MM/dd/yyyy");
   const leaderboardEl = await Leaderboard.find({ date: currentDate });
-
   if (leaderboardEl && leaderboardEl[0]) return leaderboardEl[0].leaderboard;
 };
 

@@ -1,9 +1,7 @@
-import { Request, Response } from "express";
+import { Stats } from "request-stats";
 
-export const handleEventLog = (req: Request, res: Response) => {
-  res.on("finish", () => {
-    console.log(
-      `method=${req.method} path="${req.url}" ip="${req.ip}" status=${res.statusCode}`
-    );
-  });
+export const handleEventLog = (stats: Stats) => {
+  console.log(
+    `method=${stats.req.method} path="${stats.req.path}" ip="${stats.req.ip}" status=${stats.res.status}`
+  );
 };
