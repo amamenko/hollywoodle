@@ -50,10 +50,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 io.sockets.on("connection", (socket) => {
-  const host = socket.handshake.headers.host;
-  const address = socket.handshake.address;
+  const ip =
+    socket.handshake.headers["x-forwarded-for"] ||
+    socket.client.conn.remoteAddress;
   const connectionURL = socket.handshake.url;
-  const connectionStr = `host="${host}" address="${address}" path="${connectionURL}"`;
+  const connectionStr = `address="${ip}" path="${connectionURL}"`;
   if (process.env.NODE_ENV === "production") {
     console.log(`Socket connected: ${connectionStr}`);
   }

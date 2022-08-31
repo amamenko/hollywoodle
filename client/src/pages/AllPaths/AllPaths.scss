@@ -13,7 +13,9 @@
   background: #fff;
   box-sizing: border-box;
   transition: background 0.4s ease, color 0.4s ease;
-  overflow: hidden;
+  @media only screen and (max-width: 550px) {
+    overflow: hidden;
+  }
 
   &.dark {
     background: #010408;
