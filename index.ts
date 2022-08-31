@@ -50,9 +50,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 io.sockets.on("connection", (socket) => {
-  const ip =
+  let ip =
     socket.handshake.headers["x-forwarded-for"] ||
-    socket.client.conn.remoteAddress;
+    socket.client.conn.remoteAddress ||
+    "";
+  ip = ip ? ip.toString().split(",")[0] : "";
   const connectionURL = socket.handshake.url;
   const connectionStr = `address="${ip}" path="${connectionURL}"`;
   if (process.env.NODE_ENV === "production") {
@@ -60,12 +62,12 @@ io.sockets.on("connection", (socket) => {
   }
   const leaderboardChangeStream = Leaderboard.watch();
   leaderboardChangeStream.on("change", (change) => {
-    handleLiveChange(change, socket, "leaderboard");
+    handleLiveChange(change, socket, "leaderboard", connectionStr);
   });
 
   const pathsChangeStream = Path.watch();
   pathsChangeStream.on("change", (change) => {
-    handleLiveChange(change, socket, "paths");
+    handleLiveChange(change, socket, "paths", connectionStr);
   });
 
   socket.on("disconnect", () => {
