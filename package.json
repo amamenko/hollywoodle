@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "node --max-old-space-size=4096 -- node_modules/ts-node/dist/bin -P tsconfig.json index.ts",
-    "dev": "nodemon -x node --max-old-space-size=4096 -- node_modules/ts-node/dist/bin -P tsconfig.json index.ts",
+    "startProd": "node --max-old-space-size=400 -- node_modules/ts-node/dist/bin -P tsconfig.json index.ts",
+    "start": "ts-node index.ts",
+    "dev": "nodemon -x ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

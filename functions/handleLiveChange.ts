@@ -6,14 +6,8 @@ import { getTopPathsAggregatedData } from "./getTopPathsAggregatedData";
 export const handleLiveChange = (
   change: { [key: string]: any },
   socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
-  key: string,
-  connectionStr: string
+  key: string
 ) => {
-  const logUpdate = () => {
-    if (process.env.NODE_ENV === "production") {
-      console.log(`Socket updated emitted: ${connectionStr}`);
-    }
-  };
   if (change.operationType === "update") {
     const allUpdatedFields = change.updateDescription.updatedFields;
     if (allUpdatedFields) {
@@ -33,11 +27,10 @@ export const handleLiveChange = (
             highestDegree,
           };
           socket.emit("changeData", changeData);
-          logUpdate();
         });
+      } else {
+        socket.emit("changeData", changeData);
       }
-      socket.emit("changeData", changeData);
-      logUpdate();
     }
   }
 };

@@ -62,12 +62,12 @@ io.sockets.on("connection", (socket) => {
   }
   const leaderboardChangeStream = Leaderboard.watch();
   leaderboardChangeStream.on("change", (change) => {
-    handleLiveChange(change, socket, "leaderboard", connectionStr);
+    handleLiveChange(change, socket, "leaderboard");
   });
 
   const pathsChangeStream = Path.watch();
   pathsChangeStream.on("change", (change) => {
-    handleLiveChange(change, socket, "paths", connectionStr);
+    handleLiveChange(change, socket, "paths");
   });
 
   socket.on("disconnect", () => {
