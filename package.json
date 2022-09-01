@@ -37,8 +37,10 @@
     "mongoose": "^6.2.8",
     "node-cron": "^3.0.0",
     "request-stats": "^3.0.0",
-    "socket.io": "^4.5.0",
+    "socket.io": "^4.5.1",
     "ts-node": "^10.9.1",
-    "twitter-api-v2": "^1.12.3"
+    "twitter-api-v2": "^1.12.3",
+    "winston": "^3.8.1",
+    "winston-papertrail-transport": "^1.0.9"
   }
 }

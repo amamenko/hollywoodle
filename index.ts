@@ -19,22 +19,28 @@ import { updateActorMostPopularPath } from "./functions/updateActorMostPopularPa
 import { getTopPathsAggregatedData } from "./functions/getTopPathsAggregatedData";
 import { postToTwitter } from "./functions/postToTwitter";
 import { handleLiveChange } from "./functions/handleLiveChange";
-// import requestStats from "request-stats";
-// import { handleEventLog } from "./functions/handleEventLog";
+import { logger } from "./logger/logger";
+import requestStats from "request-stats";
+import { handleEventLog } from "./functions/handleEventLog";
 
 export interface RequestQuery {
   [key: string]: string | number;
+}
+
+// Hide all console outputs in prod
+if (process.env.NODE_ENV === "production") {
+  console.log = function () {};
 }
 
 const app = express();
 // Populate req.ip
 app.set("trust proxy", true);
 const server = http.createServer(app);
-// requestStats(server, (stats) => {
-//   if (process.env.NODE_ENV === "production") {
-//     handleEventLog(stats);
-//   }
-// });
+requestStats(server, (stats) => {
+  if (process.env.NODE_ENV === "production") {
+    handleEventLog(stats);
+  }
+});
 const io = new Server(server, { cors: { origin: "*" } });
 
 // Cross-Origin Requests
@@ -50,16 +56,16 @@ if (process.env.NODE_ENV === "production") {
 }
 
 io.sockets.on("connection", (socket) => {
-  // let ip =
-  //   socket.handshake.headers["x-forwarded-for"] ||
-  //   socket.client.conn.remoteAddress ||
-  //   "";
-  // ip = ip ? ip.toString().split(",")[0] : "";
-  // const connectionURL = socket.handshake.url;
-  // const connectionStr = `address="${ip}" path="${connectionURL}"`;
-  // if (process.env.NODE_ENV === "production") {
-  //   console.log(`Socket connected: ${connectionStr}`);
-  // }
+  let ip =
+    socket.handshake.headers["x-forwarded-for"] ||
+    socket.client.conn.remoteAddress ||
+    "";
+  ip = ip ? ip.toString().split(",")[0] : "";
+  const connectionURL = socket.handshake.url;
+  const connectionStr = `address="${ip}" path="${connectionURL}"`;
+  if (process.env.NODE_ENV === "production") {
+    logger("server").info(`Socket connected: ${connectionStr}`);
+  }
   const leaderboardChangeStream = Leaderboard.watch();
   leaderboardChangeStream.on("change", (change) => {
     handleLiveChange(change, socket, "leaderboard");
@@ -70,11 +76,11 @@ io.sockets.on("connection", (socket) => {
     handleLiveChange(change, socket, "paths");
   });
 
-  // socket.on("disconnect", () => {
-  //   if (process.env.NODE_ENV === "production") {
-  //     console.log(`Socked disconnected: ${connectionStr}`);
-  //   }
-  // });
+  socket.on("disconnect", () => {
+    if (process.env.NODE_ENV === "production") {
+      logger("server").info(`Socked disconnected: ${connectionStr}`);
+    }
+  });
 });
 
 app.get("/api/actor", [], async (req: Request, res: Response) => {
@@ -210,10 +216,18 @@ mongoose
     `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_DB_CLUSTER}.vpfgw.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`
   )
   .then(() => {
-    console.log("Connected to MongoDB");
+    if (process.env.NODE_ENV === "production") {
+      logger("server").info("Connected to MongoDB");
+    } else {
+      console.log("Connected to MongoDB");
+    }
   })
   .catch((err) => console.log(err));
 
 server.listen(port, () => {
-  console.log(`Listening on port ${port}...`);
+  if (process.env.NODE_ENV === "production") {
+    logger("server").info(`Listening on port ${port}...`);
+  } else {
+    console.log(`Listening on port ${port}...`);
+  }
 });
