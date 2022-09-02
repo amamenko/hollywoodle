@@ -41,7 +41,10 @@ requestStats(server, (stats) => {
     handleEventLog(stats);
   }
 });
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, {
+  cors: { origin: "*" },
+  perMessageDeflate: false,
+});
 
 // Cross-Origin Requests
 app.use(cors());
