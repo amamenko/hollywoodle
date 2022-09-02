@@ -68,15 +68,17 @@ io.sockets.on("connection", (socket) => {
   }
   const leaderboardChangeStream = Leaderboard.watch();
   leaderboardChangeStream.on("change", (change) => {
-    handleLiveChange(change, socket, "leaderboard");
+    if (socket.connected) handleLiveChange(change, socket, "leaderboard");
   });
 
   const pathsChangeStream = Path.watch();
   pathsChangeStream.on("change", (change) => {
-    handleLiveChange(change, socket, "paths");
+    // Make sure updates only emit for connected sockets
+    if (socket.connected) handleLiveChange(change, socket, "paths");
   });
 
   socket.on("disconnect", () => {
+    socket.disconnect();
     if (process.env.NODE_ENV === "production") {
       logger("server").info(`Socked disconnected: ${connectionStr}`);
     }

@@ -136,6 +136,7 @@ export const AllPaths = () => {
           upgrade: false,
           reconnectionAttempts: 5,
           reconnectionDelay: 5000,
+          forceNew: true,
         }
       );
       socketRef.current = socket;
