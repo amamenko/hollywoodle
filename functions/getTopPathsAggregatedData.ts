@@ -4,13 +4,20 @@ export const getTopPathsAggregatedData = (
   }[]
 ) => {
   if (paths) {
-    const allCounts = paths.map((el) => Number(el.count));
-    const allDegrees = paths.map((el) => Number(el.degrees));
+    const allDataObj: { [key: string]: number[] } = {
+      counts: [],
+      degrees: [],
+    };
+
+    for (const path of paths) {
+      allDataObj.counts.push(Number(path.count));
+      allDataObj.degrees.push(Number(path.degrees));
+    }
 
     const totalPathsFound = paths.length;
-    const totalPlayers = allCounts.reduce((a, b) => a + b, 0);
-    const lowestDegree = Math.min(...allDegrees);
-    const highestDegree = Math.max(...allDegrees);
+    const totalPlayers = allDataObj.counts.reduce((a, b) => a + b, 0);
+    const lowestDegree = Math.min(...allDataObj.degrees);
+    const highestDegree = Math.max(...allDataObj.degrees);
 
     return {
       totalPathsFound,

@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import { updateDatabaseActors } from "./functions/updateDatabaseActors";
 import { Actor } from "./models/Actor";
-import { Leaderboard } from "./models/Leaderboard";
+// import { Leaderboard } from "./models/Leaderboard";
 import { News } from "./models/News";
 import cron from "node-cron";
 import cors from "cors";
@@ -11,7 +11,7 @@ import enforce from "express-sslify";
 import { format, parse } from "date-fns";
 import http from "http";
 import { Server } from "socket.io";
-import { updateLeaderboard } from "./functions/updateLeaderboard";
+// import { updateLeaderboard } from "./functions/updateLeaderboard";
 import { Path } from "./models/Path";
 import { updateTopPaths } from "./functions/updateTopPaths";
 import { updateEmotes } from "./functions/updateEmotes";
@@ -69,10 +69,10 @@ io.sockets.on("connection", (socket) => {
   if (process.env.NODE_ENV === "production") {
     logger("server").info(`Socket connected: ${connectionStr}`);
   }
-  const leaderboardChangeStream = Leaderboard.watch();
-  leaderboardChangeStream.on("change", (change) => {
-    if (socket.connected) handleLiveChange(change, socket, "leaderboard");
-  });
+  // const leaderboardChangeStream = Leaderboard.watch();
+  // leaderboardChangeStream.on("change", (change) => {
+  //   if (socket.connected) handleLiveChange(change, socket, "leaderboard");
+  // });
 
   const pathsChangeStream = Path.watch();
   pathsChangeStream.on("change", (change) => {
@@ -82,6 +82,7 @@ io.sockets.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     socket.disconnect();
+    pathsChangeStream.close();
     if (process.env.NODE_ENV === "production") {
       logger("server").info(`Socked disconnected: ${connectionStr}`);
     }
@@ -125,24 +126,24 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
   }
 });
 
-export const getTodaysLeaderboard = async () => {
-  const currentDate = format(new Date(), "MM/dd/yyyy");
-  const leaderboardEl = await Leaderboard.find({ date: currentDate });
-  if (leaderboardEl && leaderboardEl[0]) return leaderboardEl[0].leaderboard;
-};
+// export const getTodaysLeaderboard = async () => {
+//   const currentDate = format(new Date(), "MM/dd/yyyy");
+//   const leaderboardEl = await Leaderboard.find({ date: currentDate });
+//   if (leaderboardEl && leaderboardEl[0]) return leaderboardEl[0].leaderboard;
+// };
 
-app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
-  const leaderboard: { [key: string]: string | number }[] =
-    await getTodaysLeaderboard();
-  res.send(leaderboard);
-});
+// app.get("/api/leaderboard", [], async (req: Request, res: Response) => {
+//   const leaderboard: { [key: string]: string | number }[] =
+//     await getTodaysLeaderboard();
+//   res.send(leaderboard);
+// });
 
-app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
-  if (req.body && typeof req.body === "object") {
-    const update = await updateLeaderboard(req.body as RequestQuery);
-    res.send(update);
-  }
-});
+// app.post("/api/update_leaderboard", [], async (req: Request, res: Response) => {
+//   if (req.body && typeof req.body === "object") {
+//     const update = await updateLeaderboard(req.body as RequestQuery);
+//     res.send(update);
+//   }
+// });
 
 app.get("/api/news", [], async (req: Request, res: Response) => {
   const pageRequest: number = Number(req.query.page) || 0;
