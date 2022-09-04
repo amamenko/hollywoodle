@@ -91,9 +91,9 @@ io.sockets.on("connection", (socket) => {
 
 app.get("/api/actor", [], async (req: Request, res: Response) => {
   const currentDate = format(new Date(), "MM/dd/yyyy");
-  const actors = await Actor.find({ date: currentDate }).catch((e) =>
-    console.error(e)
-  );
+  const actors = await Actor.find({ date: currentDate })
+    .lean()
+    .catch((e) => console.error(e));
   res.send(actors);
 });
 
@@ -102,21 +102,23 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
   const requestedName = req.query.name;
   const dateRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/gim;
   if (typeof requestedDate === "string" && dateRegex.test(requestedDate)) {
-    const actors = await Actor.find({ date: requestedDate }).catch((e) =>
-      console.error(e)
-    );
+    const actors = await Actor.find({ date: requestedDate })
+      .lean()
+      .catch((e) => console.error(e));
     res.send(actors);
   } else if (requestedName && typeof requestedName === "string") {
-    const actor = await Actor.find({ name: requestedName }).catch((e) =>
-      console.error(e)
-    );
+    const actor = await Actor.find({ name: requestedName })
+      .lean()
+      .catch((e) => console.error(e));
     const allDates = Array.isArray(actor) ? actor?.map((el) => el.date) : [];
     if (allDates.length > 0) {
       const allActors = await Actor.find({
         date: {
           $in: allDates,
         },
-      }).catch((e) => console.error(e));
+      })
+        .lean()
+        .catch((e) => console.error(e));
       res.send(allActors);
     } else {
       res.send([]);
@@ -147,7 +149,7 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
 
 app.get("/api/news", [], async (req: Request, res: Response) => {
   const pageRequest: number = Number(req.query.page) || 0;
-  const allNews = await News.find({ draft: { $ne: true } });
+  const allNews = await News.find({ draft: { $ne: true } }).lean();
   const numResults = allNews.length;
   const parseFunc = (date: string) => parse(date, "MMMM d, yyyy", new Date());
   allNews.sort((a, b) => (parseFunc(a.date) > parseFunc(b.date) ? -1 : 1));
@@ -157,14 +159,14 @@ app.get("/api/news", [], async (req: Request, res: Response) => {
 
 app.get("/api/news_article", [], async (req: Request, res: Response) => {
   const slugRequest = req.query.slug || "";
-  const foundArticle = await News.findOne({ slug: slugRequest });
+  const foundArticle = await News.findOne({ slug: slugRequest }).lean();
   res.send(foundArticle);
 });
 
 app.get("/api/top_paths", [], async (req: Request, res: Response) => {
   const pageRequest: number = Number(req.query.page) || 0;
   const topPaths: { [key: string]: { [key: string]: string | number }[] }[] =
-    await Path.find();
+    await Path.find().lean();
   if (topPaths[0] && topPaths[0].paths) {
     const { totalPathsFound, totalPlayers, lowestDegree, highestDegree } =
       getTopPathsAggregatedData(topPaths[0].paths);
@@ -176,6 +178,11 @@ app.get("/api/top_paths", [], async (req: Request, res: Response) => {
       highestDegree,
     });
   }
+});
+
+app.get("/timezone", (req: Request, res: Response) => {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  res.send(timezone);
 });
 
 app.post("/api/update_top_paths", [], async (req: Request, res: Response) => {
@@ -207,10 +214,19 @@ cron.schedule("1 0 * * *", () => {
   postToTwitter();
 });
 
-app.get("/timezone", (req: Request, res: Response) => {
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  res.send(timezone);
-});
+if (process.env.NODE_ENV === "production") {
+  // Log info about prod server memory
+  cron.schedule("0,30 * * * *", () => {
+    const used = process.memoryUsage();
+    let memStr = "";
+    for (const key in used) {
+      memStr += `${key} ${
+        Math.round((used[key] / 1024 / 1024) * 100) / 100
+      } MB `;
+    }
+    logger("server").info(memStr.trim());
+  });
+}
 
 app.get("/", (req: Request, res: Response) => {
   res.send("The Hollywoodle server is up and running!");

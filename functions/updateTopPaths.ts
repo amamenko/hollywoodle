@@ -35,8 +35,8 @@ export const updateTopPaths = async (query: {
           currentTopPathsClone[foundPathMatchIndex].count = foundEl.count + 1;
         } else {
           currentTopPathsClone.push({
-            degrees,
-            path,
+            degrees: Number(degrees),
+            path: path.toString(),
             count: 1,
             emotes: {
               like: 0,

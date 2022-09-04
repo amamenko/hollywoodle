@@ -5,13 +5,13 @@ import { Path } from "../models/Path";
 export const updateActorMostPopularPath = async () => {
   const currentDate = format(new Date(), "MM/dd/yyyy");
   const dateFilter = { date: currentDate };
-  let currentTopPaths = await Path.find(dateFilter);
+  let currentTopPaths = await Path.find(dateFilter).lean();
   if (currentTopPaths[0].paths) {
-    currentTopPaths = currentTopPaths[0].paths;
-    const allDegrees = currentTopPaths.map((el) => Number(el.degrees));
+    const allTopPaths = currentTopPaths[0].paths;
+    const allDegrees = allTopPaths.map((el) => Number(el.degrees));
     const lowestDegree = Math.min(...allDegrees);
     // Find the first (most popular) path with the lowest degrees
-    const mostPopularBestPath = currentTopPaths.find(
+    const mostPopularBestPath = allTopPaths.find(
       (el) => el.degrees === lowestDegree
     );
     if (mostPopularBestPath) {

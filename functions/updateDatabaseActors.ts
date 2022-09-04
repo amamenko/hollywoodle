@@ -20,10 +20,12 @@ export const updateDatabaseActors = async () => {
       date: {
         $in: pastThreeMonthsArr,
       },
-    }).catch((e) => console.error(e))) || [];
+    })
+      .lean()
+      .catch((e) => console.error(e))) || [];
 
   const allBlacklistedIDs = allDbActors.map(
-    (actor: { [key: string]: number }) => actor.id
+    (actor: { [key: string]: any }) => actor.id
   );
 
   // Look up longer movie terms featured in the past 2 weeks and blacklist terms
@@ -31,7 +33,7 @@ export const updateDatabaseActors = async () => {
   const allBlacklistedMovieTerms = [
     ...new Set(
       allDbActors
-        .filter((actor: { [key: string]: string }) =>
+        .filter((actor: { [key: string]: any }) =>
           pastTwoWeeksArr.includes(actor.date)
         )
         .map((actor) =>
