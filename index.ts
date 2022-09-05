@@ -64,14 +64,8 @@ wss.on("connection", (socket: any, req: Request) => {
   ip = ip ? ip.toString().split(",")[0].trim() : "";
   socket.ip = ip;
   const connectionStr = `address="${ip}"`;
-  const handleDisconnect = () => {
-    if (process.env.NODE_ENV === "production") {
-      logger("server").info(`Socket disconnected: ${connectionStr}`);
-    }
-  };
   socket.isAlive = true;
   socket.on("pong", heartbeat);
-  socket.on("close", handleDisconnect);
   if (process.env.NODE_ENV === "production") {
     logger("server").info(`Socket connected: ${connectionStr}`);
   }
@@ -80,6 +74,13 @@ wss.on("connection", (socket: any, req: Request) => {
     // Make sure updates only emit for connected and alive sockets
     if (socket.isAlive) handleLiveChange(change, socket, "paths");
   });
+  const handleDisconnect = () => {
+    pathsChangeStream.close();
+    if (process.env.NODE_ENV === "production") {
+      logger("server").info(`Socket disconnected: ${connectionStr}`);
+    }
+  };
+  socket.on("close", handleDisconnect);
 });
 const heartBeatInterval = setInterval(() => {
   wss.clients.forEach((ws: any) => {
