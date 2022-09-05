@@ -54,7 +54,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
 
-const wss = new WebSocketServer({ server });
+const wss = new WebSocketServer({ server, perMessageDeflate: false });
 
 wss.on("connection", (socket: any, req: Request) => {
   function heartbeat() {
