@@ -88,6 +88,7 @@ export const Header = () => {
           changeShowLeaderboardModal={changeShowLeaderboardModal}
         /> */}
         {currentHoliday === "Memorial Day" ||
+        currentHoliday === "Labor Day" ||
         currentHoliday === "Independence Day" ? (
           <LogoStars className="hollywoodle_logo" />
         ) : currentHoliday === "Juneteenth" ? (

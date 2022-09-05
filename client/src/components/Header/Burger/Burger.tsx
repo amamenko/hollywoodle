@@ -55,6 +55,7 @@ export const Burger = ({
       <span className="hollywoodle_logo_container_burger">
         ""
         {currentHoliday === "Memorial Day" ||
+        currentHoliday === "Labor Day" ||
         currentHoliday === "Independence Day" ? (
           <LogoStars className="hollywoodle_logo burger_menu" />
         ) : currentHoliday === "Juneteenth" ? (
