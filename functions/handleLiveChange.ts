@@ -1,11 +1,9 @@
 import "dotenv/config";
-import { Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { getTopPathsAggregatedData } from "./getTopPathsAggregatedData";
 
 export const handleLiveChange = (
   change: { [key: string]: any },
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
+  socket: WebSocket,
   key: string
 ) => {
   if (change.operationType === "update") {
@@ -15,9 +13,11 @@ export const handleLiveChange = (
       if (key === "paths") {
         const { totalPathsFound, totalPlayers, lowestDegree, highestDegree } =
           getTopPathsAggregatedData(changeData);
-        socket.emit("pageCheck", (response: number | undefined) => {
+        socket.send("pageCheck");
+        socket.onmessage = (message) => {
+          const messageData = message.data;
           let currentPage = 0;
-          if (response) currentPage = response;
+          if (messageData) currentPage = Number(messageData);
           changeData = {
             // Only return 10 results at a time relative to current page
             paths: changeData.slice(currentPage * 10, currentPage * 10 + 10),
@@ -26,10 +26,10 @@ export const handleLiveChange = (
             lowestDegree,
             highestDegree,
           };
-          socket.emit("changeData", changeData);
-        });
-      } else {
-        socket.emit("changeData", changeData);
+          socket.send(
+            JSON.stringify({ event: "pathsUpdate", data: changeData })
+          );
+        };
       }
     }
   }

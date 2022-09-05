@@ -24,6 +24,7 @@
     "@types/express": "^4.17.13",
     "@types/mongoose": "^5.11.97",
     "@types/request-stats": "^3.0.0",
+    "@types/ws": "^8.5.3",
     "nodemon": "^2.0.15",
     "typescript": "^4.8.2"
   },
@@ -38,10 +39,10 @@
     "mongoose": "^6.5.4",
     "node-cron": "^3.0.0",
     "request-stats": "^3.0.0",
-    "socket.io": "^4.5.2",
     "ts-node": "^10.9.1",
     "twitter-api-v2": "^1.12.3",
     "winston": "^3.8.1",
-    "winston-papertrail-transport": "^1.0.9"
+    "winston-papertrail-transport": "^1.0.9",
+    "ws": "^8.8.1"
   }
 }

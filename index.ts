@@ -10,7 +10,6 @@ import cors from "cors";
 import enforce from "express-sslify";
 import { format, parse } from "date-fns";
 import http from "http";
-import { Server } from "socket.io";
 // import { updateLeaderboard } from "./functions/updateLeaderboard";
 import { Path } from "./models/Path";
 import { updateTopPaths } from "./functions/updateTopPaths";
@@ -22,10 +21,13 @@ import { handleLiveChange } from "./functions/handleLiveChange";
 import { logger } from "./logger/logger";
 import requestStats from "request-stats";
 import { handleEventLog } from "./functions/handleEventLog";
+import { WebSocketServer } from "ws";
 
 export interface RequestQuery {
   [key: string]: string | number;
 }
+
+const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 
 // Hide all console outputs in prod
 if (process.env.NODE_ENV === "production") {
@@ -41,10 +43,6 @@ requestStats(server, (stats) => {
     handleEventLog(stats);
   }
 });
-const io = new Server(server, {
-  cors: { origin: "*" },
-  perMessageDeflate: false,
-});
 
 // Cross-Origin Requests
 app.use(cors());
@@ -52,41 +50,52 @@ app.use(cors());
 // To show request body during POST requests
 app.use(express.json());
 
-const port = process.env.PORT || 4000;
-
 if (process.env.NODE_ENV === "production") {
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
 
-io.sockets.on("connection", (socket) => {
-  let ip =
-    socket.handshake.headers["x-forwarded-for"] ||
-    socket.client.conn.remoteAddress ||
-    "";
-  ip = ip ? ip.toString().split(",")[0] : "";
-  const connectionURL = socket.handshake.url;
-  const connectionStr = `address="${ip}" path="${connectionURL}"`;
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", (socket: any, req: Request) => {
+  function heartbeat() {
+    this.isAlive = true;
+  }
+  let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "";
+  ip = ip ? ip.toString().split(",")[0].trim() : "";
+  socket.ip = ip;
+  const connectionStr = `address="${ip}"`;
+  const handleDisconnect = () => {
+    if (process.env.NODE_ENV === "production") {
+      logger("server").info(`Socket disconnected: ${connectionStr}`);
+    }
+  };
+  socket.isAlive = true;
+  socket.on("pong", heartbeat);
+  socket.on("close", handleDisconnect);
   if (process.env.NODE_ENV === "production") {
     logger("server").info(`Socket connected: ${connectionStr}`);
   }
-  // const leaderboardChangeStream = Leaderboard.watch();
-  // leaderboardChangeStream.on("change", (change) => {
-  //   if (socket.connected) handleLiveChange(change, socket, "leaderboard");
-  // });
-
   const pathsChangeStream = Path.watch();
   pathsChangeStream.on("change", (change) => {
-    // Make sure updates only emit for connected sockets
-    if (socket.connected) handleLiveChange(change, socket, "paths");
+    // Make sure updates only emit for connected and alive sockets
+    if (socket.isAlive) handleLiveChange(change, socket, "paths");
   });
-
-  socket.on("disconnect", () => {
-    socket.disconnect();
-    pathsChangeStream.close();
-    if (process.env.NODE_ENV === "production") {
-      logger("server").info(`Socked disconnected: ${connectionStr}`);
+});
+const heartBeatInterval = setInterval(() => {
+  wss.clients.forEach((ws: any) => {
+    if (ws.isAlive === false) {
+      if (process.env.NODE_ENV === "production") {
+        logger("server").info(`Socked disconnected: ${ws.ip}`);
+      }
+      return ws.terminate();
     }
+    ws.isAlive = false;
+    ws.ping();
   });
+}, 30000);
+
+wss.on("close", () => {
+  clearInterval(heartBeatInterval);
 });
 
 app.get("/api/actor", [], async (req: Request, res: Response) => {

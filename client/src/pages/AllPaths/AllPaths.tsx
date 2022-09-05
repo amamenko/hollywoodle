@@ -1,12 +1,10 @@
 import React, { useRef, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { io, Socket } from "socket.io-client";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { IoFootsteps } from "react-icons/io5";
 import { ClipLoader } from "react-spinners";
 import ReactPaginate from "react-paginate";
-import { DefaultEventsMap } from "@socket.io/component-emitter";
 import { AppContext } from "../../App";
 import { PathContainer } from "../../components/Header/TopPaths/PathContainer";
 import { BackButton } from "../BackButton";
@@ -23,10 +21,7 @@ export const AllPaths = () => {
     objectiveCurrentDate,
     changeShowTopPathsModal,
   } = useContext(AppContext);
-  const socketRef: React.MutableRefObject<Socket<
-    DefaultEventsMap,
-    DefaultEventsMap
-  > | null> = useRef(null);
+  const socketRef: React.MutableRefObject<WebSocket | null> = useRef(null);
   const currentPage = useRef(0);
   const location = useLocation();
   const [pathsLoading, changePathsLoading] = useState(false);
@@ -41,6 +36,69 @@ export const AllPaths = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
+    if (!socketRef.current) {
+      const ws = new WebSocket(
+        process.env.REACT_APP_NODE_ENV === "production"
+          ? `wss://${process.env.REACT_APP_PROD_BASE_URL}`
+          : "ws://localhost:4000"
+      );
+      socketRef.current = ws;
+      ws.onmessage = (event) => {
+        if (event.data === "pageCheck") {
+          ws.send(JSON.stringify(currentPage.current));
+        } else {
+          const json = JSON.parse(event.data);
+          try {
+            if ((json.event = "pathsUpdate")) {
+              const updateData = json.data;
+              if (
+                updateData &&
+                updateData.paths &&
+                Array.isArray(updateData.paths)
+              ) {
+                const allCurrentPaths = topPaths.map(
+                  (el) => `${el.path}${el.count}`
+                );
+                const argPaths = updateData.paths.map(
+                  (el: { [key: string]: string | number }) =>
+                    `${el.path}${el.count}`
+                );
+
+                const arrEqualityCheck = (arr1: string[], arr2: string[]) => {
+                  return (
+                    arr1.length === arr2.length &&
+                    arr1.every((el, index) => el === arr2[index])
+                  );
+                };
+
+                if (!arrEqualityCheck(allCurrentPaths, argPaths)) {
+                  changeTopPaths(updateData.paths);
+                }
+
+                if (updateData.totalPathsFound) {
+                  changeTotalPathsFound(updateData.totalPathsFound);
+                  const currentPages = Math.ceil(
+                    updateData.totalPathsFound / itemsPerPage
+                  );
+                  if (currentPages > pageCount) changePageCount(currentPages);
+                }
+                if (updateData.totalPlayers)
+                  changeTotalPlayers(updateData.totalPlayers);
+                if (updateData.lowestDegree)
+                  changeLowestDegree(updateData.lowestDegree);
+                if (updateData.highestDegree)
+                  changeHighestDegree(updateData.highestDegree);
+              }
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      };
+    }
+  }, [pageCount, topPaths]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
@@ -49,9 +107,12 @@ export const AllPaths = () => {
     return () => {
       changeShowTopPathsModal(false);
       if (socketRef.current) {
-        socketRef.current?.removeAllListeners();
-        socketRef.current?.close();
-        socketRef.current = null;
+        try {
+          socketRef.current?.close();
+          socketRef.current = null;
+        } catch (e) {
+          console.error(e);
+        }
       }
     };
   }, [changeShowTopPathsModal]);
@@ -120,65 +181,6 @@ export const AllPaths = () => {
 
     return () => {};
   }, [location.pathname]);
-
-  useEffect(() => {
-    if (!socketRef.current) {
-      const nodeEnv = process.env.REACT_APP_NODE_ENV
-        ? process.env.REACT_APP_NODE_ENV
-        : "";
-
-      const socket = io(
-        nodeEnv && nodeEnv === "production"
-          ? `${process.env.REACT_APP_PROD_SERVER}`
-          : "http://localhost:4000",
-        {
-          transports: ["websocket"],
-          upgrade: false,
-          reconnectionAttempts: 5,
-          reconnectionDelay: 5000,
-          forceNew: true,
-        }
-      );
-      socketRef.current = socket;
-
-      socket.on("pageCheck", (callback) => {
-        callback(currentPage.current);
-      });
-
-      socket.on("changeData", (arg) => {
-        if (arg && arg.paths && Array.isArray(arg.paths)) {
-          const allCurrentPaths = topPaths.map((el) => `${el.path}${el.count}`);
-          const argPaths = arg.paths.map(
-            (el: { [key: string]: string | number }) => `${el.path}${el.count}`
-          );
-
-          const arrEqualityCheck = (arr1: string[], arr2: string[]) => {
-            return (
-              arr1.length === arr2.length &&
-              arr1.every((el, index) => el === arr2[index])
-            );
-          };
-
-          if (!arrEqualityCheck(allCurrentPaths, argPaths)) {
-            changeTopPaths(arg.paths);
-          }
-
-          if (arg.totalPathsFound) {
-            changeTotalPathsFound(arg.totalPathsFound);
-            const currentPages = Math.ceil(arg.totalPathsFound / itemsPerPage);
-            if (currentPages > pageCount) changePageCount(currentPages);
-          }
-          if (arg.totalPlayers) changeTotalPlayers(arg.totalPlayers);
-          if (arg.lowestDegree) changeLowestDegree(arg.lowestDegree);
-          if (arg.highestDegree) changeHighestDegree(arg.highestDegree);
-        }
-      });
-
-      socket.on("disconnect", () => {
-        socket.removeAllListeners();
-      });
-    }
-  }, [topPaths, pageCount]);
 
   const handlePageClick = (event: { [key: string]: number }) => {
     changePathCollapsed("");
