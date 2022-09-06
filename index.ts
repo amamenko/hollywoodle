@@ -22,6 +22,7 @@ import { logger } from "./logger/logger";
 import requestStats from "request-stats";
 import { handleEventLog } from "./functions/handleEventLog";
 import { WebSocketServer } from "ws";
+import { deployToRender } from "./functions/deployToRender";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -235,6 +236,11 @@ if (process.env.NODE_ENV === "production") {
       } MB `;
     }
     logger("server").info(memStr.trim());
+  });
+
+  // Redeploy render service every 8 hours - 2:15 AM, 10:15 AM, 6:15 PM
+  cron.schedule("15 2,10,18 * * *", () => {
+    deployToRender();
   });
 }
 
