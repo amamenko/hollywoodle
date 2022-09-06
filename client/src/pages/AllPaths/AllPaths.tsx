@@ -11,6 +11,7 @@ import { BackButton } from "../BackButton";
 import { Footer } from "../../components/Footer/Footer";
 import { useLocation } from "react-router-dom";
 import { Path } from "../../interfaces/Path.interface";
+import ReconnectingWebSocket from "reconnecting-websocket";
 import "./AllPaths.scss";
 
 export const AllPaths = () => {
@@ -37,12 +38,17 @@ export const AllPaths = () => {
 
   useEffect(() => {
     if (!socketRef.current) {
-      const ws = new WebSocket(
+      const ws = new ReconnectingWebSocket(
         process.env.REACT_APP_NODE_ENV === "production"
           ? `wss://${process.env.REACT_APP_PROD_BASE_URL}`
-          : "ws://localhost:4000"
+          : "ws://localhost:4000",
+        [],
+        {
+          WebSocket: WebSocket,
+          maxRetries: 10,
+        }
       );
-      socketRef.current = ws;
+      socketRef.current = ws as unknown as WebSocket;
       ws.onmessage = (event) => {
         if (event.data === "pageCheck") {
           ws.send(JSON.stringify(currentPage.current));
