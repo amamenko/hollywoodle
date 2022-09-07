@@ -260,7 +260,7 @@ if (process.env.NODE_ENV === "production") {
 
   nodeCleanup((exitCode, signal) => {
     mongoose.disconnect();
-    logger("server").info(
+    console.log(
       `Node process exited${exitCode ? ` with exit code ${exitCode} ` : " "}${
         exitCode
           ? signal
