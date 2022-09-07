@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/mongoose": "^5.11.97",
+    "@types/node-cleanup": "^2.1.2",
     "@types/request-stats": "^3.0.0",
     "@types/ws": "^8.5.3",
     "nodemon": "^2.0.15",
@@ -37,6 +38,7 @@
     "express-sslify": "^1.2.0",
     "lodash.sample": "^4.2.1",
     "mongoose": "^6.5.4",
+    "node-cleanup": "^2.1.2",
     "node-cron": "^3.0.0",
     "request-stats": "^3.0.0",
     "ts-node": "^10.9.1",

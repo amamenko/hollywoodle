@@ -23,6 +23,7 @@ import requestStats from "request-stats";
 import { handleEventLog } from "./functions/handleEventLog";
 import { WebSocketServer } from "ws";
 import { deployToRender } from "./functions/deployToRender";
+import nodeCleanup from "node-cleanup";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -225,25 +226,6 @@ cron.schedule("1 0 * * *", () => {
   postToTwitter();
 });
 
-if (process.env.NODE_ENV === "production") {
-  // Log info about prod server memory
-  cron.schedule("0,30 * * * *", () => {
-    const used = process.memoryUsage();
-    let memStr = "";
-    for (const key in used) {
-      memStr += `${key} ${
-        Math.round((used[key] / 1024 / 1024) * 100) / 100
-      } MB `;
-    }
-    logger("server").info(memStr.trim());
-  });
-
-  // Redeploy render service every 8 hours - 2:15 AM, 10:15 AM, 6:15 PM
-  cron.schedule("15 2,10,18 * * *", () => {
-    deployToRender();
-  });
-}
-
 app.get("/", (req: Request, res: Response) => {
   res.send("The Hollywoodle server is up and running!");
 });
@@ -269,3 +251,25 @@ server.listen(port, () => {
     console.log(`Listening on port ${port}...`);
   }
 });
+
+if (process.env.NODE_ENV === "production") {
+  // Redeploy render service every 8 hours - 2:15 AM, 10:15 AM, 6:15 PM
+  cron.schedule("15 2,10,18 * * *", () => {
+    deployToRender();
+  });
+
+  nodeCleanup((exitCode, signal) => {
+    mongoose.disconnect();
+    logger("server").info(
+      `Node process exited${exitCode ? ` with exit code ${exitCode} ` : " "}${
+        exitCode
+          ? signal
+            ? `and with signal ${signal}`
+            : ""
+          : signal
+          ? `with signal ${signal}`
+          : ""
+      }.`
+    );
+  });
+}
