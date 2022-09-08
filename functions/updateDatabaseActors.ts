@@ -1,7 +1,9 @@
+import "dotenv/config";
 import { updateActors } from "./updateActors";
 import { Actor } from "../models/Actor";
 import { eachDayOfInterval, format, subDays } from "date-fns";
 import { resetTopPaths } from "./resetTopPaths";
+import { logger } from "../logger/logger";
 
 export const updateDatabaseActors = async () => {
   const threeMonthsAgo = subDays(new Date(), 92);
@@ -57,9 +59,13 @@ export const updateDatabaseActors = async () => {
   await Actor.create(resultActors.actor1Obj).catch((e) => console.error(e));
   // Create last actor document for today
   await Actor.create(resultActors.actor2Obj).catch((e) => console.error(e));
-  console.log(
-    `Successfully created first and last actors for ${new Date().toLocaleDateString()}!\nFirst actor: ${
-      resultActors.actor1Obj.name
-    }\nSecond actor: ${resultActors.actor2Obj.name}`
-  );
+
+  const successStatement = `Successfully created first and last actors for ${new Date().toLocaleDateString()}!\nFirst actor: ${
+    resultActors.actor1Obj.name
+  }\nSecond actor: ${resultActors.actor2Obj.name}`;
+  if (process.env.NODE_ENV === "production") {
+    logger("server").info(successStatement);
+  } else {
+    console.log(successStatement);
+  }
 };

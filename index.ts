@@ -31,11 +31,6 @@ export interface RequestQuery {
 
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 
-// Hide all console outputs in prod
-if (process.env.NODE_ENV === "production") {
-  console.log = function () {};
-}
-
 const app = express();
 // Populate req.ip
 app.set("trust proxy", true);

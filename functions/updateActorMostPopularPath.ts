@@ -1,6 +1,8 @@
+import "dotenv/config";
 import { format } from "date-fns";
 import { Actor } from "../models/Actor";
 import { Path } from "../models/Path";
+import { logger } from "../logger/logger";
 
 export const updateActorMostPopularPath = async () => {
   const currentDate = format(new Date(), "MM/dd/yyyy");
@@ -27,21 +29,34 @@ export const updateActorMostPopularPath = async () => {
         };
         try {
           await Actor.updateMany(dateFilter, mostPopularPathUpdate);
-          console.log(
-            `Successfully updated most popular path for ${currentDate} actors!`
-          );
+          const successStatement = `Successfully updated most popular path for ${currentDate} actors!`;
+          if (process.env.NODE_ENV === "production") {
+            logger("server").info(successStatement);
+          } else {
+            console.log(successStatement);
+          }
         } catch (e) {
-          console.error(e);
+          if (process.env.NODE_ENV === "production") {
+            logger("server").error(e.message);
+          } else {
+            console.error(e);
+          }
         }
       } else {
-        console.log(
-          `Missing path or degrees when trying to update most popular path for ${currentDate} actors!`
-        );
+        const missingStatement = `Missing path or degrees when trying to update most popular path for ${currentDate} actors!`;
+        if (process.env.NODE_ENV === "production") {
+          logger("server").info(missingStatement);
+        } else {
+          console.log(missingStatement);
+        }
       }
     } else {
-      console.log(
-        `Couldn't find most popular/best path while trying to update most popular path for ${currentDate} actors!`
-      );
+      const cantFindStatement = `Couldn't find most popular/best path while trying to update most popular path for ${currentDate} actors!`;
+      if (process.env.NODE_ENV === "production") {
+        logger("server").info(cantFindStatement);
+      } else {
+        console.log(cantFindStatement);
+      }
     }
   }
 };
