@@ -3,6 +3,7 @@ import { AppContext } from "../../App";
 import { ReactComponent as LogoWhite } from "../../assets/LogoWhite.svg";
 import { ReactComponent as LogoStars } from "../../assets/LogoVariants/Stars/LogoStarsHeader.svg";
 import { ReactComponent as LogoJuneteenth } from "../../assets/LogoVariants/Juneteenth/LogoJuneteenthHeader.svg";
+import { ReactComponent as LogoUnionJack } from "../../assets/LogoVariants/UnionJack/LogoUnionJackHeader.svg";
 import { HowToPlayModal } from "../HowToPlayModal/HowToPlayModal";
 import { BiBarChartAlt2 } from "react-icons/bi";
 import { GiBackwardTime } from "react-icons/gi";
@@ -64,6 +65,7 @@ export const Header = () => {
       }
     }
   }, [archivedGame, currentlyPlayingDate, objectiveCurrentDate]);
+
   return (
     <div className={`header ${darkMode ? "dark" : ""}`}>
       <div className="inner_header_container">
@@ -87,16 +89,17 @@ export const Header = () => {
           showLeaderboardModal={showLeaderboardModal}
           changeShowLeaderboardModal={changeShowLeaderboardModal}
         /> */}
-        {currentHoliday === "Memorial Day" ||
-        currentHoliday === "Labor Day" ||
-        currentHoliday === "Independence Day" ? (
+        {objectiveCurrentDate === "09/09/2022" ? (
+          <LogoUnionJack className="hollywoodle_logo" />
+        ) : currentHoliday === "Memorial Day" ||
+          currentHoliday === "Labor Day" ||
+          currentHoliday === "Independence Day" ? (
           <LogoStars className="hollywoodle_logo" />
         ) : currentHoliday === "Juneteenth" ? (
           <LogoJuneteenth className="hollywoodle_logo" />
         ) : (
           <LogoWhite className="hollywoodle_logo" />
         )}
-
         <Link to="/archive">
           <GiBackwardTime
             className="archive_icon"

@@ -8,6 +8,7 @@ import { GrContact } from "react-icons/gr";
 import { ReactComponent as LogoWhite } from "../../../assets/LogoWhite.svg";
 import { ReactComponent as LogoStars } from "../../../assets/LogoVariants/Stars/LogoStarsBurger.svg";
 import { ReactComponent as LogoJuneteenth } from "../../../assets/LogoVariants/Juneteenth/LogoJuneteenthBurger.svg";
+import { ReactComponent as LogoUnionJack } from "../../../assets/LogoVariants/UnionJack/LogoUnionJackBurger.svg";
 import KofiButton from "kofi-button";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
@@ -29,8 +30,13 @@ export const Burger = ({
   changeShowContactModal: React.Dispatch<React.SetStateAction<boolean>>;
   changeShowSupportModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { darkMode, changeDarkMode, changeShowTopPathsModal, currentHoliday } =
-    useContext(AppContext);
+  const {
+    darkMode,
+    changeDarkMode,
+    changeShowTopPathsModal,
+    currentHoliday,
+    objectiveCurrentDate,
+  } = useContext(AppContext);
 
   const handleChange = () => {
     changeDarkMode(!darkMode);
@@ -54,9 +60,11 @@ export const Burger = ({
     >
       <span className="hollywoodle_logo_container_burger">
         ""
-        {currentHoliday === "Memorial Day" ||
-        currentHoliday === "Labor Day" ||
-        currentHoliday === "Independence Day" ? (
+        {objectiveCurrentDate === "09/09/2022" ? (
+          <LogoUnionJack className="hollywoodle_logo burger_menu" />
+        ) : currentHoliday === "Memorial Day" ||
+          currentHoliday === "Labor Day" ||
+          currentHoliday === "Independence Day" ? (
           <LogoStars className="hollywoodle_logo burger_menu" />
         ) : currentHoliday === "Juneteenth" ? (
           <LogoJuneteenth className="hollywoodle_logo burger_menu" />
