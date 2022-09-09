@@ -97,11 +97,16 @@ wss.on("close", () => {
 });
 
 app.get("/api/actor", [], async (req: Request, res: Response) => {
-  const currentDate = format(new Date(), "MM/dd/yyyy");
+  const todayDate = new Date();
+  const wordsCurrentDate = format(todayDate, "MMMM d, yyyy");
+  const foundTodaysArticle = await News.find({ date: wordsCurrentDate })
+    .select("date title image slug")
+    .lean();
+  const currentDate = format(todayDate, "MM/dd/yyyy");
   const actors = await Actor.find({ date: currentDate })
     .lean()
     .catch((e) => console.error(e));
-  res.send(actors);
+  res.send({ actors, article: foundTodaysArticle[0] });
 });
 
 app.get("/api/archive_actor", [], async (req: Request, res: Response) => {

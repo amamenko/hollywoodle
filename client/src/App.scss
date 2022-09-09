@@ -46,13 +46,15 @@
 }
 
 .Toastify__toast-container {
-  position: fixed;
-  top: 70px;
-  z-index: 99999999999 !important;
+  z-index: 999999999 !important;
+  &:not(.Toastify__toast-container--bottom-center) {
+    position: fixed;
+    top: 70px;
+  }
 }
 
 .Toastify__toast-theme--dark {
-  border: 1px solid #30363d;
+  border: 1px solid rgb(100, 100, 100);
 }
 
 .first_actor_container {

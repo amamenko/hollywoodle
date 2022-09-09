@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import CacheBuster from "react-cache-buster";
 import packageJSON from "../package.json";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { getMovieCast } from "./getMovieCast";
 import { buildPath } from "./components/AutosuggestInput/buildPath";
@@ -20,6 +20,8 @@ import { Main } from "./pages/Main";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
+import { NewsToast } from "./components/Toast/NewsToast";
+import { handleSeenArticle } from "./components/Toast/handleSeenArticle";
 
 export const AppContext = createContext<ContextProps>(contextDefaults);
 
@@ -63,6 +65,15 @@ const App = () => {
   const [darkMode, changeDarkMode] = useState(true);
   const [initialAppMounted, changeInitialAppMounted] = useState(false);
   const [currentHoliday, changeCurrentHoliday] = useState("");
+  const [browserWidth, changeBrowserWidth] = useState(
+    Math.max(
+      document.body.scrollWidth,
+      document.documentElement.scrollWidth,
+      document.body.offsetWidth,
+      document.documentElement.offsetWidth,
+      document.documentElement.clientWidth
+    )
+  );
 
   // Handle modal logic
   const [showTopPathsModal, changeShowTopPathsModal] = useState(false);
@@ -81,6 +92,25 @@ const App = () => {
   const [pathRankCount, changePathRankCount] = useState({
     rank: "",
     count: "",
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const currentWidth = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      );
+      changeBrowserWidth(currentWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   });
 
   useEffect(() => {
@@ -141,7 +171,35 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const currentFirstAndLastActors = await getFirstAndLastActors();
+        const { actors: currentFirstAndLastActors, article } =
+          await getFirstAndLastActors();
+        const storageStr = localStorage.getItem("hollywoodle-statistics");
+        let storageObj: { [key: string]: number | number[] | string } = {};
+        try {
+          storageObj = JSON.parse(storageStr ? storageStr : "");
+        } catch (e) {
+          console.error(e);
+        }
+        if (article && !storageObj.seen_article) {
+          toast(
+            <NewsToast
+              date={article.date}
+              title={article.title}
+              image={article.image}
+              slug={article.slug}
+            />,
+            {
+              theme: "dark",
+              autoClose: 30000,
+              hideProgressBar: true,
+              position:
+                browserWidth < 768
+                  ? toast.POSITION.BOTTOM_CENTER
+                  : toast.POSITION.TOP_RIGHT,
+              onClose: () => handleSeenArticle(),
+            }
+          );
+        }
         const currentFirst = currentFirstAndLastActors.find(
           (actor: { [key: string]: string | number }) => actor.type === "first"
         );
@@ -183,7 +241,12 @@ const App = () => {
         changeLastActor(foundLast);
       }
     }
-  }, [currentArchivedActorsResults, currentlyPlayingDate, initialAppMounted]);
+  }, [
+    currentArchivedActorsResults,
+    currentlyPlayingDate,
+    initialAppMounted,
+    browserWidth,
+  ]);
 
   const mostRecentGuess = guesses.sort((a, b) => {
     return (a ? Number(a.guess_number) : 0) - (b ? Number(b.guess_number) : 0);

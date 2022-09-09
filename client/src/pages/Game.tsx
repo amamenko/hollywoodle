@@ -46,19 +46,21 @@ export const Game = ({
             emotes: [],
             leaderboard_viewed: "",
             leaderboard_eligible: false,
+            seen_article: false,
           })
         );
       } else {
         const storageStr = localStorage.getItem("hollywoodle-statistics");
         let storageObj: { [key: string]: number | number[] | string } = {};
-
         try {
           storageObj = JSON.parse(storageStr ? storageStr : "");
         } catch (e) {
           console.error(e);
         }
         let resetStreak = false;
+        let resetReadArticle = false;
         if (objectiveCurrentDate !== storageObj.current_date.toString()) {
+          resetReadArticle = true;
           if (storageObj.last_played) {
             const parsedCurrentdDate = parse(
               objectiveCurrentDate,
@@ -115,6 +117,7 @@ export const Game = ({
               : hasUsername
               ? true
               : false,
+            seen_article: !resetReadArticle,
           })
         );
       }

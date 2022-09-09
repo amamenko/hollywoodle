@@ -129,17 +129,19 @@ export const AutosuggestInput = ({
     image: string;
   }) => {
     if (!name) {
-      toast.error(<p className="toast_message">Unknown {typeOfGuess}!</p>, {
-        theme: "dark",
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-
+      toast.dismiss();
+      setTimeout(() => {
+        toast.error(<p className="toast_message">Unknown {typeOfGuess}!</p>, {
+          theme: "dark",
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }, 750);
       // Don't show any more toasts in queue
       setTimeout(() => toast.clearWaitingQueue(), 500);
     } else {

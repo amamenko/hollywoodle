@@ -1,5 +1,7 @@
+import "dotenv/config";
 import sample from "lodash.sample";
 import axios from "axios";
+import { logger } from "../logger/logger";
 
 export const getRandomPopularActor = async (
   allBlacklistedIDs: number[],
@@ -12,7 +14,11 @@ export const getRandomPopularActor = async (
   if (!blacklistedMovieTerms) blacklistedMovieTerms = [];
 
   while (triesCounter < 25) {
-    console.log(`Try #${triesCounter}`);
+    if (process.env.NODE_ENV === "production") {
+      logger("server").info(`Try #${triesCounter}`);
+    } else {
+      console.log(`Try #${triesCounter}`);
+    }
 
     const pageArr = [];
 
