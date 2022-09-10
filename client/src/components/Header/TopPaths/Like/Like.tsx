@@ -8,11 +8,12 @@ import { LaughingEmote } from "./Emotes/LaughingEmote";
 import { WowEmote } from "./Emotes/WowEmote";
 import { BoringEmote } from "./Emotes/BoringEmote";
 import { handleUpdateEmotes } from "./handleUpdateEmotes";
+import debounce from "lodash/debounce";
+import { TooltipEmojisSelector } from "./TooltipEmojisSelector";
 import "./Like.scss";
 
 export const Like = ({ rank, id }: { rank: number; id: string }) => {
   const [emoteSelected, changeEmoteSelected] = useState("");
-
   const getStorageObj = () => {
     const storageStr = localStorage.getItem("hollywoodle-statistics");
     let storageObj: {
@@ -95,13 +96,22 @@ export const Like = ({ rank, id }: { rank: number; id: string }) => {
       if (!emoteSelected) {
         await handleNewEmoteUpdate();
       } else {
-        await handleResetEmote();
-        await handleNewEmoteUpdate();
+        if (emoteSelected === emoteCapitalized) {
+          await handleResetEmote();
+        } else {
+          await handleResetEmote();
+          await handleNewEmoteUpdate();
+        }
       }
     } catch (e) {
       console.error(e);
     }
   };
+  const debouncedTriggerEmote = debounce(handleTriggerEmote, 500, {
+    trailing: true,
+    maxWait: 1000,
+  });
+
   useEffect(() => {
     const storageObj = getStorageObj();
     const allEmotes = storageObj.emotes as {
@@ -155,15 +165,9 @@ export const Like = ({ rank, id }: { rank: number; id: string }) => {
         clickable={true}
         delayHide={0}
         delayShow={0}
+        globalEventOff={"click"}
       >
-        <div className="tooltip_emoji_container">
-          <LikeEmote handleTriggerEmote={handleTriggerEmote} />
-          <OscarEmote handleTriggerEmote={handleTriggerEmote} />
-          <AngryEmote handleTriggerEmote={handleTriggerEmote} />
-          <WowEmote handleTriggerEmote={handleTriggerEmote} />
-          <BoringEmote handleTriggerEmote={handleTriggerEmote} />
-          <LaughingEmote handleTriggerEmote={handleTriggerEmote} />
-        </div>
+        <TooltipEmojisSelector debouncedTriggerEmote={debouncedTriggerEmote} />
       </ReactTooltip>
     </>
   );

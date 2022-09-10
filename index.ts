@@ -99,7 +99,10 @@ wss.on("close", () => {
 app.get("/api/actor", [], async (req: Request, res: Response) => {
   const todayDate = new Date();
   const wordsCurrentDate = format(todayDate, "MMMM d, yyyy");
-  const foundTodaysArticle = await News.find({ date: wordsCurrentDate })
+  const foundTodaysArticle = await News.find({
+    date: wordsCurrentDate,
+    draft: { $ne: true },
+  })
     .select("date title image slug")
     .lean();
   const currentDate = format(todayDate, "MM/dd/yyyy");

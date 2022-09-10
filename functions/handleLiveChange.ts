@@ -18,17 +18,19 @@ export const handleLiveChange = (
           const messageData = message.data;
           let currentPage = 0;
           if (messageData) currentPage = Number(messageData);
-          changeData = {
-            // Only return 10 results at a time relative to current page
-            paths: changeData.slice(currentPage * 10, currentPage * 10 + 10),
-            totalPathsFound,
-            totalPlayers,
-            lowestDegree,
-            highestDegree,
-          };
-          socket.send(
-            JSON.stringify({ event: "pathsUpdate", data: changeData })
-          );
+          if (changeData && Array.isArray(changeData)) {
+            changeData = {
+              // Only return 10 results at a time relative to current page
+              paths: changeData.slice(currentPage * 10, currentPage * 10 + 10),
+              totalPathsFound,
+              totalPlayers,
+              lowestDegree,
+              highestDegree,
+            };
+            socket.send(
+              JSON.stringify({ event: "pathsUpdate", data: changeData })
+            );
+          }
         };
       }
     }
