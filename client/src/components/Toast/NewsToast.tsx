@@ -8,11 +8,13 @@ export const NewsToast = ({
   title,
   image,
   slug,
+  category,
 }: {
   date: string;
   title: string;
   image: string;
   slug: string;
+  category: string;
 }) => {
   const handleDismissToast = () => {
     handleSeenArticle();
@@ -27,7 +29,11 @@ export const NewsToast = ({
         </div>
         <div className="news_toast_details">
           <p className="news_toast_title">{title}</p>
-          <p className="news_toast_date">{date}</p>
+          <div className="news_toast_date_category_container">
+            <p className="news_toast_date">{date}</p>
+            <p className="news_toast_separator">|</p>
+            <p>{category}</p>
+          </div>
         </div>
       </div>
       <div className="news_toast_buttons_container">

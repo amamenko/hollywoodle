@@ -103,7 +103,7 @@ app.get("/api/actor", [], async (req: Request, res: Response) => {
     date: wordsCurrentDate,
     draft: { $ne: true },
   })
-    .select("date title image slug")
+    .select("date title image category slug")
     .lean();
   const currentDate = format(todayDate, "MM/dd/yyyy");
   const actors = await Actor.find({ date: currentDate })

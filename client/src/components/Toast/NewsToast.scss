@@ -43,12 +43,25 @@
         }
       }
       .news_toast_date {
-        color: rgb(225, 225, 225);
         font-size: 0.6rem;
-        margin: 0.5rem 0 0 0;
         padding: 0;
+      }
+      .news_toast_date_category_container {
+        color: rgb(225, 225, 225);
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 0.5rem 0 0 0;
+        .news_toast_separator {
+          margin: 0 0.5rem;
+        }
+        p {
+          font-size: 0.6rem;
+        }
         @media only screen and (max-width: 768px) {
-          font-size: 0.8rem;
+          p {
+            font-size: 0.8rem;
+          }
         }
       }
     }

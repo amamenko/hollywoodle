@@ -17,11 +17,11 @@ import { ActorObj } from "./interfaces/ActorObj.interface";
 import { GuessObj } from "./interfaces/GuessObj.interface";
 import { contextDefaults } from "./contextDefaults";
 import { Main } from "./pages/Main";
+import { NewsToast } from "./components/Toast/NewsToast";
+import { handleSeenArticle } from "./components/Toast/handleSeenArticle";
 import "react-toastify/dist/ReactToastify.css";
 import "./bootstrap.css";
 import "./App.scss";
-import { NewsToast } from "./components/Toast/NewsToast";
-import { handleSeenArticle } from "./components/Toast/handleSeenArticle";
 
 export const AppContext = createContext<ContextProps>(contextDefaults);
 
@@ -187,6 +187,7 @@ const App = () => {
               title={article.title}
               image={article.image}
               slug={article.slug}
+              category={article.category}
             />,
             {
               theme: "dark",
