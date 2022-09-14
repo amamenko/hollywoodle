@@ -73,6 +73,14 @@
       color: rgb(252, 210, 132);
     }
   }
+  .like_spinner_container {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    span {
+      margin: 0;
+    }
+  }
   svg {
     fill: #fff;
   }

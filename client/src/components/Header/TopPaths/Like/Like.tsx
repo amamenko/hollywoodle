@@ -9,6 +9,7 @@ import { WowEmote } from "./Emotes/WowEmote";
 import { BoringEmote } from "./Emotes/BoringEmote";
 import { handleUpdateEmotes } from "./handleUpdateEmotes";
 import { TooltipEmojisSelector } from "./TooltipEmojisSelector";
+import { ClipLoader } from "react-spinners";
 import "./Like.scss";
 
 interface StorageObj {
@@ -23,6 +24,7 @@ interface StorageObj {
 export const Like = ({ rank, id }: { rank: number; id: string }) => {
   const tooltipEl = useRef<HTMLDivElement>(null);
   const [hideTooltip, changeHideTooltip] = useState(false);
+  const [likeLoading, changeLikeLoading] = useState(false);
   const getStorageObj = () => {
     const storageStr = localStorage.getItem("hollywoodle-statistics");
     let storageObj: StorageObj = {};
@@ -90,6 +92,7 @@ export const Like = ({ rank, id }: { rank: number; id: string }) => {
     handleHideTooltip();
     changeHideTooltip(true);
     setTimeout(() => changeHideTooltip(false), 500);
+    changeLikeLoading(true);
     const emoteSelected = findEmoteByID();
     try {
       const emoteCapitalized = emote.charAt(0).toUpperCase() + emote.slice(1);
@@ -119,37 +122,66 @@ export const Like = ({ rank, id }: { rank: number; id: string }) => {
         }
       };
       if (!emoteSelected) {
-        await handleNewEmoteUpdate();
+        await handleNewEmoteUpdate()
+          .then(() => changeLikeLoading(false))
+          .catch((e) => {
+            console.error(e);
+            changeLikeLoading(false);
+          });
       } else {
         if (emoteSelected === emoteCapitalized) {
-          await handleResetEmote();
+          await handleResetEmote()
+            .then(() => changeLikeLoading(false))
+            .catch((e) => {
+              console.error(e);
+              changeLikeLoading(false);
+            });
         } else {
-          await handleResetEmote().then(async () => {
-            await handleNewEmoteUpdate();
-          });
+          await handleResetEmote()
+            .then(async () => {
+              await handleNewEmoteUpdate()
+                .then(() => changeLikeLoading(false))
+                .catch((e) => {
+                  console.error(e);
+                  changeLikeLoading(false);
+                });
+            })
+            .catch((e) => {
+              console.error(e);
+              changeLikeLoading(false);
+            });
         }
       }
     } catch (e) {
       console.error(e);
+      if (likeLoading) changeLikeLoading(true);
     }
   };
 
   const handleRenderLikeButton = () => {
     const currentEmoteSelected = findEmoteByID();
-    if (currentEmoteSelected === "Like") {
-      return <LikeEmote mainButton={true} />;
-    } else if (currentEmoteSelected === "Oscar") {
-      return <OscarEmote mainButton={true} />;
-    } else if (currentEmoteSelected === "Anger") {
-      return <AngryEmote mainButton={true} />;
-    } else if (currentEmoteSelected === "Wow") {
-      return <WowEmote mainButton={true} />;
-    } else if (currentEmoteSelected === "Boring") {
-      return <BoringEmote mainButton={true} />;
-    } else if (currentEmoteSelected === "Haha") {
-      return <LaughingEmote mainButton={true} />;
+    if (likeLoading) {
+      return (
+        <div className="like_spinner_container">
+          <ClipLoader color={"#fff"} size={16} />
+        </div>
+      );
     } else {
-      return <FiThumbsUp size={20} />;
+      if (currentEmoteSelected === "Like") {
+        return <LikeEmote mainButton={true} />;
+      } else if (currentEmoteSelected === "Oscar") {
+        return <OscarEmote mainButton={true} />;
+      } else if (currentEmoteSelected === "Anger") {
+        return <AngryEmote mainButton={true} />;
+      } else if (currentEmoteSelected === "Wow") {
+        return <WowEmote mainButton={true} />;
+      } else if (currentEmoteSelected === "Boring") {
+        return <BoringEmote mainButton={true} />;
+      } else if (currentEmoteSelected === "Haha") {
+        return <LaughingEmote mainButton={true} />;
+      } else {
+        return <FiThumbsUp size={20} />;
+      }
     }
   };
   const handleDynamicClassname = () => {
@@ -180,7 +212,7 @@ export const Like = ({ rank, id }: { rank: number; id: string }) => {
           {handleButtonText()}
         </p>
       </div>
-      {!hideTooltip && (
+      {!hideTooltip && !likeLoading && (
         <ReactTooltip
           className="keep_tooltip_on_hover"
           id={`likeButton${rank}`}
