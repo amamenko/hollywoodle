@@ -172,12 +172,8 @@ export const Like = ({ rank, id }: { rank: number; id: string }) => {
         data-iscapture="true"
         data-for={`likeButton${rank}`}
         ref={tooltipEl}
-        onClick={() => {
-          handleShowTooltip();
-        }}
-        onTouchEnd={() => {
-          handleShowTooltip();
-        }}
+        onClick={handleShowTooltip}
+        onTouchEnd={handleShowTooltip}
       >
         {handleRenderLikeButton()}
         <p className={`like_button_text  ${handleDynamicClassname()}`}>
@@ -194,7 +190,6 @@ export const Like = ({ rank, id }: { rank: number; id: string }) => {
           clickable={true}
           delayHide={0}
           delayShow={0}
-          globalEventOff={"click"}
         >
           <TooltipEmojisSelector handleTriggerEmote={handleTriggerEmote} />
         </ReactTooltip>

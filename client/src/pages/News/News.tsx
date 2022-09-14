@@ -28,26 +28,10 @@ export const News = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    if (queryPage && Number(queryPage) > 0) {
-      const finalPage = Number(queryPage) - 1;
-      currentPage.current = finalPage;
-      fetchData(finalPage);
-    } else {
-      navigate({ pathname: "/news", search: "?page=1" });
-    }
-  }, [queryPage, navigate]);
-
-  // Remove all displayed toasts on modal open
-  useEffect(() => {
-    if (location.pathname === "/news") toast.dismiss();
-  }, [location]);
-
   const fetchData = async (page?: number) => {
     const nodeEnv = process.env.REACT_APP_NODE_ENV
       ? process.env.REACT_APP_NODE_ENV
       : "";
-
     changeDataLoaded(false);
     await axios
       .get(
@@ -80,14 +64,24 @@ export const News = () => {
 
   useEffect(() => {
     const source = axios.CancelToken.source();
-    fetchData(currentPage.current);
+    if (queryPage && Number(queryPage) > 0) {
+      const finalPage = Number(queryPage) - 1;
+      currentPage.current = finalPage;
+      fetchData(finalPage);
+    } else {
+      navigate({ pathname: "/news", search: "?page=1" });
+    }
     return () => source.cancel();
-  }, []);
+  }, [queryPage, navigate]);
+
+  // Remove all displayed toasts on modal open
+  useEffect(() => {
+    if (location.pathname === "/news") toast.dismiss();
+  }, [location]);
 
   const handlePageClick = (event: { [key: string]: number }) => {
     currentPage.current = event.selected;
     navigate({ pathname: "/news", search: `?page=${event.selected + 1}` });
-    fetchData(event.selected);
   };
 
   return (

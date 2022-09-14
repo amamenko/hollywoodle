@@ -146,9 +146,13 @@
   border: 1px solid rgb(115, 115, 115) !important;
   color: #000 !important;
   padding-left: 1rem !important;
+  pointer-events: auto !important;
   padding-right: 1rem !important;
   @media only screen and (max-width: 768px) {
     margin-left: 5.5rem !important;
+  }
+  &.place-bottom {
+    margin-top: 5px !important;
   }
 }
 
