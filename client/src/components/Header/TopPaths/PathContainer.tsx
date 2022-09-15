@@ -3,6 +3,7 @@ import { Collapse } from "react-collapse";
 import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
 import { Emotes } from "../../../interfaces/Emotes.interface";
+// import { Comment } from "./Comment/Comment";
 import { EmotesResults } from "./Like/EmotesResults";
 import { Like } from "./Like/Like";
 
@@ -92,6 +93,13 @@ export const PathContainer = ({
       />
       <div className="bottom_path_reactions_container">
         <Like rank={rank} id={id} />
+        {/* <Comment
+          id={id}
+          rank={rank}
+          degrees={degrees}
+          count={count}
+          path={path}
+        /> */}
       </div>
     </div>
   );
