@@ -1,3 +1,7 @@
+.path_details_container {
+  overflow-x: hidden;
+}
+
 .comment_container {
   cursor: pointer;
   box-sizing: border-box;
@@ -46,7 +50,7 @@
   align-items: center;
   justify-content: center;
   color: rgb(150, 150, 150);
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 1200px) {
     margin-right: 1px;
   }
   .total_comments_text {
@@ -60,8 +64,18 @@
 }
 
 .path_details_container {
+  background: rgb(30, 30, 30);
+  padding: 1px;
+  .path_details_path_text {
+    box-sizing: border-box;
+    background: #000;
+    margin: 0;
+    padding: 0.75rem 0.5rem;
+    border-top: 1px solid rgb(85, 85, 85);
+  }
   .path_details_comments_header {
-    background: rgb(35, 35, 35);
+    box-sizing: border-box;
+    background: rgb(55, 55, 55);
     padding: 0.75rem 0.5rem;
     margin: 0;
     border-bottom: 1px solid rgb(85, 85, 85);
@@ -72,46 +86,141 @@
       padding: 0;
     }
   }
+  .path_comments_container {
+    display: flex;
+    flex-direction: column;
+    .no_comments_statement {
+      margin-top: 2rem;
+      color: rgb(215, 215, 215);
+      font-weight: 700;
+      text-align: center;
+    }
+    .path_comment_box {
+      transition: margin 0.2s ease;
+    }
+    :focus {
+      outline: none;
+    }
+    .col-3 {
+      float: left;
+      width: 92%;
+      @media only screen and (max-width: 1200px) {
+        width: 115%;
+      }
+      position: relative;
+    }
+    textarea {
+      resize: none;
+    }
+    /* necessary to give position: relative to parent. */
+    textarea[type="text"] {
+      position: relative;
+      color: #fff;
+      width: 100%;
+      box-sizing: border-box;
+      letter-spacing: 1px;
+    }
+    .effect-16 {
+      max-width: 100%;
+      border: 0;
+      border-bottom: 1px solid #ccc;
+      border-radius: 0px;
+      padding-left: 0.5rem;
+      padding-right: 5rem;
+    }
+    .effect-16 ~ .focus-border {
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: rgb(24, 228, 192);
+      transition: 0.4s;
+    }
+    .effect-16:focus ~ .focus-border,
+    .has-content.effect-16 ~ .focus-border {
+      width: 120%;
+      transition: 0.4s;
+    }
+    .effect-16 ~ label {
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      left: 0.5rem;
+      width: 100%;
+      @media only screen and (max-width: 1200px) {
+        width: 82%;
+      }
+      top: 5px;
+      color: #aaa;
+      transition: 0.3s;
+      z-index: -1;
+      letter-spacing: 0.5px;
+    }
+    .effect-16:focus ~ label,
+    .has-content.effect-16 ~ label {
+      top: -16px;
+      font-size: 12px;
+      color: rgb(24, 228, 192);
+      transition: 0.3s;
+    }
+  }
 }
 
 .individual_comment_container {
+  box-sizing: border-box;
+  border-bottom: 1px solid rgb(50, 50, 50);
   padding: 0.25rem 0.5rem;
   display: flex;
-  border-bottom: 1px solid rgb(50, 50, 50);
-  .individual_comment_icon_container {
+  background: #000;
+  flex-direction: column;
+  .individual_comment_top_details {
     display: flex;
-    flex-direction: column;
-    position: relative;
-    p {
-      padding: 0;
-      position: absolute;
-      top: 1.45rem;
-      bottom: 0;
-      right: 0;
-      left: 0.4rem;
-      margin: 0 auto;
-      font-size: 1.15rem;
-      z-index: 9;
-    }
-    .individual_comment_icon {
-      opacity: 0.4;
-      margin-top: 1rem;
-      height: 35px;
-      width: 35px;
-      background: #bbb;
-      border-radius: 50%;
+    .individual_comment_icon_container {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
+      position: relative;
+      p {
+        padding: 0;
+        position: absolute;
+        top: 1.45rem;
+        bottom: 0;
+        right: 0;
+        left: 0.4rem;
+        margin: 0 auto;
+        font-size: 1.15rem;
+        z-index: 9;
+      }
+      .individual_comment_icon {
+        opacity: 0.4;
+        margin-top: 1rem;
+        height: 35px;
+        width: 35px;
+        background: #bbb;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    .individual_comment_text_container {
+      display: flex;
+      margin-left: 0.75rem;
+      .individual_comment_text {
+        padding-right: 1.5rem;
+        line-height: 1.5;
+        font-weight: 500;
+      }
     }
   }
-  .individual_comment_text_container {
-    display: flex;
-    margin-left: 0.75rem;
-    .individual_comment_text {
-      padding-right: 1.5rem;
-      line-height: 1.5;
-      font-weight: 500;
+  .individual_comment_bottom_details {
+    .indvidual_comment_date_place {
+      display: flex;
+      font-weight: 700;
+      color: rgb(100, 100, 100);
+      .date_place_separator {
+        padding: 0 0.5rem;
+      }
     }
   }
 }

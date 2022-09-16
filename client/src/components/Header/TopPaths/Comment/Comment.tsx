@@ -17,8 +17,12 @@ export const Comment = ({
   count: number;
 }) => {
   const [modalOpen, changeModalOpen] = useState(false);
+  const [comment, changeComment] = useState("");
   const openModal = () => changeModalOpen(true);
-  const closeModal = () => changeModalOpen(false);
+  const closeModal = () => {
+    changeModalOpen(false);
+    if (comment) changeComment("");
+  };
   return (
     <>
       <div
@@ -37,6 +41,8 @@ export const Comment = ({
       <IndividualPathComments
         modalOpen={modalOpen}
         closeModal={closeModal}
+        comment={comment}
+        changeComment={changeComment}
         id={id}
         rank={rank}
         degrees={degrees}
