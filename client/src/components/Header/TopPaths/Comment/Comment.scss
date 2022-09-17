@@ -1,5 +1,7 @@
 .path_details_container {
   overflow-x: hidden;
+  max-height: 95%;
+  margin-top: 1rem;
 }
 
 .comment_container {
@@ -66,19 +68,33 @@
 .path_details_container {
   background: rgb(30, 30, 30);
   padding: 1px;
+  h2 {
+    border-bottom: 1px solid rgb(85, 85, 85);
+    padding-bottom: 1rem;
+  }
   .path_details_path_text {
     box-sizing: border-box;
-    background: #000;
+    text-align: center;
+    padding: 0 0.5rem;
+    font-size: 0.85rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    @media only screen and (max-width: 768px) {
+      -webkit-line-clamp: 4;
+    }
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     margin: 0;
-    padding: 0.75rem 0.5rem;
-    border-top: 1px solid rgb(85, 85, 85);
   }
   .path_details_comments_header {
+    position: relative;
+    z-index: 5;
     box-sizing: border-box;
     background: rgb(55, 55, 55);
     padding: 0.75rem 0.5rem;
     margin: 0;
     border-bottom: 1px solid rgb(85, 85, 85);
+    margin-top: 1rem;
     p {
       color: rgb(215, 215, 215);
       font-weight: 700;
@@ -89,6 +105,7 @@
   .path_comments_container {
     display: flex;
     flex-direction: column;
+    background: rgb(30, 30, 30);
     .no_comments_statement {
       margin-top: 2rem;
       color: rgb(215, 215, 215);
@@ -96,6 +113,8 @@
       text-align: center;
     }
     .path_comment_box {
+      position: relative;
+      z-index: 0;
       transition: margin 0.2s ease;
     }
     :focus {
@@ -106,6 +125,7 @@
       width: 92%;
       @media only screen and (max-width: 1200px) {
         width: 115%;
+        max-width: 115%;
       }
       position: relative;
     }
@@ -119,6 +139,7 @@
       width: 100%;
       box-sizing: border-box;
       letter-spacing: 1px;
+      font-weight: 700;
     }
     .effect-16 {
       max-width: 100%;
@@ -159,10 +180,56 @@
     }
     .effect-16:focus ~ label,
     .has-content.effect-16 ~ label {
-      top: -16px;
+      top: -27px;
       font-size: 12px;
       color: rgb(24, 228, 192);
       transition: 0.3s;
+    }
+    .comment_bottom_container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .comment_length_limit {
+        margin-left: 0.5rem;
+        font-weight: 700;
+        color: rgb(178, 178, 178);
+        transition: color 0.2s ease;
+        &.warning {
+          color: #f0ad4e;
+        }
+        &.error {
+          color: #d9534f;
+        }
+        &.disabled {
+          color: rgb(113, 113, 113);
+        }
+      }
+      .comment_buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin: 0.25rem 0;
+        button {
+          padding: 0.6rem 1rem;
+          background-color: rgb(4, 208, 172);
+          border-radius: 2px;
+          font-weight: 500;
+          color: #000;
+          transition: background-color 0.2s ease, color 0.2s ease;
+          &.disabled_comment {
+            pointer-events: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: rgb(113, 113, 113);
+          }
+          &.comment_cancel {
+            background-color: transparent;
+            color: rgb(178, 178, 178);
+          }
+        }
+      }
+    }
+    .individual_comments_container {
+      max-height: 750px;
+      overflow: auto;
     }
   }
 }
@@ -174,6 +241,12 @@
   display: flex;
   background: #000;
   flex-direction: column;
+  &:last-child {
+    margin-bottom: 30rem;
+    @media only screen and (min-width: 1000px) {
+      margin-bottom: 5rem;
+    }
+  }
   .individual_comment_top_details {
     display: flex;
     .individual_comment_icon_container {
@@ -192,7 +265,7 @@
         z-index: 9;
       }
       .individual_comment_icon {
-        opacity: 0.4;
+        opacity: 0.55;
         margin-top: 1rem;
         height: 35px;
         width: 35px;
@@ -214,12 +287,53 @@
     }
   }
   .individual_comment_bottom_details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
     .indvidual_comment_date_place {
       display: flex;
+      flex-direction: column;
       font-weight: 700;
       color: rgb(100, 100, 100);
-      .date_place_separator {
-        padding: 0 0.5rem;
+      p {
+        margin: 0;
+        padding: 0;
+        width: 250px;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        @media only screen and (min-width: 768px) {
+          width: 350px;
+          max-width: 325px;
+        }
+      }
+      .individual_comment_place {
+        display: flex;
+        margin-top: 0.25rem;
+        .country_state_separator_line {
+          margin: 0 0.5rem;
+        }
+      }
+    }
+    .comment_voting_buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgb(100, 100, 100);
+      p {
+        margin: 0 0.75rem;
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+      .comment_voting_button {
+        color: rgb(100, 100, 100);
+        transition: color 0.2s ease;
+        cursor: pointer;
+        &:hover {
+          color: rgb(125, 125, 125);
+        }
       }
     }
   }

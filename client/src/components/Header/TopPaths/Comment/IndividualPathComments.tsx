@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { BsPencilSquare } from "react-icons/bs";
 import Modal from "react-modal";
@@ -48,8 +48,43 @@ export const IndividualPathComments = ({
 }) => {
   const [textareaClicked, changeTextareaClicked] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [browserWidth, changeBrowserWidth] = useState(
+    Math.max(
+      document.body.scrollWidth,
+      document.documentElement.scrollWidth,
+      document.body.offsetWidth,
+      document.documentElement.offsetWidth,
+      document.documentElement.clientWidth
+    )
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      const currentWidth = Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+      );
+      changeBrowserWidth(currentWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    changeComment(e.target.value);
+    if (e.target.value.length < 200) {
+      changeComment(e.target.value);
+    } else {
+      changeComment(e.target.value.slice(0, 200));
+    }
+  };
+  const handleResetComment = () => {
+    changeComment("");
   };
   useLayoutEffect(() => {
     if (textareaRef && textareaRef.current) {
@@ -72,7 +107,7 @@ export const IndividualPathComments = ({
         shouldFocusAfterRender={false}
         style={customModalStyles}
       >
-        <h2>PATH DETAILS</h2>
+        <h2>HOLLYWOODLE PATH DETAILS</h2>
         <button className="close_modal_button" onClick={closeModal}>
           <AiOutlineClose size={20} color="#fff" />
         </button>
@@ -94,7 +129,7 @@ export const IndividualPathComments = ({
               ref={textareaRef}
               className="effect-16"
               name="text"
-              cols={50}
+              cols={browserWidth > 768 ? 47 : 35}
               placeholder=" "
               value={comment}
               onChange={handleChangeComment}
@@ -114,10 +149,33 @@ export const IndividualPathComments = ({
             </label>
             <span className="focus-border"></span>
           </div>
-          <IndividualComment id="test" />
-          <IndividualComment id="word" />
-          <IndividualComment id="test2" />
-          <IndividualComment id="test3" />
+          <div className="comment_bottom_container">
+            <p
+              className={`comment_length_limit ${!comment ? "disabled" : ""} ${
+                comment.length >= 200
+                  ? "error"
+                  : comment.length >= 180
+                  ? "warning"
+                  : ""
+              }`}
+            >
+              {comment.length}/200
+            </p>
+            <div className="comment_buttons">
+              <button className="comment_cancel" onClick={handleResetComment}>
+                CANCEL
+              </button>
+              <button className={comment ? "" : "disabled_comment"}>
+                COMMENT
+              </button>
+            </div>
+          </div>
+          <div className="individual_comments_container">
+            <IndividualComment id="test" />
+            <IndividualComment id="word" />
+            <IndividualComment id="test2" />
+            <IndividualComment id="test3" />
+          </div>
         </div>
       </Modal>
     </RemoveScroll>

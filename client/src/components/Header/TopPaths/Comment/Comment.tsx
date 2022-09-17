@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaCommentDots, FaRegComment } from "react-icons/fa";
-import "./Comment.scss";
 import { IndividualPathComments } from "./IndividualPathComments";
+import "./Comment.scss";
 
 export const Comment = ({
   id,

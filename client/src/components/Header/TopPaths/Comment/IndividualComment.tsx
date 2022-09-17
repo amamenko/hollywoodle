@@ -1,12 +1,12 @@
 import gradient from "random-gradient";
 import { useRef } from "react";
 import emoji from "react-easy-emoji";
+import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import { getRandomEmoji } from "./getRandomEmoji";
 
 export const IndividualComment = ({ id }: { id: string }) => {
   const bgGradient = { background: gradient(id) };
   const randomEmoji = useRef(getRandomEmoji()).current;
-
   return (
     <div className="individual_comment_container">
       <div className="individual_comment_top_details">
@@ -25,8 +25,17 @@ export const IndividualComment = ({ id }: { id: string }) => {
       <div className="individual_comment_bottom_details">
         <div className="indvidual_comment_date_place">
           <p>43m ago</p>
-          <p className="date_place_separator">|</p>
-          <p>Finland</p>
+          <div className="individual_comment_place">
+            <p>
+              Finland<span className="country_state_separator_line">|</span>
+              Helsinki
+            </p>
+          </div>
+        </div>
+        <div className="comment_voting_buttons">
+          <IoIosArrowDropup className="comment_voting_button" size={40} />
+          <p>0</p>
+          <IoIosArrowDropdown className="comment_voting_button" size={40} />
         </div>
       </div>
     </div>
