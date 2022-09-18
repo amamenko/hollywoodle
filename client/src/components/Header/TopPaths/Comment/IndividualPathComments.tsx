@@ -3,9 +3,15 @@ import { AiOutlineClose } from "react-icons/ai";
 import { BsPencilSquare } from "react-icons/bs";
 import Modal from "react-modal";
 import { RemoveScroll } from "react-remove-scroll";
-// import { Button } from "reactstrap";
-import "./Comment.scss";
+import { Button } from "reactstrap";
 import { IndividualComment } from "./IndividualComment";
+import * as Ladda from "ladda";
+import { handleUpdateComments } from "./handleUpdateComments";
+import { getRandomEmoji } from "./getRandomEmoji";
+import gradient from "random-gradient";
+import "./Comment.scss";
+import "ladda/dist/ladda.min.css";
+import { Comments } from "../../../../interfaces/Comments.interface";
 
 const customModalStyles = {
   content: {
@@ -31,6 +37,7 @@ export const IndividualPathComments = ({
   comment,
   changeComment,
   id,
+  comments,
   rank,
   degrees,
   count,
@@ -41,13 +48,20 @@ export const IndividualPathComments = ({
   comment: string;
   changeComment: React.Dispatch<React.SetStateAction<string>>;
   id: string;
+  comments: Comments[];
   rank: number;
   degrees: number;
   count: number;
   path: string;
 }) => {
   const [textareaClicked, changeTextareaClicked] = useState(false);
+  const [laddaLoading, changeLaddaLoading] = useState(false);
+  const [currentEmoji, changeCurrentEmoji] = useState("");
+  const [currentBackgroundGradient, changeCurrentBackgroundGradient] =
+    useState("");
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const laddaRef = useRef<HTMLButtonElement | null>(null);
   const [browserWidth, changeBrowserWidth] = useState(
     Math.max(
       document.body.scrollWidth,
@@ -57,6 +71,59 @@ export const IndividualPathComments = ({
       document.documentElement.clientWidth
     )
   );
+
+  const getStorageObj = () => {
+    const storageStr = localStorage.getItem("hollywoodle-statistics");
+    let storageObj: { [key: string]: number | number[] | string } = {};
+    try {
+      storageObj = JSON.parse(storageStr ? storageStr : "");
+    } catch (e) {
+      console.error(e);
+    }
+    return storageObj;
+  };
+
+  useEffect(() => {
+    if (!currentEmoji) {
+      const randEmoji = getRandomEmoji();
+      changeCurrentEmoji(randEmoji);
+    }
+  }, [currentEmoji]);
+
+  useEffect(() => {
+    if (!currentBackgroundGradient) {
+      const storageObj = getStorageObj();
+      const userId = storageObj.id ? storageObj.id.toString() : id;
+      const randGradient = gradient(userId);
+      changeCurrentBackgroundGradient(randGradient);
+    }
+  }, [currentBackgroundGradient, id]);
+
+  const handleAddComment = async () => {
+    if (laddaRef && laddaRef.current) {
+      let l = Ladda.create(laddaRef.current);
+      changeLaddaLoading(true);
+      l.start();
+      const storageObj = getStorageObj();
+      const currentId = storageObj.id.toString();
+      await handleUpdateComments(
+        id,
+        currentId,
+        comment,
+        currentEmoji,
+        currentBackgroundGradient
+      )
+        .then(() => {
+          if (l.isLoading()) l.stop();
+          changeComment("");
+          changeLaddaLoading(false);
+        })
+        .catch((e) => {
+          console.error(e);
+          changeLaddaLoading(false);
+        });
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -162,15 +229,29 @@ export const IndividualPathComments = ({
               {comment.length}/200
             </p>
             <div className="comment_buttons">
-              <button className="comment_cancel" onClick={handleResetComment}>
-                CANCEL
-              </button>
-              <button className={comment ? "" : "disabled_comment"}>
-                COMMENT
-              </button>
+              <Button
+                className="guess_button comment_cancel"
+                onClick={handleResetComment}
+              >
+                <span className="ladda-label">CANCEL</span>
+              </Button>
+              <Button
+                className={`guess_button ladda-button comment_button ${
+                  comment ? "" : "disabled_comment"
+                } ${laddaLoading ? "loading" : ""}`}
+                onClick={handleAddComment}
+                data-style="zoom-out"
+                data-spinner-color="#000"
+                innerRef={laddaRef}
+              >
+                <span className="ladda-label">COMMENT</span>
+              </Button>
             </div>
           </div>
           <div className="individual_comments_container">
+            {/* {comments.map((comment) => {
+              return <IndividualComment id={comment.userId} />;
+            })} */}
             <IndividualComment id="test" />
             <IndividualComment id="word" />
             <IndividualComment id="test2" />

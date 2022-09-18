@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { FaCommentDots, FaRegComment } from "react-icons/fa";
 import { IndividualPathComments } from "./IndividualPathComments";
+import { Comments } from "../../../../interfaces/Comments.interface";
 import "./Comment.scss";
 
 export const Comment = ({
   id,
+  comments,
   path,
   degrees,
   rank,
   count,
 }: {
   id: string;
+  comments: Comments[];
   path: string;
   degrees: number;
   rank: number;
@@ -44,6 +47,7 @@ export const Comment = ({
         comment={comment}
         changeComment={changeComment}
         id={id}
+        comments={comments}
         rank={rank}
         degrees={degrees}
         count={count}

@@ -11,7 +11,7 @@ export const updateEmotes = async (query: {
     const currentTopPaths = topPaths[0].paths;
     let currentTopPathsClone = [...currentTopPaths];
     const foundPathMatchIndex = currentTopPaths.findIndex(
-      (el: { [key: string]: string | number }) => el._id.toString() === id
+      (el: { [key: string]: any }) => el._id.toString() === id
     );
     if (foundPathMatchIndex > -1) {
       const foundEl = currentTopPathsClone[foundPathMatchIndex];

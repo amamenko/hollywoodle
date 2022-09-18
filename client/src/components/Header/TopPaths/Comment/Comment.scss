@@ -189,6 +189,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 0.2rem;
       .comment_length_limit {
         margin-left: 0.5rem;
         font-weight: 700;
@@ -207,13 +208,15 @@
       .comment_buttons {
         display: flex;
         justify-content: flex-end;
-        margin: 0.25rem 0;
+        margin-right: 0.5rem;
         button {
-          padding: 0.6rem 1rem;
+          @media only screen and (max-width: 768px) {
+            width: 8rem;
+          }
+          margin: 0;
           background-color: rgb(4, 208, 172);
           border-radius: 2px;
           font-weight: 500;
-          color: #000;
           transition: background-color 0.2s ease, color 0.2s ease;
           &.disabled_comment {
             pointer-events: none;
@@ -223,6 +226,9 @@
           &.comment_cancel {
             background-color: transparent;
             color: rgb(178, 178, 178);
+          }
+          &.comment_button {
+            color: #000;
           }
         }
       }
@@ -296,6 +302,7 @@
       flex-direction: column;
       font-weight: 700;
       color: rgb(100, 100, 100);
+      margin-bottom: 0.5rem;
       p {
         margin: 0;
         padding: 0;

@@ -1,0 +1,58 @@
+import { format } from "date-fns";
+import { RequestQuery } from "..";
+import { Path } from "../models/Path";
+
+export const updateComments = async (query: {
+  [key: string]: string | number;
+}) => {
+  const { pathId, userId, comment, emoji, background, country, city } =
+    query as RequestQuery;
+  const topPaths = await Path.find();
+  if (topPaths[0] && topPaths[0].paths) {
+    const currentTopPaths = topPaths[0].paths;
+    let currentTopPathsClone = [...currentTopPaths];
+    const foundPathMatchIndex = currentTopPaths.findIndex(
+      (el: { [key: string]: any }) => el._id.toString() === pathId
+    );
+    if (foundPathMatchIndex > -1) {
+      const fullCommentObj: {
+        userId: string;
+        comment: string;
+        emoji: string;
+        background: string;
+        country: string;
+        city: string;
+        score: number;
+        time: Date;
+      } = {
+        userId: userId.toString(),
+        comment: comment.toString(),
+        emoji: emoji.toString(),
+        background: background.toString(),
+        country: country.toString(),
+        city: city.toString(),
+        score: 0,
+        time: new Date(),
+      };
+      const oldCommentsArr = currentTopPathsClone[foundPathMatchIndex].comments;
+      const foundMatchingUserId = oldCommentsArr.find(
+        (comment) => comment.userId === userId
+      );
+      if (foundMatchingUserId) {
+        if (foundMatchingUserId.emoji && foundMatchingUserId.background) {
+          fullCommentObj.emoji = foundMatchingUserId.emoji;
+          fullCommentObj.background = foundMatchingUserId.background;
+        }
+      }
+      currentTopPathsClone[foundPathMatchIndex].comments = [
+        ...oldCommentsArr,
+        fullCommentObj,
+      ];
+      const currentDate = format(new Date(), "MM/dd/yyyy");
+      const topPathsFilter = { date: currentDate };
+      const pathsUpdate = { paths: currentTopPathsClone };
+      await Path.findOneAndUpdate(topPathsFilter, pathsUpdate);
+      return currentTopPathsClone[foundPathMatchIndex].comments;
+    }
+  }
+};

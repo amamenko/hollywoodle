@@ -45,6 +45,7 @@
     "react-tiny-popover": "^7.0.1",
     "react-toastify": "^8.2.0",
     "react-tooltip": "^4.2.21",
+    "react-uuid": "^1.0.3",
     "react-world-flags": "^1.4.0",
     "reactstrap": "^9.0.1",
     "reconnecting-websocket": "^4.4.0",

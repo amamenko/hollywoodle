@@ -1,3 +1,4 @@
+import { Comments } from "./Comments.interface";
 import { Emotes } from "./Emotes.interface";
 
 export interface Path {
@@ -6,4 +7,5 @@ export interface Path {
   count: number;
   path: string;
   emotes: Emotes;
+  comments: Comments[];
 }

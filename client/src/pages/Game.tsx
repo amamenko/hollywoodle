@@ -12,6 +12,7 @@ import { IntroModal } from "../components/IntroModal/IntroModal";
 import { Winner } from "../components/Winner/Winner";
 import { differenceInDays, parse } from "date-fns";
 import { GameContext } from "./Main";
+import uuid from "react-uuid";
 
 export const Game = ({
   refreshingDataTime,
@@ -37,6 +38,7 @@ export const Game = ({
         localStorage.setItem(
           "hollywoodle-statistics",
           JSON.stringify({
+            id: uuid(),
             current_date: objectiveCurrentDate,
             last_played: "",
             current_streak: 0,
@@ -44,6 +46,7 @@ export const Game = ({
             avg_moves: [],
             played_today: false,
             emotes: [],
+            comments: [],
             leaderboard_viewed: "",
             leaderboard_eligible: false,
             seen_article: false,
@@ -89,6 +92,7 @@ export const Game = ({
           "hollywoodle-statistics",
           JSON.stringify({
             ...storageObj,
+            id: storageObj.id || uuid(),
             current_date: objectiveCurrentDate,
             current_streak: resetStreak ? 0 : storageObj.current_streak,
             played_today:
@@ -99,6 +103,10 @@ export const Game = ({
               objectiveCurrentDate !== storageObj.current_date.toString()
                 ? []
                 : storageObj.emotes,
+            comments:
+              objectiveCurrentDate !== storageObj.current_date.toString()
+                ? []
+                : storageObj.comments,
             leaderboard_viewed: storageObj.leaderboard_viewed
               ? storageObj.leaderboard_viewed.toString() ===
                 objectiveCurrentDate

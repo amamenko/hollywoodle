@@ -19,15 +19,15 @@ export const handleUpdateLeaderboard = async (
 
   if (
     geolocationData &&
-    geolocationData.ip &&
-    geolocationData.countryCode &&
-    geolocationData.countryName
+    // geolocationData.ip &&
+    geolocationData.countryCode
+    // geolocationData.countryName
   ) {
     const leaderboardObj = {
       username: storageObj.username,
       countryCode: geolocationData.countryCode,
-      countryName: geolocationData.countryName,
-      ip: geolocationData.ip,
+      // countryName: geolocationData.countryName,
+      // ip: geolocationData.ip,
       degrees: currentDegrees + 1,
       moves: currentMoves + 1,
       time: currentETTime,

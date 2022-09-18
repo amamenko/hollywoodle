@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { Collapse } from "react-collapse";
 import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
+import { Comments } from "../../../interfaces/Comments.interface";
 import { Emotes } from "../../../interfaces/Emotes.interface";
 // import { Comment } from "./Comment/Comment";
 import { EmotesResults } from "./Like/EmotesResults";
@@ -14,6 +15,7 @@ export const PathContainer = ({
   count,
   path,
   emotes,
+  comments,
   pathCollapsed,
   changePathCollapsed,
   currentPage,
@@ -24,6 +26,7 @@ export const PathContainer = ({
   count: number;
   path: string;
   emotes: Emotes;
+  comments: Comments[];
   pathCollapsed: string;
   changePathCollapsed: React.Dispatch<React.SetStateAction<string>>;
   currentPage: number;
@@ -95,6 +98,7 @@ export const PathContainer = ({
         <Like rank={rank} id={id} />
         {/* <Comment
           id={id}
+          comments={comments}
           rank={rank}
           degrees={degrees}
           count={count}

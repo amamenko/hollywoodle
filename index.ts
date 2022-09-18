@@ -24,6 +24,7 @@ import { handleEventLog } from "./functions/handleEventLog";
 import { WebSocketServer } from "ws";
 import { deployToRender } from "./functions/deployToRender";
 import nodeCleanup from "node-cleanup";
+import { updateComments } from "./functions/updateComments";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -210,6 +211,13 @@ app.post("/api/update_top_paths", [], async (req: Request, res: Response) => {
 app.post("/api/update_emotes", [], async (req: Request, res: Response) => {
   if (req.body && typeof req.body === "object") {
     const update = await updateEmotes(req.body as RequestQuery);
+    res.send(update);
+  }
+});
+
+app.post("/api/update_comments", [], async (req: Request, res: Response) => {
+  if (req.body && typeof req.body === "object") {
+    const update = await updateComments(req.body as RequestQuery);
     res.send(update);
   }
 });

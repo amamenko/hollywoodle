@@ -1,8 +1,8 @@
 export interface Emotes {
-  like: Number;
-  oscar: Number;
-  anger: Number;
-  wow: Number;
-  boring: Number;
-  haha: Number;
+  like: number;
+  oscar: number;
+  anger: number;
+  wow: number;
+  boring: number;
+  haha: number;
 }

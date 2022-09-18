@@ -267,6 +267,7 @@ export const AllPaths = () => {
                       count={el.count}
                       path={el.path}
                       emotes={el.emotes}
+                      comments={el.comments}
                       pathCollapsed={pathCollapsed}
                       changePathCollapsed={changePathCollapsed}
                       currentPage={currentPage.current}

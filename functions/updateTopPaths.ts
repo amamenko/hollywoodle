@@ -27,7 +27,7 @@ export const updateTopPaths = async (query: {
         let currentTopPathsClone = [...currentTopPaths];
 
         const foundPathMatchIndex = currentTopPaths.findIndex(
-          (el: { [key: string]: string | number }) => el.path === path
+          (el: { [key: string]: any }) => el.path === path
         );
 
         if (foundPathMatchIndex > -1) {
@@ -46,6 +46,7 @@ export const updateTopPaths = async (query: {
               boring: 0,
               haha: 0,
             },
+            comments: [],
           });
         }
         const sortedPaths = currentTopPathsClone.sort((a, b) => {
