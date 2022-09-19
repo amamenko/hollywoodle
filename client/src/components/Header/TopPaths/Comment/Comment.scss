@@ -28,7 +28,7 @@
     path {
       fill: #fff;
       stroke: #000;
-      stroke-width: 30px;
+      stroke-width: 40px;
       stroke-dasharray: 2, 2;
       stroke-linejoin: round;
     }
@@ -46,12 +46,18 @@
 }
 
 .total_comments_container {
+  cursor: pointer;
   outline: 1px solid rgb(150, 150, 150);
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   color: rgb(150, 150, 150);
+  @media only screen and (min-width: 768px) {
+    &:hover {
+      background: rgb(55, 55, 55);
+    }
+  }
   @media only screen and (max-width: 1200px) {
     margin-right: 1px;
   }
@@ -61,7 +67,9 @@
     vertical-align: center;
     padding: 0;
     margin: 0 0 0 0.5rem;
-    // color: rgb(24, 228, 192);
+    &.active {
+      color: rgb(24, 228, 192);
+    }
   }
 }
 
@@ -106,24 +114,19 @@
     display: flex;
     flex-direction: column;
     background: rgb(30, 30, 30);
-    .no_comments_statement {
-      margin-top: 2rem;
-      color: rgb(215, 215, 215);
-      font-weight: 700;
-      text-align: center;
-    }
     .path_comment_box {
       position: relative;
       z-index: 0;
       transition: margin 0.2s ease;
+      border-bottom: 1px solid #ccc;
     }
     :focus {
       outline: none;
     }
     .col-3 {
       float: left;
-      width: 92%;
-      @media only screen and (max-width: 1200px) {
+      width: 100%;
+      @media only screen and (max-width: 1000px) {
         width: 115%;
         max-width: 115%;
       }
@@ -144,14 +147,13 @@
     .effect-16 {
       max-width: 100%;
       border: 0;
-      border-bottom: 1px solid #ccc;
       border-radius: 0px;
       padding-left: 0.5rem;
       padding-right: 5rem;
     }
     .effect-16 ~ .focus-border {
       position: absolute;
-      bottom: 4px;
+      bottom: -2px;
       left: 0;
       width: 0;
       height: 2px;
@@ -169,8 +171,14 @@
       position: absolute;
       left: 0.5rem;
       width: 100%;
-      @media only screen and (max-width: 1200px) {
+      svg {
+        margin-right: 2rem;
+      }
+      @media only screen and (max-width: 1000px) {
         width: 82%;
+        svg {
+          margin-right: 0;
+        }
       }
       top: 5px;
       color: #aaa;
@@ -189,7 +197,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.3rem;
+      margin-top: 0.2rem;
       .comment_length_limit {
         margin-left: 0.5rem;
         font-weight: 700;
@@ -236,6 +245,12 @@
     .individual_comments_container {
       max-height: 750px;
       overflow: auto;
+      .no_comments_statement {
+        margin-top: 2rem;
+        color: rgb(215, 215, 215);
+        font-weight: 700;
+        text-align: center;
+      }
     }
   }
 }
@@ -260,12 +275,15 @@
       flex-direction: column;
       position: relative;
       p {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 0;
         position: absolute;
-        top: 1.45rem;
+        top: 0.65rem;
         bottom: 0;
         right: 0;
-        left: 0.4rem;
+        left: 0;
         margin: 0 auto;
         font-size: 1.15rem;
         z-index: 9;
@@ -300,9 +318,10 @@
     .indvidual_comment_date_place {
       display: flex;
       flex-direction: column;
+      font-size: 0.9rem;
       font-weight: 700;
       color: rgb(100, 100, 100);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.2rem;
       p {
         margin: 0;
         padding: 0;
@@ -311,7 +330,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        @media only screen and (min-width: 768px) {
+        @media only screen and (min-width: 500px) {
           width: 350px;
           max-width: 325px;
         }

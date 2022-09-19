@@ -10,7 +10,7 @@ export const getGeolocationData = async () => {
     return {
       // ip: res.data.IPv4,
       countryCode: res.data.country_code,
-      // countryName: res.data.country_name,
+      countryName: res.data.country_name,
       city: res.data.city,
     };
   } else {

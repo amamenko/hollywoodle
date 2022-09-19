@@ -180,12 +180,9 @@ export const IndividualPathComments = ({
         </button>
         <p className="path_details_path_text">{path}</p>
         <div className="path_details_comments_header">
-          <p>2 Comments</p>
+          <p>{comments ? comments.length : 0} Comments</p>
         </div>
         <div className="path_comments_container">
-          {/* <p className="no_comments_statement">
-            There aren't any comments yet.
-          </p> */}
           <div
             className="path_comment_box col-3 input-effect"
             style={{
@@ -249,13 +246,28 @@ export const IndividualPathComments = ({
             </div>
           </div>
           <div className="individual_comments_container">
-            {/* {comments.map((comment) => {
-              return <IndividualComment id={comment.userId} />;
-            })} */}
-            <IndividualComment id="test" />
-            <IndividualComment id="word" />
-            <IndividualComment id="test2" />
-            <IndividualComment id="test3" />
+            {!comments || comments.length === 0 ? (
+              <p className="no_comments_statement">
+                There aren't any comments yet.
+              </p>
+            ) : (
+              comments.map((comment) => {
+                return (
+                  <IndividualComment
+                    key={comment._id}
+                    userId={comment.userId}
+                    comment={comment.comment}
+                    commentEmoji={comment.emoji}
+                    background={comment.background}
+                    countryCode={comment.countryCode}
+                    countryName={comment.countryName}
+                    city={comment.city}
+                    score={comment.score}
+                    time={comment.time}
+                  />
+                );
+              })
+            )}
           </div>
         </div>
       </Modal>

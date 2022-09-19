@@ -5,8 +5,16 @@ import { Path } from "../models/Path";
 export const updateComments = async (query: {
   [key: string]: string | number;
 }) => {
-  const { pathId, userId, comment, emoji, background, country, city } =
-    query as RequestQuery;
+  const {
+    pathId,
+    userId,
+    comment,
+    emoji,
+    background,
+    countryCode,
+    countryName,
+    city,
+  } = query as RequestQuery;
   const topPaths = await Path.find();
   if (topPaths[0] && topPaths[0].paths) {
     const currentTopPaths = topPaths[0].paths;
@@ -20,7 +28,8 @@ export const updateComments = async (query: {
         comment: string;
         emoji: string;
         background: string;
-        country: string;
+        countryCode: string;
+        countryName: string;
         city: string;
         score: number;
         time: Date;
@@ -29,7 +38,8 @@ export const updateComments = async (query: {
         comment: comment.toString(),
         emoji: emoji.toString(),
         background: background.toString(),
-        country: country.toString(),
+        countryCode: countryCode.toString(),
+        countryName: countryName.toString(),
         city: city.toString(),
         score: 0,
         time: new Date(),

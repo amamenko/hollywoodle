@@ -37,9 +37,15 @@ export const Comment = ({
         <FaCommentDots size={20} className="comment_icon" />
         <p className={"comment_text"}>Comment</p>
       </div>
-      <div className="total_comments_container">
+      <div className="total_comments_container" onClick={openModal}>
         <FaRegComment size={20} />
-        <p className="total_comments_text">0</p>
+        <p
+          className={`total_comments_text ${
+            comments ? (comments.length > 0 ? "active" : "") : ""
+          }`}
+        >
+          {comments ? comments.length : 0}
+        </p>
       </div>
       <IndividualPathComments
         modalOpen={modalOpen}

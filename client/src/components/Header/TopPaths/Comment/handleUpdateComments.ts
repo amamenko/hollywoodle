@@ -8,7 +8,7 @@ export const handleUpdateComments = async (
   emoji: string,
   background: string
 ) => {
-  const { countryCode, city } = await getGeolocationData();
+  const { countryCode, countryName, city } = await getGeolocationData();
 
   const updateObj = {
     pathId,
@@ -16,7 +16,8 @@ export const handleUpdateComments = async (
     comment,
     emoji,
     background,
-    country: countryCode,
+    countryCode,
+    countryName,
     city,
   };
 

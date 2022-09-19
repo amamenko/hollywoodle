@@ -3,8 +3,10 @@ export interface Comments {
   comment: string;
   emoji: string;
   background: string;
-  country: string;
+  countryCode: string;
+  countryName: string;
   city: string;
   score: number;
   time: Date;
+  _id: string;
 }

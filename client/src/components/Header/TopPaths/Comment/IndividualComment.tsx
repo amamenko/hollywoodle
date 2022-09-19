@@ -1,40 +1,62 @@
-import gradient from "random-gradient";
-import { useRef } from "react";
-import emoji from "react-easy-emoji";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
-import { getRandomEmoji } from "./getRandomEmoji";
+import emoji from "react-easy-emoji";
+import { formatDistance } from "date-fns";
+import Flag from "react-world-flags";
 
-export const IndividualComment = ({ id }: { id: string }) => {
-  const bgGradient = { background: gradient(id) };
-  const randomEmoji = useRef(getRandomEmoji()).current;
+export const IndividualComment = ({
+  userId,
+  comment,
+  commentEmoji,
+  background,
+  countryCode,
+  countryName,
+  city,
+  score,
+  time,
+}: {
+  userId: string;
+  comment: string;
+  commentEmoji: string;
+  background: string;
+  countryCode: string;
+  countryName: string;
+  city: string;
+  score: number;
+  time: Date;
+}) => {
+  const timeAgo = formatDistance(new Date(time), new Date(), {
+    addSuffix: true,
+    includeSeconds: true,
+  });
   return (
     <div className="individual_comment_container">
       <div className="individual_comment_top_details">
         <div className="individual_comment_icon_container">
-          <p>{emoji(randomEmoji)}</p>
-          <span className="individual_comment_icon" style={bgGradient} />
+          <p>{emoji(commentEmoji)}</p>
+          <span className="individual_comment_icon" style={{ background }} />
         </div>
         <div className="individual_comment_text_container">
-          <p className="individual_comment_text">
-            Lorem ipsum dolor sit amet lorem ipsum dolor sit amet ipsum dolor
-            sit amet lorem ipsum dolor sit amet ipsum dolor sit amet lorem ipsum
-            dolor sit amet ipsum dolor sit amet lorem ipsum dolor sit amet
-          </p>
+          <p className="individual_comment_text">{comment}</p>
         </div>
       </div>
       <div className="individual_comment_bottom_details">
         <div className="indvidual_comment_date_place">
-          <p>43m ago</p>
+          <p>{timeAgo}</p>
           <div className="individual_comment_place">
             <p>
-              Finland<span className="country_state_separator_line">|</span>
-              Helsinki
+              {countryCode && (
+                <>
+                  <Flag code={"US"} height="10" />
+                  <span className="country_state_separator_line">|</span>
+                </>
+              )}
+              {city}
             </p>
           </div>
         </div>
         <div className="comment_voting_buttons">
           <IoIosArrowDropup className="comment_voting_button" size={40} />
-          <p>0</p>
+          <p>{score}</p>
           <IoIosArrowDropdown className="comment_voting_button" size={40} />
         </div>
       </div>

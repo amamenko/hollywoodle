@@ -247,7 +247,7 @@ export const AllPaths = () => {
       </p>
       <div className="all_paths_container">
         {pathsLoading ? (
-          <ClipLoader color="#fff" size={150} />
+          <ClipLoader color={darkMode ? "#fff" : "#000"} size={150} />
         ) : topPaths.every((el) => !el.path && !el.degrees && !el.count) ? (
           <div className="no_paths_played_container">
             <IoFootsteps size={200} color={"rgb(80, 80, 80)"} />
