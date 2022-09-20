@@ -4,7 +4,7 @@ import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
 import { Comments } from "../../../interfaces/Comments.interface";
 import { Emotes } from "../../../interfaces/Emotes.interface";
-import { Comment } from "./Comment/Comment";
+// import { Comment } from "./Comment/Comment";
 import { EmotesResults } from "./Like/EmotesResults";
 import { Like } from "./Like/Like";
 

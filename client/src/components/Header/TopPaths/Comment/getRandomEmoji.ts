@@ -1,4 +1,10 @@
-export const getRandomEmoji = () => {
+import { Comments } from "../../../../interfaces/Comments.interface";
+
+export const getRandomEmoji = (comments: Comments[]) => {
+  const allUniqueUsedEmojis = Array.from(
+    new Set(comments.map((comment) => comment.emoji))
+  );
+
   const emojis = [
     "😢",
     "😂",
@@ -71,11 +77,8 @@ export const getRandomEmoji = () => {
     "🙌",
     "🙏",
     "💪",
-    "👬",
-    "👭",
     "💏",
     "💑",
-    "👯",
     "🙆",
     "🙅",
     "💁",
@@ -97,10 +100,7 @@ export const getRandomEmoji = () => {
     "👚",
     "👗",
     "🎽",
-    "👖",
     "👘",
-    "👙",
-    "💼",
     "👜",
     "👝",
     "👛",
@@ -161,9 +161,6 @@ export const getRandomEmoji = () => {
     "🐲",
     "🐡",
     "🐊",
-    "🐫",
-    "🐪",
-    "🐆",
     "🐈",
     "🐩",
     "💐",
@@ -196,7 +193,6 @@ export const getRandomEmoji = () => {
     "🌊",
     "🎍",
     "💝",
-    "🎎",
     "🎒",
     "🎏",
     "🎆",
@@ -342,16 +338,13 @@ export const getRandomEmoji = () => {
     "🏰",
     "⛺",
     "🏭",
-    "🗼",
     "🗾",
     "🗻",
     "🌄",
     "🌅",
     "🌃",
     "🗽",
-    "🎠",
     "⛲",
-    "🎢",
     "🚢",
     "⛵",
     "🚤",
@@ -399,5 +392,9 @@ export const getRandomEmoji = () => {
     "🔱",
   ];
 
-  return emojis[Math.floor(Math.random() * emojis.length)];
+  const filteredEmojis = emojis.filter(
+    (emoji) => !allUniqueUsedEmojis.includes(emoji)
+  );
+
+  return filteredEmojis[Math.floor(Math.random() * filteredEmojis.length)];
 };

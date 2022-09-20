@@ -9,9 +9,9 @@ import * as Ladda from "ladda";
 import { handleUpdateComments } from "./handleUpdateComments";
 import { getRandomEmoji } from "./getRandomEmoji";
 import gradient from "random-gradient";
+import { Comments } from "../../../../interfaces/Comments.interface";
 import "./Comment.scss";
 import "ladda/dist/ladda.min.css";
-import { Comments } from "../../../../interfaces/Comments.interface";
 
 const customModalStyles = {
   content: {
@@ -85,10 +85,10 @@ export const IndividualPathComments = ({
 
   useEffect(() => {
     if (!currentEmoji) {
-      const randEmoji = getRandomEmoji();
+      const randEmoji = getRandomEmoji(comments);
       changeCurrentEmoji(randEmoji);
     }
-  }, [currentEmoji]);
+  }, [currentEmoji, comments]);
 
   useEffect(() => {
     if (!currentBackgroundGradient) {
