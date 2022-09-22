@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { BsPencilSquare } from "react-icons/bs";
 import Modal from "react-modal";
@@ -12,6 +12,7 @@ import gradient from "random-gradient";
 import { Comments } from "../../../../interfaces/Comments.interface";
 import "./Comment.scss";
 import "ladda/dist/ladda.min.css";
+import { getStorageObj } from "../../../../utils/getStorageObj";
 
 const customModalStyles = {
   content: {
@@ -72,17 +73,6 @@ export const IndividualPathComments = ({
     )
   );
 
-  const getStorageObj = () => {
-    const storageStr = localStorage.getItem("hollywoodle-statistics");
-    let storageObj: { [key: string]: number | number[] | string } = {};
-    try {
-      storageObj = JSON.parse(storageStr ? storageStr : "");
-    } catch (e) {
-      console.error(e);
-    }
-    return storageObj;
-  };
-
   useEffect(() => {
     if (!currentEmoji) {
       const randEmoji = getRandomEmoji(comments);
@@ -113,10 +103,22 @@ export const IndividualPathComments = ({
         currentEmoji,
         currentBackgroundGradient
       )
-        .then(() => {
+        .then((res) => {
           if (l.isLoading()) l.stop();
           changeComment("");
           changeLaddaLoading(false);
+          if (res && res.data) {
+            const updatedCommentId = res.data;
+            if (Array.isArray(storageObj.comments)) {
+              localStorage.setItem(
+                "hollywoodle-statistics",
+                JSON.stringify({
+                  ...storageObj,
+                  comments: [...storageObj.comments, updatedCommentId],
+                })
+              );
+            }
+          }
         })
         .catch((e) => {
           console.error(e);
@@ -251,20 +253,22 @@ export const IndividualPathComments = ({
                 There aren't any comments yet.
               </p>
             ) : (
-              comments.map((comment) => {
+              comments.map((comment, i) => {
                 return (
-                  <IndividualComment
-                    key={comment._id}
-                    userId={comment.userId}
-                    comment={comment.comment}
-                    commentEmoji={comment.emoji}
-                    background={comment.background}
-                    countryCode={comment.countryCode}
-                    countryName={comment.countryName}
-                    city={comment.city}
-                    score={comment.score}
-                    time={comment.time}
-                  />
+                  <React.Fragment key={`${comment._id}${i}`}>
+                    <IndividualComment
+                      commentId={comment._id}
+                      userId={comment.userId}
+                      comment={comment.comment}
+                      commentEmoji={comment.emoji}
+                      background={comment.background}
+                      countryCode={comment.countryCode}
+                      countryName={comment.countryName}
+                      city={comment.city}
+                      score={comment.score}
+                      time={comment.time}
+                    />
+                  </React.Fragment>
                 );
               })
             )}

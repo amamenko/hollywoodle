@@ -61,8 +61,29 @@ export const updateComments = async (query: {
       const currentDate = format(new Date(), "MM/dd/yyyy");
       const topPathsFilter = { date: currentDate };
       const pathsUpdate = { paths: currentTopPathsClone };
-      await Path.findOneAndUpdate(topPathsFilter, pathsUpdate);
-      return currentTopPathsClone[foundPathMatchIndex].comments;
+      const updatedPathsObj = await Path.findOneAndUpdate(
+        topPathsFilter,
+        pathsUpdate,
+        {
+          returnOriginal: false,
+        }
+      );
+      if (updatedPathsObj.paths) {
+        const newFoundMatchIndex = updatedPathsObj.paths.findIndex(
+          (el: { [key: string]: any }) => el._id.toString() === pathId
+        );
+        const foundUserComments = updatedPathsObj.paths[
+          newFoundMatchIndex
+        ].comments.filter(
+          (comment: { [key: string]: string | number | Date }) =>
+            comment.userId === userId
+        );
+        if (foundUserComments && foundUserComments.length > 0) {
+          return foundUserComments[foundUserComments.length - 1]._id;
+        }
+      } else {
+        return {};
+      }
     }
   }
 };

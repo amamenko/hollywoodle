@@ -2,8 +2,10 @@ import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import emoji from "react-easy-emoji";
 import { formatDistance } from "date-fns";
 import Flag from "react-world-flags";
+import { getStorageObj } from "../../../../utils/getStorageObj";
 
 export const IndividualComment = ({
+  commentId,
   userId,
   comment,
   commentEmoji,
@@ -14,6 +16,7 @@ export const IndividualComment = ({
   score,
   time,
 }: {
+  commentId: string;
   userId: string;
   comment: string;
   commentEmoji: string;
@@ -28,8 +31,14 @@ export const IndividualComment = ({
     addSuffix: true,
     includeSeconds: true,
   });
+  const storageObj = getStorageObj();
+  const writtenComments = storageObj.comments as unknown as string[];
   return (
-    <div className="individual_comment_container">
+    <div
+      className={`individual_comment_container ${
+        writtenComments.includes(commentId) ? "active" : ""
+      }`}
+    >
       <div className="individual_comment_top_details">
         <div className="individual_comment_icon_container">
           <p>{emoji(commentEmoji)}</p>

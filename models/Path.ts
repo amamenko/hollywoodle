@@ -17,6 +17,7 @@ const pathSchema = new mongoose.Schema({
       },
       comments: [
         {
+          _id: String,
           userId: String,
           comment: String,
           emoji: String,
