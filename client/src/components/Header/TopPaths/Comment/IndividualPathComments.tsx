@@ -10,9 +10,9 @@ import { handleUpdateComments } from "./handleUpdateComments";
 import { getRandomEmoji } from "./getRandomEmoji";
 import gradient from "random-gradient";
 import { Comments } from "../../../../interfaces/Comments.interface";
+import { getStorageObj } from "../../../../utils/getStorageObj";
 import "./Comment.scss";
 import "ladda/dist/ladda.min.css";
-import { getStorageObj } from "../../../../utils/getStorageObj";
 
 const customModalStyles = {
   content: {
@@ -39,9 +39,6 @@ export const IndividualPathComments = ({
   changeComment,
   id,
   comments,
-  rank,
-  degrees,
-  count,
   path,
 }: {
   modalOpen: boolean;
@@ -50,9 +47,6 @@ export const IndividualPathComments = ({
   changeComment: React.Dispatch<React.SetStateAction<string>>;
   id: string;
   comments: Comments[];
-  rank: number;
-  degrees: number;
-  count: number;
   path: string;
 }) => {
   const [textareaClicked, changeTextareaClicked] = useState(false);

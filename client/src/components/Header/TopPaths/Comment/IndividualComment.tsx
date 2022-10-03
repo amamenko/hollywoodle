@@ -1,4 +1,4 @@
-import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
+// import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import emoji from "react-easy-emoji";
 import { formatDistance } from "date-fns";
 import Flag from "react-world-flags";
@@ -63,11 +63,11 @@ export const IndividualComment = ({
             </p>
           </div>
         </div>
-        <div className="comment_voting_buttons">
+        {/* <div className="comment_voting_buttons">
           <IoIosArrowDropup className="comment_voting_button" size={40} />
           <p>{score}</p>
           <IoIosArrowDropdown className="comment_voting_button" size={40} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

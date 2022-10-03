@@ -4,7 +4,7 @@ import { Button } from "reactstrap";
 import { AppContext } from "../../../App";
 import { Comments } from "../../../interfaces/Comments.interface";
 import { Emotes } from "../../../interfaces/Emotes.interface";
-// import { Comment } from "./Comment/Comment";
+import { Comment } from "./Comment/Comment";
 import { EmotesResults } from "./Like/EmotesResults";
 import { Like } from "./Like/Like";
 
@@ -96,14 +96,7 @@ export const PathContainer = ({
       />
       <div className="bottom_path_reactions_container">
         <Like rank={rank} id={id} />
-        {/* <Comment
-          id={id}
-          comments={comments}
-          rank={rank}
-          degrees={degrees}
-          count={count}
-          path={path}
-        /> */}
+        <Comment id={id} comments={comments} path={path} />
       </div>
     </div>
   );

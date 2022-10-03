@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { RequestQuery } from "..";
 import { Path } from "../models/Path";
+import { ObjectID } from "bson";
 
 export const updateComments = async (query: {
   [key: string]: string | number;
@@ -23,7 +24,9 @@ export const updateComments = async (query: {
       (el: { [key: string]: any }) => el._id.toString() === pathId
     );
     if (foundPathMatchIndex > -1) {
+      const newCommentId = new ObjectID().toString();
       const fullCommentObj: {
+        _id: string;
         userId: string;
         comment: string;
         emoji: string;
@@ -34,6 +37,7 @@ export const updateComments = async (query: {
         score: number;
         time: Date;
       } = {
+        _id: newCommentId,
         userId: userId.toString(),
         comment: comment.toString(),
         emoji: emoji.toString(),
@@ -69,18 +73,7 @@ export const updateComments = async (query: {
         }
       );
       if (updatedPathsObj.paths) {
-        const newFoundMatchIndex = updatedPathsObj.paths.findIndex(
-          (el: { [key: string]: any }) => el._id.toString() === pathId
-        );
-        const foundUserComments = updatedPathsObj.paths[
-          newFoundMatchIndex
-        ].comments.filter(
-          (comment: { [key: string]: string | number | Date }) =>
-            comment.userId === userId
-        );
-        if (foundUserComments && foundUserComments.length > 0) {
-          return foundUserComments[foundUserComments.length - 1]._id;
-        }
+        return newCommentId;
       } else {
         return {};
       }

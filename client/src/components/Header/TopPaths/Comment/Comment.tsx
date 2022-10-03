@@ -8,16 +8,10 @@ export const Comment = ({
   id,
   comments,
   path,
-  degrees,
-  rank,
-  count,
 }: {
   id: string;
   comments: Comments[];
   path: string;
-  degrees: number;
-  rank: number;
-  count: number;
 }) => {
   const [modalOpen, changeModalOpen] = useState(false);
   const [comment, changeComment] = useState("");
@@ -54,9 +48,6 @@ export const Comment = ({
         changeComment={changeComment}
         id={id}
         comments={comments}
-        rank={rank}
-        degrees={degrees}
-        count={count}
         path={path}
       />
     </>
