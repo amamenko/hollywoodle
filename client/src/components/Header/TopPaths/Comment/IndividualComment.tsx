@@ -45,7 +45,7 @@ export const IndividualComment = ({
           <span className="individual_comment_icon" style={{ background }} />
         </div>
         <div className="individual_comment_text_container">
-          <p className="individual_comment_text">{comment}</p>
+          <p className="individual_comment_text">{emoji(comment)}</p>
         </div>
       </div>
       <div className="individual_comment_bottom_details">
