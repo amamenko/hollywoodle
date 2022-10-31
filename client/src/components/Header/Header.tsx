@@ -4,6 +4,7 @@ import { ReactComponent as LogoWhite } from "../../assets/LogoWhite.svg";
 import { ReactComponent as LogoStars } from "../../assets/LogoVariants/Stars/LogoStarsHeader.svg";
 import { ReactComponent as LogoJuneteenth } from "../../assets/LogoVariants/Juneteenth/LogoJuneteenthHeader.svg";
 import { ReactComponent as LogoUnionJack } from "../../assets/LogoVariants/UnionJack/LogoUnionJackHeader.svg";
+import { ReactComponent as LogoHalloween } from "../../assets/LogoVariants/Halloween/LogoHalloweenHeader.svg";
 import { HowToPlayModal } from "../HowToPlayModal/HowToPlayModal";
 import { BiBarChartAlt2 } from "react-icons/bi";
 import { GiBackwardTime } from "react-icons/gi";
@@ -97,6 +98,8 @@ export const Header = () => {
           <LogoStars className="hollywoodle_logo" />
         ) : currentHoliday === "Juneteenth" ? (
           <LogoJuneteenth className="hollywoodle_logo" />
+        ) : currentHoliday === "Halloween" ? (
+          <LogoHalloween className="hollywoodle_logo" />
         ) : (
           <LogoWhite className="hollywoodle_logo" />
         )}

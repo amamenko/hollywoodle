@@ -9,6 +9,7 @@ import { ReactComponent as LogoWhite } from "../../../assets/LogoWhite.svg";
 import { ReactComponent as LogoStars } from "../../../assets/LogoVariants/Stars/LogoStarsBurger.svg";
 import { ReactComponent as LogoJuneteenth } from "../../../assets/LogoVariants/Juneteenth/LogoJuneteenthBurger.svg";
 import { ReactComponent as LogoUnionJack } from "../../../assets/LogoVariants/UnionJack/LogoUnionJackBurger.svg";
+import { ReactComponent as LogoHalloween } from "../../../assets/LogoVariants/Halloween/LogoHalloweenBurger.svg";
 import KofiButton from "kofi-button";
 import { toast } from "react-toastify";
 import { AppContext } from "../../../App";
@@ -68,6 +69,8 @@ export const Burger = ({
           <LogoStars className="hollywoodle_logo burger_menu" />
         ) : currentHoliday === "Juneteenth" ? (
           <LogoJuneteenth className="hollywoodle_logo burger_menu" />
+        ) : currentHoliday === "Halloween" ? (
+          <LogoHalloween className="hollywoodle_logo burger_menu" />
         ) : (
           <LogoWhite className="hollywoodle_logo burger_menu" />
         )}
