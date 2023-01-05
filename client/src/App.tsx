@@ -282,8 +282,19 @@ const App = () => {
             if (secondTryResults && secondTryResults.length > 0) {
               changeMovieCast(secondTryResults);
               changeGuessLoading(false);
+            } else {
+              // Third time's the charm
+              const thirdTryResults = await getMovieCast(currentSelection.id);
+              if (thirdTryResults && thirdTryResults.length > 0) {
+                changeMovieCast(thirdTryResults);
+                changeGuessLoading(false);
+              }
             }
           }
+          setTimeout(() => {
+            const inputEl = document.getElementById("autosuggest_input");
+            if (inputEl) inputEl.focus();
+          }, 500);
         } catch (e) {
           console.error(e);
         }
