@@ -122,11 +122,11 @@ export const PrivacyPolicy = () => {
             <p>
               <strong>Website</strong> refers to Hollywoodle, accessible from{" "}
               <a
-                href="https://hollywoodle.ml"
+                href="https://hollywoodle.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                https://hollywoodle.ml
+                https://hollywoodle.vercel.app
               </a>
             </p>
           </li>

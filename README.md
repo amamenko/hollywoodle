@@ -17,7 +17,7 @@
     Wordle Spinoff Game
     <br />
     <br />
-    <a href="https://www.hollywoodle.ml/">Visit Website</a>
+    <a href="https://hollywoodle.vercel.app/">Visit Website</a>
     ·
     <a href="https://github.com/amamenko/hollywoodle/issues">Report Issue</a> 
   </p>

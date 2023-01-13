@@ -116,7 +116,7 @@ export const Article = () => {
         {/* Open Graph / Facebook  */}
         <meta
           property="og:url"
-          content={`https://www.hollywoodle.ml/news/${currentArticle.slug}`}
+          content={`https://hollywoodle.vercel.app/news/${currentArticle.slug}`}
         />
         <meta
           property="og:title"
@@ -129,7 +129,7 @@ export const Article = () => {
         {/* Twitter */}
         <meta
           property="twitter:url"
-          content={`https://www.hollywoodle.ml/news/${currentArticle.slug}`}
+          content={`https://hollywoodle.vercel.app/news/${currentArticle.slug}`}
         />
         <meta
           property="twitter:title"

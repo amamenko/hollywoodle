@@ -136,7 +136,7 @@ export const Main = () => {
         />
         {/* Open Graph / Facebook  */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.hollywoodle.ml/" />
+        <meta property="og:url" content="https://hollywoodle.vercel.app/" />
         <meta property="og:title" content="Hollywoodle" />
         <meta
           property="og:description"
@@ -144,7 +144,10 @@ export const Main = () => {
         />
         <meta property="og:image" content="https://i.imgur.com/ML7OvjA.png" />
         {/* Twitter */}
-        <meta property="twitter:url" content="https://www.hollywoodle.ml/" />
+        <meta
+          property="twitter:url"
+          content="https://hollywoodle.vercel.app/"
+        />
         <meta property="twitter:title" content="Hollywoodle" />
         <meta
           property="twitter:description"

@@ -52,7 +52,7 @@ export const postToTwitter = async () => {
               if (actor1Name && actor2Name) {
                 await client.v2
                   .tweet(
-                    `The ${fullWordDate} Hollywoodle game features ${actor1Name} and ${actor2Name}. Can you find the fewest degrees of separation between them? Make the connection at https://hollywoodle.ml.`
+                    `The ${fullWordDate} Hollywoodle game features ${actor1Name} and ${actor2Name}. Can you find the fewest degrees of separation between them? Make the connection at https://hollywoodle.vercel.app.`
                   )
                   .then(async () => {
                     const successStatement = `Successfully posted ${currentDate} Hollywoodle tweet to Twitter @hollywoodlegame!`;

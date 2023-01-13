@@ -23,7 +23,8 @@ export const TermsAndConditions = () => {
         <p>Welcome to Hollywoodle!</p>
         <p>
           These terms and conditions outline the rules and regulations for the
-          use of Hollywoodle's Website, located at https://hollywoodle.ml.
+          use of Hollywoodle's Website, located at
+          https://hollywoodle.vercel.app.
         </p>
         <p>
           By accessing this website we assume you accept these terms and

@@ -238,7 +238,7 @@ export const Winner = React.forwardRef<FullRewardElement, any>((props, ref) => {
 
   const finalShareText = `${shareText}\n${finalEmojiGrid}\n${
     pathRankCount.rank && pathRankCount.count ? `\n${pathShare}\n` : ""
-  }hollywoodle.ml`;
+  }hollywoodle.vercel.app`;
 
   return (
     <div className={`winner_container ${darkMode ? "dark" : ""}`}>

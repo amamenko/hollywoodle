@@ -27,7 +27,7 @@ export const FullArticle = ({
       navigate("/news");
     }
   };
-  const fullArticleLink = `https://hollywoodle.ml/news/${currentArticle.slug}`;
+  const fullArticleLink = `https://hollywoodle.vercel.app/news/${currentArticle.slug}`;
   const handleScrollToTop = () => {
     scroller.scrollTo("top", {
       duration: 500,
