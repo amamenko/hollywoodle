@@ -88,10 +88,7 @@ export const Statistics = ({
   }, [storageObj.avg_moves, averageMoves]);
 
   useEffect(() => {
-    if (
-      storageObj.last_recovered &&
-      lastRecoveredDate !== storageObj.last_recovered
-    )
+    if (lastRecoveredDate !== storageObj.last_recovered)
       changeLastRecoveredDate(storageObj.last_recovered.toString());
   }, [lastRecoveredDate, storageObj.last_recovered]);
 
