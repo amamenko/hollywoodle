@@ -40,10 +40,11 @@ export const Statistics = ({
   const [averageMoves, changeAverageMoves] = useState<number[]>([]);
   const [resetStatsModalOpen, changeResetStatsModalOpen] = useState(false);
   const [recoverStatsModalOpen, changeRecoverStatsModalOpen] = useState(false);
+  const [lastRecoveredDate, changeLastRecoveredDate] = useState("");
 
   const { fullTimezoneDate, objectiveCurrentDate } = useContext(AppContext);
 
-  let storageObj: { [key: string]: number | number[] } = {};
+  let storageObj: { [key: string]: number | number[] | string } = {};
 
   if (localStorage.getItem("hollywoodle-statistics")) {
     const storageStr = localStorage.getItem("hollywoodle-statistics");
@@ -77,10 +78,22 @@ export const Statistics = ({
     if (
       storageObj.avg_moves &&
       Array.isArray(storageObj.avg_moves) &&
-      storageObj.avg_moves.length !== averageMoves.length
+      // checks if first element of array is different
+      (storageObj.avg_moves[0] !== averageMoves[0] ||
+        // checks if last element of array is different
+        storageObj.avg_moves[storageObj.avg_moves.length - 1] !==
+          averageMoves[averageMoves.length - 1])
     )
       changeAverageMoves(storageObj.avg_moves);
-  }, [storageObj.avg_moves, averageMoves.length]);
+  }, [storageObj.avg_moves, averageMoves]);
+
+  useEffect(() => {
+    if (
+      storageObj.last_recovered &&
+      lastRecoveredDate !== storageObj.last_recovered
+    )
+      changeLastRecoveredDate(storageObj.last_recovered.toString());
+  }, [lastRecoveredDate, storageObj.last_recovered]);
 
   Modal.setAppElement("#root");
 
@@ -151,6 +164,11 @@ export const Statistics = ({
             <div className="statistics_label">Leaderboard Placements</div>
           </div> */}
         </div>
+        {lastRecoveredDate && (
+          <p className="last_recovered_statement">
+            Last recovered: {lastRecoveredDate}
+          </p>
+        )}
         <div className="modal_statistics_countdown">
           <h2>NEXT HOLLYWOODLE</h2>
           <CountdownTimer />
@@ -166,7 +184,7 @@ export const Statistics = ({
             </>
           )}
         </div>
-        {/* <div
+        <div
           className="reset_statistics_container"
           onClick={handleToggleRecoverStatsModal}
         >
@@ -175,7 +193,7 @@ export const Statistics = ({
         <RecoverModal
           recoverStatsModalOpen={recoverStatsModalOpen}
           handleToggleRecoverStatsModal={handleToggleRecoverStatsModal}
-        /> */}
+        />
         <div
           className="reset_statistics_container warning"
           onClick={handleToggleResetStatsModal}
