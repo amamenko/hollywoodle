@@ -434,10 +434,24 @@
   align-items: center;
   justify-content: center;
 
+  &.warning {
+    margin-top: 1rem;
+    p {
+      margin-top: 0.5rem;
+      color: rgb(200, 35, 50);
+      border-bottom: 1px solid rgba(200, 35, 50, 0.8);
+      &:hover {
+        color: rgba(175, 10, 25, 0.8);
+        border-bottom: 1px solid rgba(175, 10, 25, 0.8);
+        cursor: pointer;
+      }
+    }
+  }
+
   p {
+    color: rgba(150, 150, 150, 0.8);
     margin-top: 1.5rem;
     font-size: 0.75rem;
-    color: rgba(150, 150, 150, 0.8);
     border-bottom: 1px solid rgba(150, 150, 150, 0.8);
     padding-bottom: 1px;
     cursor: pointer;

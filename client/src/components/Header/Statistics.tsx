@@ -2,12 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { CountdownTimer } from "../Countdown/CountdownTimer";
 import { AiOutlineClose } from "react-icons/ai";
 import Modal from "react-modal";
-import { ReactComponent as ComingSoon } from "../../assets/ComingSoon.svg";
+// import { ReactComponent as ComingSoon } from "../../assets/ComingSoon.svg";
 import { RemoveScroll } from "react-remove-scroll";
-import { Button } from "reactstrap";
+import { ResetModal } from "./ResetModal";
 import { toast } from "react-toastify";
 import { AppContext } from "../../App";
 import "../HowToPlayModal/HowToPlayModal.scss";
+import { RecoverModal } from "./RecoverModal";
 
 const customModalStyles = {
   content: {
@@ -38,6 +39,7 @@ export const Statistics = ({
   const [maxStreak, changeMaxStreak] = useState(0);
   const [averageMoves, changeAverageMoves] = useState<number[]>([]);
   const [resetStatsModalOpen, changeResetStatsModalOpen] = useState(false);
+  const [recoverStatsModalOpen, changeRecoverStatsModalOpen] = useState(false);
 
   const { fullTimezoneDate, objectiveCurrentDate } = useContext(AppContext);
 
@@ -85,6 +87,10 @@ export const Statistics = ({
   let measureAverageMoves =
     Math.round(averageMoves.reduce((a, b) => a + b, 0) / averageMoves.length) ||
     0;
+
+  const handleToggleRecoverStatsModal = () => {
+    changeRecoverStatsModalOpen(!recoverStatsModalOpen);
+  };
 
   const handleToggleResetStatsModal = () => {
     changeResetStatsModalOpen(!resetStatsModalOpen);
@@ -139,11 +145,11 @@ export const Statistics = ({
             <h3>{measureAverageMoves}</h3>
             <div className="statistics_label">Average Moves</div>
           </div>
-          <div className="statistics_inner_container grayed_out">
+          {/* <div className="statistics_inner_container grayed_out">
             <ComingSoon className="coming_soon_banner" />
             <h3>0</h3>
             <div className="statistics_label">Leaderboard Placements</div>
-          </div>
+          </div> */}
         </div>
         <div className="modal_statistics_countdown">
           <h2>NEXT HOLLYWOODLE</h2>
@@ -160,39 +166,27 @@ export const Statistics = ({
             </>
           )}
         </div>
-        <div
+        {/* <div
           className="reset_statistics_container"
+          onClick={handleToggleRecoverStatsModal}
+        >
+          <p>Recover Statistics</p>
+        </div>
+        <RecoverModal
+          recoverStatsModalOpen={recoverStatsModalOpen}
+          handleToggleRecoverStatsModal={handleToggleRecoverStatsModal}
+        /> */}
+        <div
+          className="reset_statistics_container warning"
           onClick={handleToggleResetStatsModal}
         >
           <p>Reset Statistics</p>
         </div>
-        <Modal
-          isOpen={resetStatsModalOpen}
-          onRequestClose={handleToggleResetStatsModal}
-          contentLabel="Reset Statistics Modal"
-          className="modal_container reset_statistics_modal"
-          shouldFocusAfterRender={false}
-          style={customModalStyles}
-        >
-          <div className="reset_statistics_content_container">
-            <button
-              className="close_modal_button"
-              onClick={handleToggleResetStatsModal}
-            >
-              <AiOutlineClose size={20} color="#fff" />
-            </button>
-            <p>Are you sure you want to reset your Hollywoodle statistics?</p>
-            <Button className={"who_button"} onClick={handleResetStatistics}>
-              RESET STATISTICS
-            </Button>
-            <Button
-              className={"who_button"}
-              onClick={handleToggleResetStatsModal}
-            >
-              GO BACK
-            </Button>
-          </div>
-        </Modal>
+        <ResetModal
+          resetStatsModalOpen={resetStatsModalOpen}
+          handleResetStatistics={handleResetStatistics}
+          handleToggleResetStatsModal={handleToggleResetStatsModal}
+        />
       </Modal>
     </RemoveScroll>
   );
