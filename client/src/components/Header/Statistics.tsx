@@ -125,6 +125,7 @@ export const Statistics = ({
         avg_moves: [],
         emotes: storageObj.emotes,
         played_today: false,
+        last_recovered: "",
       })
     );
 
