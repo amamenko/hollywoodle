@@ -89,7 +89,9 @@ export const Statistics = ({
 
   useEffect(() => {
     if (lastRecoveredDate !== storageObj.last_recovered)
-      changeLastRecoveredDate(storageObj.last_recovered.toString());
+      changeLastRecoveredDate(
+        storageObj.last_recovered ? storageObj.last_recovered.toString() : ""
+      );
   }, [lastRecoveredDate, storageObj.last_recovered]);
 
   Modal.setAppElement("#root");
