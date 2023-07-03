@@ -26,6 +26,7 @@ import { deployToRender } from "./functions/deployToRender";
 import { updateComments } from "./functions/updateComments";
 import { updateVoteComments } from "./functions/updateVoteComments";
 import nodeCleanup from "node-cleanup";
+import { ActorObj } from "./client/src/interfaces/ActorObj.interface";
 
 export interface RequestQuery {
   [key: string]: string | number;
@@ -111,7 +112,17 @@ app.get("/api/actor", [], async (req: Request, res: Response) => {
   const actors = await Actor.find({ date: currentDate })
     .lean()
     .catch((e) => console.error(e));
-  res.send({ actors, article: foundTodaysArticle[0] });
+
+  const firstActor = actors
+    ? actors.find((actor) => actor.type === "first")
+    : undefined;
+  const secondActor = actors
+    ? actors.find((actor) => actor.type === "last")
+    : undefined;
+  res.send({
+    actors: firstActor && secondActor ? [firstActor, secondActor] : [],
+    article: foundTodaysArticle[0],
+  });
 });
 
 app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
@@ -122,7 +133,13 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
     const actors = await Actor.find({ date: requestedDate })
       .lean()
       .catch((e) => console.error(e));
-    res.send(actors);
+    const firstActor = actors
+      ? actors.find((actor) => actor.type === "first")
+      : undefined;
+    const secondActor = actors
+      ? actors.find((actor) => actor.type === "last")
+      : undefined;
+    res.send(firstActor && secondActor ? [firstActor, secondActor] : []);
   } else if (requestedName && typeof requestedName === "string") {
     const actor = await Actor.find({ name: requestedName })
       .lean()
@@ -136,7 +153,13 @@ app.get("/api/archive_actor", [], async (req: Request, res: Response) => {
       })
         .lean()
         .catch((e) => console.error(e));
-      res.send(allActors);
+      const firstActor = allActors
+        ? allActors.find((actor) => actor.type === "first")
+        : undefined;
+      const secondActor = allActors
+        ? allActors.find((actor) => actor.type === "last")
+        : undefined;
+      res.send(firstActor && secondActor ? [firstActor, secondActor] : []);
     } else {
       res.send([]);
     }
