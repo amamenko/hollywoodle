@@ -148,7 +148,8 @@ export const AutosuggestInput = ({
       if (!archivedSearch) {
         let currentActorId: number = Number(firstActor.id);
 
-        const sortedGuesses = guesses.sort(sortAsc);
+        const clonedGuesses = [...guesses];
+        const sortedGuesses = clonedGuesses.sort(sortAsc);
 
         const prevGuess = sortedGuesses[guesses.length - 1];
         // Latest guess comes first
@@ -309,7 +310,7 @@ export const AutosuggestInput = ({
         }
 
         const newGuess: GuessType = {
-          guess_number: guesses.length,
+          guess_number: sortedGuesses.length,
           id,
           guess: name,
           prev_guess: formatGuessObj(prevGuess),
@@ -358,7 +359,7 @@ export const AutosuggestInput = ({
         changeInputInitiallyFocused(true);
         changeCurrentMoves(currentTotalMoves);
         changeHintCollapsed(false);
-        changeGuesses([...guesses, newGuess]);
+        changeGuesses([...clonedGuesses, newGuess]);
         changeInputValue("");
         changeCurrentSelection({
           id: 0,
