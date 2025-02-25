@@ -6,21 +6,21 @@ import { resetTopPaths } from "./resetTopPaths";
 import { logger } from "../logger/logger";
 
 export const updateDatabaseActors = async () => {
-  const twoMonthsAgo = subDays(new Date(), 45);
+  const monthAgo = subDays(new Date(), 30);
   const result = eachDayOfInterval({
-    start: twoMonthsAgo,
+    start: monthAgo,
     end: new Date(),
   });
 
-  const pastTwoMonthsArr = result
+  const pastMonthArr = result
     .map((date) => format(date, "MM/dd/yyyy"))
     .sort((a: string, b: string) => b.localeCompare(a));
 
-  // Look up actors featured in the past two months and blacklist IDs
+  // Look up actors featured in the past month and blacklist IDs
   const allDbActors =
     (await Actor.find({
       date: {
-        $in: pastTwoMonthsArr,
+        $in: pastMonthArr,
       },
     })
       .lean()
@@ -31,7 +31,7 @@ export const updateDatabaseActors = async () => {
   );
 
   // Look up longer movie terms featured in the past 2 weeks and blacklist terms
-  const pastTwoWeeksArr = pastTwoMonthsArr.slice(0, 15);
+  const pastTwoWeeksArr = pastMonthArr.slice(0, 15);
   const allBlacklistedMovieTerms = [
     ...new Set(
       allDbActors
