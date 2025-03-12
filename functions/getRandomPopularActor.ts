@@ -100,7 +100,7 @@ export const getRandomPopularActor = async (
           currentActor.profile_path &&
           currentActor.id <= 2000000 &&
           !currentActor.adult &&
-          currentActor.popularity >= 16.35 &&
+          currentActor.popularity >= 2.57 &&
           !allBlacklistedIDs.includes(currentActor.id) &&
           currentActor.name !== exceptedName &&
           currentActor.name !== exceptedName2
