@@ -69,6 +69,8 @@ export const getRandomPopularActor = async (
         "game of thrones",
       ];
 
+      console.log({ results });
+
       const filteredResults = results.filter(
         (currentActor: { [key: string]: any }) =>
           currentActor.known_for &&
@@ -79,8 +81,8 @@ export const getRandomPopularActor = async (
               movie.adult ||
               movie.original_language !== "en" ||
               (movie.media_type === "movie"
-                ? movie.vote_count < 5000
-                : movie.vote_count < 3000) ||
+                ? movie.vote_count < 4000
+                : movie.vote_count < 2000) ||
               blacklistedMovieTerms.some((str) =>
                 movie.title
                   ? movie.title.toLowerCase().includes(str)

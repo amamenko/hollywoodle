@@ -6,9 +6,9 @@ import { resetTopPaths } from "./resetTopPaths";
 import { logger } from "../logger/logger";
 
 export const updateDatabaseActors = async () => {
-  const monthAgo = subDays(new Date(), 30);
+  const twoWeeksAgo = subDays(new Date(), 14);
   const result = eachDayOfInterval({
-    start: monthAgo,
+    start: twoWeeksAgo,
     end: new Date(),
   });
 
