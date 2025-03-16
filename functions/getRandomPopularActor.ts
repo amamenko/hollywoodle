@@ -69,8 +69,6 @@ export const getRandomPopularActor = async (
         "game of thrones",
       ];
 
-      console.log({ results });
-
       const filteredResults = results.filter(
         (currentActor: { [key: string]: any }) =>
           currentActor.known_for &&
@@ -100,9 +98,8 @@ export const getRandomPopularActor = async (
             .filter((el: string) => el === "movie").length >= 2 &&
           currentActor.known_for_department === "Acting" &&
           currentActor.profile_path &&
-          currentActor.id <= 2000000 &&
           !currentActor.adult &&
-          currentActor.popularity >= 2.57 &&
+          currentActor.popularity >= 0.6 &&
           !allBlacklistedIDs.includes(currentActor.id) &&
           currentActor.name !== exceptedName &&
           currentActor.name !== exceptedName2
